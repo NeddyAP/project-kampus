@@ -156,15 +156,20 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
-            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri');
+            return back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Anda tidak dapat menghapus akun Anda sendiri'
+            ]);
         }
 
         $user->logActivity('deleted', "Pengguna {$user->name} telah dihapus");
         $user->delete();
 
-        return back()->with('message', 'Pengguna berhasil dihapus');
+        return back()->with('flash', [
+            'type' => 'success',
+            'message' => 'Pengguna berhasil dihapus'
+        ]);
     }
-
     public function restore($id)
     {
         abort_if(!auth()->user()->isSuperAdmin(), 403);
@@ -173,6 +178,9 @@ class UserController extends Controller
         $user->restore();
         $user->logActivity('restored', "Pengguna {$user->name} telah dipulihkan");
 
-        return back()->with('message', 'Pengguna berhasil dipulihkan');
+        return back()->with('flash', [
+            'type' => 'success',
+            'message' => 'Pengguna berhasil dipulihkan'
+        ]);
     }
 }

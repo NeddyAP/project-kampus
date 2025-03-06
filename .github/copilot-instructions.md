@@ -33,3 +33,8 @@ Rules:
 2. Validation & Logic: Handle all validation and business logic on the backend.
 
 ---
+
+### Debuging Command:
+
+1. npm run format
+2. npm run lint

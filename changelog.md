@@ -1,5 +1,7 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
 ## [Unreleased]
 
 ### Added
@@ -37,6 +39,14 @@
 - Role-based authorization middleware
 - Role selection in user creation and editing
 - Role validation and filtering
+- Toast notifications system with Indonesian language support using Sonner
+  - Integrated Sonner toast library
+  - Created ToasterProvider component with theme support
+  - Added utility functions for showing success, error, warning, and info toasts
+  - Integrated toast provider in the root application layout
+  - Added FlashMessage component to handle backend flash messages
+  - Integrated toast notifications with Inertia.js flash messages
+  - Standardized flash message format across all CRUD operations
 
 ### Technical
 
