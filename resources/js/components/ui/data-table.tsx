@@ -1,7 +1,9 @@
 import {
+  useReactTable,
   flexRender,
   getCoreRowModel,
-  useReactTable,
+  getSortedRowModel,
+  type SortingState,
   type ColumnDef,
 } from '@tanstack/react-table';
 import {
@@ -13,7 +15,16 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from "@/components/ui/button";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useState } from 'react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -29,18 +40,44 @@ interface DataTableProps<TData, TValue> {
       active: boolean;
     }>;
   };
+  defaultSort?: SortingState;
 }
+
+const rowCountOptions = [10, 25, 50, 100];
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pagination,
+  defaultSort = [],
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>(defaultSort);
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const handlePerPageChange = (value: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('per_page', value);
+    router.get(url.toString(), {}, { preserveState: true, preserveScroll: true });
+  };
+
+  const SortingIcon = ({ isSorted }: { isSorted: false | 'asc' | 'desc' }) => {
+    if (!isSorted) return null;
+    return isSorted === 'asc' ? (
+      <ChevronUp className="ml-2 h-4 w-4" />
+    ) : (
+      <ChevronDown className="ml-2 h-4 w-4" />
+    );
+  };
 
   return (
     <div className="space-y-4">
@@ -50,13 +87,22 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                  <TableHead 
+                    key={header.id}
+                    className={header.column.getCanSort() ? 'cursor-pointer select-none' : ''}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    <div className="flex items-center">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                      {header.column.getCanSort() && (
+                        <SortingIcon isSorted={header.column.getIsSorted()} />
+                      )}
+                    </div>
                   </TableHead>
                 ))}
               </TableRow>
@@ -82,6 +128,28 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+      
+      <div className="flex items-center justify-start">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Tampilkan</span>
+          <Select
+            value={pagination?.per_page.toString()}
+            onValueChange={handlePerPageChange}
+          >
+            <SelectTrigger className="w-[80px]">
+              <SelectValue placeholder={pagination?.per_page.toString()} />
+            </SelectTrigger>
+            <SelectContent>
+              {rowCountOptions.map((option) => (
+                <SelectItem key={option} value={option.toString()}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span className="text-sm text-muted-foreground">data</span>
+        </div>
       </div>
       
       {pagination && (

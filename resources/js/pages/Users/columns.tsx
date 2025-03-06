@@ -16,18 +16,26 @@ export const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'name',
         header: 'Nama',
+        sortingFn: 'text',
+        enableSorting: true,
     },
     {
         accessorKey: 'email',
         header: 'Email',
+        sortingFn: 'text',
+        enableSorting: true,
     },
     {
         accessorKey: 'role',
         header: 'Role',
+        sortingFn: 'text',
+        enableSorting: true,
     },
     {
         accessorKey: 'created_at',
         header: 'Tanggal Dibuat',
+        sortingFn: 'datetime',
+        enableSorting: true,
         cell: ({ row }) => {
             return new Date(row.getValue('created_at')).toLocaleDateString('id-ID');
         },

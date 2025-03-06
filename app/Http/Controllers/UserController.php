@@ -17,12 +17,18 @@ class UserController extends Controller
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             })
-            ->paginate(10)
+            ->when($request->sort, function($query, $sort) {
+                [$column, $direction] = explode('.', $sort);
+                if (in_array($column, ['name', 'email', 'role', 'created_at'])) {
+                    $query->orderBy($column, $direction);
+                }
+            })
+            ->paginate($request->input('per_page', 10))
             ->withQueryString();
 
         return Inertia::render('users/index', [
             'users' => $users,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'sort', 'per_page']),
             'roles' => User::ROLES,
         ]);
     }
