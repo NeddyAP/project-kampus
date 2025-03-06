@@ -22,13 +22,16 @@ class UserController extends Controller
 
         return Inertia::render('users/index', [
             'users' => $users,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
+            'roles' => User::ROLES,
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('users/create');
+        return Inertia::render('users/create', [
+            'roles' => User::ROLES,
+        ]);
     }
 
     public function store(Request $request)
@@ -37,6 +40,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
+            'role' => ['required', 'string', Rule::in(array_keys(User::ROLES))],
         ], [
             'name.required' => 'Nama wajib diisi',
             'email.required' => 'Email wajib diisi',
@@ -44,6 +48,8 @@ class UserController extends Controller
             'email.unique' => 'Email sudah terdaftar',
             'password.required' => 'Password wajib diisi',
             'password.min' => 'Password minimal 8 karakter',
+            'role.required' => 'Role wajib dipilih',
+            'role.in' => 'Role tidak valid',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -60,7 +66,8 @@ class UserController extends Controller
     public function edit(User $user)
     {
         return Inertia::render('users/edit', [
-            'user' => $user
+            'user' => $user,
+            'roles' => User::ROLES,
         ]);
     }
 
@@ -70,12 +77,15 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:8'],
+            'role' => ['required', 'string', Rule::in(array_keys(User::ROLES))],
         ], [
             'name.required' => 'Nama wajib diisi',
             'email.required' => 'Email wajib diisi',
             'email.email' => 'Format email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
             'password.min' => 'Password minimal 8 karakter',
+            'role.required' => 'Role wajib dipilih',
+            'role.in' => 'Role tidak valid',
         ]);
 
         if (!empty($validated['password'])) {

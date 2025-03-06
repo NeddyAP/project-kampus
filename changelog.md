@@ -4,6 +4,10 @@
 
 ### Added
 
+- Created reusable UserForm component for create and edit operations
+- Added role selection dropdown using Shadcn UI Select component
+- Improved form validation feedback
+- Added TypeScript types for User interface
 - User management system with data table implementation
     - Added TanStack React Table integration
     - Implemented search functionality with debouncing
@@ -29,6 +33,10 @@
     - Added safety check to prevent self-deletion
     - Added success/error messages
     - Added Indonesian translations for confirmation dialogs
+- User role system with Superadmin, Admin, Dosen, and Mahasiswa roles
+- Role-based authorization middleware
+- Role selection in user creation and editing
+- Role validation and filtering
 
 ### Technical
 

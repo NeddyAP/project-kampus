@@ -21,7 +21,25 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
+
+    const ROLES = [
+        'superadmin' => 'Super Admin',
+        'admin' => 'Admin',
+        'dosen' => 'Dosen',
+        'mahasiswa' => 'Mahasiswa',
+    ];
+
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === 'superadmin';
+    }
 
     /**
      * The attributes that should be hidden for serialization.
