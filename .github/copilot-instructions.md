@@ -21,7 +21,8 @@ Rules:
 1. Tech Stack: Use modern React, TypeScript, and Shadcn UI.
 2. Avoid Storyboards: Do not use storyboards for UI development.
 3. Design Principles: Ensure UIs are visually appealing, fast, and fully responsive.
-4. Language: All text must be in Indonesian.
+4. Use Inertia.js Form
+5. Language: All text must be in Indonesian.
 
 ---
 
