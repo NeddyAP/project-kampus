@@ -40,39 +40,39 @@ All notable changes to this project will be documented in this file.
 - Role selection in user creation and editing
 - Role validation and filtering
 - Toast notifications system with Indonesian language support using Sonner
-  - Integrated Sonner toast library
-  - Created ToasterProvider component with theme support
-  - Added utility functions for showing success, error, warning, and info toasts
-  - Integrated toast provider in the root application layout
-  - Added FlashMessage component to handle backend flash messages
-  - Integrated toast notifications with Inertia.js flash messages
-  - Standardized flash message format across all CRUD operations
+    - Integrated Sonner toast library
+    - Created ToasterProvider component with theme support
+    - Added utility functions for showing success, error, warning, and info toasts
+    - Integrated toast provider in the root application layout
+    - Added FlashMessage component to handle backend flash messages
+    - Integrated toast notifications with Inertia.js flash messages
+    - Standardized flash message format across all CRUD operations
 - Specific user details for role-based profiles
-  - Admin (Staff) specific fields:
-    - Employee ID (ID Pegawai) - Unique identifier
-    - Department (Departemen)
-    - Position (Jabatan)
-    - Employment Status (Status Kepegawaian) - Tetap/Kontrak/Magang
-    - Join Date (Tanggal Bergabung)
-    - Phone Number (Nomor Telepon)
-    - Address (Alamat)
-    - Supervisor Name (Nama Atasan)
-    - Work Location (Lokasi Kerja)
-  - Dosen (Lecturer) specific fields:
-    - NIP (Nomor Induk Pegawai) - Employee identification number
-    - Bidang keahlian - Field of expertise
-    - Pendidikan terakhir - Latest education
-    - Jabatan akademik - Academic position
-    - Status kepegawaian - Employment status (PNS/Non-PNS)
-    - Tahun mulai mengajar - Year started teaching
-  - Mahasiswa (Student) specific fields:
-    - NIM (Nomor Induk Mahasiswa) - Student identification number
-    - Program studi - Study program
-    - Angkatan - Class year/batch
-    - Status akademik - Academic status (Aktif/Cuti/Lulus)
-    - Semester - Current semester
-    - Dosen pembimbing - Academic advisor
-    - IPK - GPA (Grade Point Average)
+    - Admin (Staff) specific fields:
+        - Employee ID (ID Pegawai) - Unique identifier
+        - Department (Departemen)
+        - Position (Jabatan)
+        - Employment Status (Status Kepegawaian) - Tetap/Kontrak/Magang
+        - Join Date (Tanggal Bergabung)
+        - Phone Number (Nomor Telepon)
+        - Address (Alamat)
+        - Supervisor Name (Nama Atasan)
+        - Work Location (Lokasi Kerja)
+    - Dosen (Lecturer) specific fields:
+        - NIP (Nomor Induk Pegawai) - Employee identification number
+        - Bidang keahlian - Field of expertise
+        - Pendidikan terakhir - Latest education
+        - Jabatan akademik - Academic position
+        - Status kepegawaian - Employment status (PNS/Non-PNS)
+        - Tahun mulai mengajar - Year started teaching
+    - Mahasiswa (Student) specific fields:
+        - NIM (Nomor Induk Mahasiswa) - Student identification number
+        - Program studi - Study program
+        - Angkatan - Class year/batch
+        - Status akademik - Academic status (Aktif/Cuti/Lulus)
+        - Semester - Current semester
+        - Dosen pembimbing - Academic advisor
+        - IPK - GPA (Grade Point Average)
 
 ### Technical
 
@@ -91,6 +91,19 @@ All notable changes to this project will be documented in this file.
 - Added @tanstack/react-table
 - Added lucide-react for icons
 
+### Changed
+
+- Refactored UserController to use UserService
+- Moved user-related business logic to UserService class
+- Improved code organization and maintainability
+- Made user role unchangeable after creation
+- Removed role field from user update validation
+- Modified edit form to show role as read-only
+
 ## [0.0.1] - 2025-02-01
 
 - Initial project setup
+
+## 2025-02-01
+
+- Updated user-form.tsx to include disabledFields prop and disable the role field when specified.

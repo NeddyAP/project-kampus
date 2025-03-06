@@ -2,12 +2,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SearchInput } from '@/components/ui/search-input';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { User, type BreadcrumbItem, PaginatedData } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Activity, Plus, Signal, Users } from 'lucide-react';
 import { columns } from './columns';
+
+interface Props {
+    users: PaginatedData<User>;
+    filters: Record<string, string>;
+    stats: {
+        active_users: number;
+        recent_activities: { description: string; time: string }[];
+    };
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,7 +24,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function UserIndex({ users, filters, stats }) {
+export default function UserIndex({ users, filters, stats }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Pengguna" />
@@ -73,15 +81,6 @@ export default function UserIndex({ users, filters, stats }) {
 
                 <Card className="flex-1">
                     <CardContent className="p-4">
-                        <div className="mb-4 flex items-center justify-between">
-                            <SearchInput value={filters.search} route={route('users.index')} params={{}} placeholder="Cari pengguna..." />
-                            <Button asChild>
-                                <Link href="/users/create">
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Tambah Pengguna
-                                </Link>
-                            </Button>
-                        </div>
                         <DataTable
                             columns={columns}
                             data={users.data}
@@ -91,6 +90,16 @@ export default function UserIndex({ users, filters, stats }) {
                                 per_page: users.per_page,
                                 total: users.total,
                                 links: users.links,
+                            }}
+                            searchable={true}
+                            searchPlaceholder="Cari pengguna..."
+                            searchParam="search"
+                            filters={filters}
+                            createButton={{
+                                href: "/users/create",
+                                text: "Tambah Pengguna",
+                                icon: <Plus className="mr-2 h-4 w-4" />,
+                                show: true
                             }}
                         />
                     </CardContent>

@@ -88,6 +88,23 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface PaginationLink {
+    url: string | undefined | null;
+    label: string;
+    active: boolean;
+}
+
+export interface PaginatedData<T> {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    links: PaginationLink[];
+    from?: number;
+    to?: number;
+}
+
 declare global {
     interface Window {
         auth: {

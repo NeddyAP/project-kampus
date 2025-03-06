@@ -20,8 +20,14 @@ export default function UserEdit({ user, roles, dosen_users }: Props) {
             <Head title="Edit Pengguna" />
             <div className="flex flex-col gap-4 rounded-xl p-4">
                 <h1 className="text-2xl font-semibold">Edit Pengguna</h1>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 overflow-hidden rounded-xl border p-4">
-                    <UserForm user={user} roles={roles} mode="edit" dosen_users={dosen_users} />
+                <div className="relative flex-1 overflow-hidden rounded-xl border p-4">
+                    <UserForm
+                        user={user}
+                        roles={roles}
+                        mode="edit"
+                        dosen_users={dosen_users}
+                        disabledFields={['role']}
+                    />
                 </div>
             </div>
         </AppLayout>

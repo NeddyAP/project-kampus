@@ -13,6 +13,7 @@ interface UserFormProps {
     roles: Record<string, string>;
     mode: 'create' | 'edit';
     dosen_users: Pick<User, 'id' | 'name'>[];
+    disabledFields?: string[]; // added for selective disabling
 }
 
 type FormData = {
@@ -47,7 +48,7 @@ type FormData = {
     ipk: string;
 };
 
-export default function UserForm({ user, roles, mode, dosen_users }: UserFormProps) {
+export default function UserForm({ user, roles, mode, dosen_users, disabledFields = [] }: UserFormProps) {
     const { data, setData, post, put, processing, errors } = useForm<FormData>({
         name: user?.name || '',
         email: user?.email || '',
@@ -125,8 +126,12 @@ export default function UserForm({ user, roles, mode, dosen_users }: UserFormPro
 
             <div className="space-y-2">
                 <Label htmlFor="role">Role</Label>
-                <Select value={data.role} onValueChange={(value) => setData('role', value)}>
-                    <SelectTrigger>
+                <Select
+                    value={data.role}
+                    onValueChange={(value) => setData('role', value)}
+                    disabled={disabledFields.includes('role')}
+                >
+                    <SelectTrigger disabled={disabledFields.includes('role')}>
                         <SelectValue placeholder="Pilih role" />
                     </SelectTrigger>
                     <SelectContent>
