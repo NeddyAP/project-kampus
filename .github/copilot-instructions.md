@@ -34,7 +34,7 @@ Rules:
 
 ---
 
-### Debuging Command:
+### Always Run Debuging Command:
 
 1. npm run format
 2. npm run lint

@@ -47,6 +47,32 @@ All notable changes to this project will be documented in this file.
   - Added FlashMessage component to handle backend flash messages
   - Integrated toast notifications with Inertia.js flash messages
   - Standardized flash message format across all CRUD operations
+- Specific user details for role-based profiles
+  - Admin (Staff) specific fields:
+    - Employee ID (ID Pegawai) - Unique identifier
+    - Department (Departemen)
+    - Position (Jabatan)
+    - Employment Status (Status Kepegawaian) - Tetap/Kontrak/Magang
+    - Join Date (Tanggal Bergabung)
+    - Phone Number (Nomor Telepon)
+    - Address (Alamat)
+    - Supervisor Name (Nama Atasan)
+    - Work Location (Lokasi Kerja)
+  - Dosen (Lecturer) specific fields:
+    - NIP (Nomor Induk Pegawai) - Employee identification number
+    - Bidang keahlian - Field of expertise
+    - Pendidikan terakhir - Latest education
+    - Jabatan akademik - Academic position
+    - Status kepegawaian - Employment status (PNS/Non-PNS)
+    - Tahun mulai mengajar - Year started teaching
+  - Mahasiswa (Student) specific fields:
+    - NIM (Nomor Induk Mahasiswa) - Student identification number
+    - Program studi - Study program
+    - Angkatan - Class year/batch
+    - Status akademik - Academic status (Aktif/Cuti/Lulus)
+    - Semester - Current semester
+    - Dosen pembimbing - Academic advisor
+    - IPK - GPA (Grade Point Average)
 
 ### Technical
 

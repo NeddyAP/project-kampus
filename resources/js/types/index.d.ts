@@ -30,6 +30,50 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export interface AdminProfile {
+    id: number;
+    user_id: number;
+    employee_id: string;
+    department: string;
+    position: string;
+    employment_status: 'Tetap' | 'Kontrak' | 'Magang';
+    join_date: string;
+    phone_number: string | null;
+    address: string | null;
+    supervisor_name: string | null;
+    work_location: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface DosenProfile {
+    id: number;
+    user_id: number;
+    nip: string;
+    bidang_keahlian: string;
+    pendidikan_terakhir: string;
+    jabatan_akademik: string;
+    status_kepegawaian: 'PNS' | 'Non-PNS';
+    tahun_mulai_mengajar: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface MahasiswaProfile {
+    id: number;
+    user_id: number;
+    nim: string;
+    program_studi: string;
+    angkatan: number;
+    status_akademik: 'Aktif' | 'Cuti' | 'Lulus';
+    semester: number;
+    dosen_pembimbing_id: number | null;
+    ipk: number | null;
+    created_at: string;
+    updated_at: string;
+    dosen_pembimbing?: User;
+}
+
 export interface User {
     id: number;
     name: string;
@@ -38,6 +82,9 @@ export interface User {
     created_at: string;
     updated_at: string;
     deleted_at?: string;
+    admin_profile?: AdminProfile;
+    dosen_profile?: DosenProfile;
+    mahasiswa_profile?: MahasiswaProfile;
     [key: string]: unknown; // This allows for additional properties...
 }
 

@@ -82,4 +82,32 @@ class User extends Authenticatable
             'description' => $description,
         ]);
     }
+
+    public function adminProfile()
+    {
+        return $this->hasOne(AdminProfile::class);
+    }
+
+    public function dosenProfile()
+    {
+        return $this->hasOne(DosenProfile::class);
+    }
+
+    public function mahasiswaProfile()
+    {
+        return $this->hasOne(MahasiswaProfile::class);
+    }
+
+    public function getProfileAttribute()
+    {
+        if ($this->role === 'admin') {
+            return $this->adminProfile;
+        } elseif ($this->role === 'dosen') {
+            return $this->dosenProfile;
+        } elseif ($this->role === 'mahasiswa') {
+            return $this->mahasiswaProfile;
+        }
+        
+        return null;
+    }
 }
