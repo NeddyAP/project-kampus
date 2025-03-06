@@ -24,12 +24,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $faker = \Faker\Factory::create('id_ID');
-        
+
         return [
             'name' => $faker->name(),
             'email' => $faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => $faker->randomElement(['superadmin', 'admin', 'dosen', 'mahasiswa']),
             'remember_token' => Str::random(10),
         ];
     }
@@ -39,7 +40,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

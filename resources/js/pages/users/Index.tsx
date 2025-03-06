@@ -1,10 +1,9 @@
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/app-layout';
-import { User, type BreadcrumbItem, PaginatedData } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { PaginatedData, User, type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/react';
 import { Activity, Plus, Signal, Users } from 'lucide-react';
 import { columns } from './columns';
 
@@ -96,10 +95,10 @@ export default function UserIndex({ users, filters, stats }: Props) {
                             searchParam="search"
                             filters={filters}
                             createButton={{
-                                href: "/users/create",
-                                text: "Tambah Pengguna",
+                                href: '/users/create',
+                                text: 'Tambah Pengguna',
                                 icon: <Plus className="mr-2 h-4 w-4" />,
-                                show: true
+                                show: true,
                             }}
                         />
                     </CardContent>

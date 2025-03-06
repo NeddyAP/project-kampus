@@ -230,15 +230,35 @@ export function DataTable<TData, TValue>({
       </div>
 
       {pagination && (
-        <div className="flex items-center justify-between px-2">
-          <p className="text-sm text-muted-foreground">
-            Total {pagination.total} data
-          </p>
-          <div className="flex items-center space-x-2">
-            {pagination.links.map((link, i) => {
-              // Skip rendering if url is null or undefined
-              if (link.url === null || link.url === undefined) return null;
+        <div className="flex items-center justify-between gap-4 px-2 flex-wrap">
+          <div className="flex items-center gap-6">
+            <p className="text-sm text-muted-foreground whitespace-nowrap">
+              Total {pagination.total} data
+            </p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Tampilkan</span>
+              <Select
+                value={pagination.per_page.toString()}
+                onValueChange={handlePerPageChange}
+              >
+                <SelectTrigger className="w-[80px]">
+                  <SelectValue placeholder={pagination.per_page.toString()} />
+                </SelectTrigger>
+                <SelectContent>
+                  {rowCountOptions.map((option) => (
+                    <SelectItem key={option} value={option.toString()}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="text-sm text-muted-foreground">data</span>
+            </div>
+          </div>
 
+          <div className="flex items-center space-x-2 ml-auto">
+            {pagination.links.map((link, i) => {
+              if (link.url === null || link.url === undefined) return null;
               return (
                 <Button
                   key={i}
@@ -254,30 +274,6 @@ export function DataTable<TData, TValue>({
                 </Button>
               );
             })}
-          </div>
-        </div>
-      )}
-
-      {pagination && (
-        <div className="flex items-center justify-start">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Tampilkan</span>
-            <Select
-              value={pagination.per_page.toString()}
-              onValueChange={handlePerPageChange}
-            >
-              <SelectTrigger className="w-[80px]">
-                <SelectValue placeholder={pagination.per_page.toString()} />
-              </SelectTrigger>
-              <SelectContent>
-                {rowCountOptions.map((option) => (
-                  <SelectItem key={option} value={option.toString()}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <span className="text-sm text-muted-foreground">data</span>
           </div>
         </div>
       )}
