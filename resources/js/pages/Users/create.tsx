@@ -7,7 +7,7 @@ const breadcrumbs = [
     { title: 'Tambah Pengguna', href: '/users/create' },
 ];
 
-export default function Create({ roles }) {
+export default function UserCreate({ roles }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tambah Pengguna" />

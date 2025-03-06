@@ -34,9 +34,17 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    avatar?: string;
-    email_verified_at: string | null;
+    role: string;
     created_at: string;
     updated_at: string;
+    deleted_at?: string;
     [key: string]: unknown; // This allows for additional properties...
+}
+
+declare global {
+    interface Window {
+        auth: {
+            user: User;
+        };
+    }
 }

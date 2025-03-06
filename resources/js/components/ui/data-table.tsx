@@ -130,28 +130,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       
-      <div className="flex items-center justify-start">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Tampilkan</span>
-          <Select
-            value={pagination?.per_page.toString()}
-            onValueChange={handlePerPageChange}
-          >
-            <SelectTrigger className="w-[80px]">
-              <SelectValue placeholder={pagination?.per_page.toString()} />
-            </SelectTrigger>
-            <SelectContent>
-              {rowCountOptions.map((option) => (
-                <SelectItem key={option} value={option.toString()}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <span className="text-sm text-muted-foreground">data</span>
-        </div>
-      </div>
-      
       {pagination && (
         <div className="flex items-center justify-between px-2">
           <p className="text-sm text-muted-foreground">
@@ -178,6 +156,28 @@ export function DataTable<TData, TValue>({
           </div>
         </div>
       )}
+      
+      <div className="flex items-center justify-start">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Tampilkan</span>
+          <Select
+            value={pagination?.per_page.toString()}
+            onValueChange={handlePerPageChange}
+          >
+            <SelectTrigger className="w-[80px]">
+              <SelectValue placeholder={pagination?.per_page.toString()} />
+            </SelectTrigger>
+            <SelectContent>
+              {rowCountOptions.map((option) => (
+                <SelectItem key={option} value={option.toString()}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span className="text-sm text-muted-foreground">data</span>
+        </div>
+      </div>
     </div>
   );
 }

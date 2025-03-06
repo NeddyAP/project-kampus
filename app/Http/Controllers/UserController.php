@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -10,8 +11,24 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        Inertia::share('auth', function () {
+            return [
+                'user' => auth()->user() ? [
+                    'id' => auth()->user()->id,
+                    'name' => auth()->user()->name,
+                    'email' => auth()->user()->email,
+                    'role' => auth()->user()->role,
+                ] : null,
+            ];
+        });
+    }
+
     public function index(Request $request)
     {
+        abort_if(!auth()->user()->isSuperAdmin() && $request->has('trashed'), 403);
+
         $users = User::query()
             ->when($request->search, function($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
@@ -23,13 +40,38 @@ class UserController extends Controller
                     $query->orderBy($column, $direction);
                 }
             })
+            ->when(auth()->user()->isSuperAdmin() && $request->has('trashed'), function($query) {
+                $query->onlyTrashed();
+            })
             ->paginate($request->input('per_page', 10))
             ->withQueryString();
 
+        $recentActivities = Activity::with('causer')
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function ($activity) {
+                return [
+                    'time' => $activity->created_at->diffForHumans(),
+                    'description' => $activity->description,
+                ];
+            });
+
+        $stats = [
+            'last_activity_time' => $recentActivities->first() ? $recentActivities->first()['time'] : 'Tidak ada',
+            'last_activity_description' => $recentActivities->first() ? $recentActivities->first()['description'] : 'Belum ada aktivitas',
+            'active_users' => User::where('last_seen_at', '>=', now()->subDay())->count(),
+            'recent_activities' => $recentActivities,
+        ];
+
         return Inertia::render('users/index', [
             'users' => $users,
-            'filters' => $request->only(['search', 'sort', 'per_page']),
+            'filters' => $request->only(['search', 'sort', 'per_page', 'trashed']),
             'roles' => User::ROLES,
+            'stats' => $stats,
+            'can' => [
+                'view_deleted' => auth()->user()->isSuperAdmin(),
+            ],
         ]);
     }
 
@@ -60,7 +102,8 @@ class UserController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
 
-        User::create($validated);
+        $user = User::create($validated);
+        $user->logActivity('created', "Pengguna {$user->name} telah dibuat");
 
         return redirect()->route('users.index')
             ->with('flash', [
@@ -101,6 +144,7 @@ class UserController extends Controller
         }
 
         $user->update($validated);
+        $user->logActivity('updated', "Pengguna {$user->name} telah diperbarui");
 
         return redirect()->route('users.index')
             ->with('flash', [
@@ -115,8 +159,20 @@ class UserController extends Controller
             return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri');
         }
 
+        $user->logActivity('deleted', "Pengguna {$user->name} telah dihapus");
         $user->delete();
 
         return back()->with('message', 'Pengguna berhasil dihapus');
+    }
+
+    public function restore($id)
+    {
+        abort_if(!auth()->user()->isSuperAdmin(), 403);
+
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+        $user->logActivity('restored', "Pengguna {$user->name} telah dipulihkan");
+
+        return back()->with('message', 'Pengguna berhasil dipulihkan');
     }
 }

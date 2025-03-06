@@ -6,17 +6,25 @@ import { useEffect, useState } from "react";
 
 interface SearchInputProps {
   value?: string;
+  route?: string;
+  params?: Record<string, string | number | boolean>;
+  placeholder?: string;
 }
 
-export function SearchInput({ value }: SearchInputProps) {
+export function SearchInput({ 
+  value, 
+  route, 
+  params = {}, 
+  placeholder = "Cari..." 
+}: SearchInputProps) {
   const [search, setSearch] = useState(value || "");
   const debouncedSearch = useDebounce(search, 300);
 
   useEffect(() => {
-    if (debouncedSearch !== value) {
+    if (route && debouncedSearch !== value) {
       router.get(
-        "/users",
-        { search: debouncedSearch },
+        route,
+        { search: debouncedSearch, ...params },
         {
           preserveState: true,
           preserveScroll: true,
@@ -24,13 +32,13 @@ export function SearchInput({ value }: SearchInputProps) {
         }
       );
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, route, params, value]);
 
   return (
     <div className="relative">
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
-        placeholder="Cari pengguna..."
+        placeholder={placeholder}
         className="pl-8"
         value={search}
         onChange={(e) => setSearch(e.target.value)}

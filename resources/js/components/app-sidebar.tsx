@@ -15,7 +15,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Users',
-        url: route('users.index'),
+        url: '/users',
         icon: Users,
     },
 ];

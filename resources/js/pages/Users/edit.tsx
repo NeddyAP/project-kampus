@@ -7,7 +7,7 @@ const breadcrumbs = [
     { title: 'Edit Pengguna', href: '/users/edit' },
 ];
 
-export default function Edit({ user, roles }) {
+export default function UserEdit({ user, roles }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Pengguna" />
