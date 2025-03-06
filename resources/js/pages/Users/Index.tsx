@@ -1,9 +1,11 @@
+import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { SearchInput } from '@/components/ui/search-input';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { Plus } from 'lucide-react';
 import { columns } from './columns';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -30,8 +32,14 @@ export default function Index({ users, filters }) {
                     </div>
                 </div>
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border p-4 md:min-h-min">
-                    <div className="mb-4">
+                    <div className="mb-4 flex items-center justify-between">
                         <SearchInput value={filters.search} />
+                        <Button asChild>
+                            <Link href="/users/create">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Tambah Pengguna
+                            </Link>
+                        </Button>
                     </div>
                     <DataTable
                         columns={columns}

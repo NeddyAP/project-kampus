@@ -1,26 +1,28 @@
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useForm } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface SearchInputProps {
   value?: string;
 }
 
 export function SearchInput({ value }: SearchInputProps) {
-  const { data, setData, get } = useForm({
-    search: value || "",
-  });
-
-  const debouncedSearch = useDebounce(data.search, 300);
+  const [search, setSearch] = useState(value || "");
+  const debouncedSearch = useDebounce(search, 300);
 
   useEffect(() => {
     if (debouncedSearch !== value) {
-      get("/users", {
-        preserveState: true,
-        preserveScroll: true,
-      });
+      router.get(
+        "/users",
+        { search: debouncedSearch },
+        {
+          preserveState: true,
+          preserveScroll: true,
+          replace: true,
+        }
+      );
     }
   }, [debouncedSearch]);
 
@@ -30,8 +32,8 @@ export function SearchInput({ value }: SearchInputProps) {
       <Input
         placeholder="Cari pengguna..."
         className="pl-8"
-        value={data.search}
-        onChange={(e) => setData("search", e.target.value)}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
       />
     </div>
   );

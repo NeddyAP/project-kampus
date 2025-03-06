@@ -1,6 +1,9 @@
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { Link, router } from '@inertiajs/react';
 import { type ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal } from 'lucide-react';
+import { Edit2, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 export type User = {
     id: number;
@@ -27,13 +30,34 @@ export const columns: ColumnDef<User>[] = [
     },
     {
         id: 'actions',
+        header: 'Aksi',
         cell: ({ row }) => {
             const user = row.original;
+            const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+            const handleDelete = () => {
+                router.delete(`/users/${user.id}`);
+            };
 
             return (
-                <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" size="icon" asChild>
+                        <Link href={`/users/${user.id}/edit`}>
+                            <Edit2 className="h-4 w-4" />
+                        </Link>
+                    </Button>
+                    <Button variant="destructive" size="icon" onClick={() => setShowDeleteDialog(true)}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+
+                    <ConfirmDialog
+                        open={showDeleteDialog}
+                        onOpenChange={setShowDeleteDialog}
+                        onConfirm={handleDelete}
+                        title="Hapus Pengguna"
+                        description={`Apakah Anda yakin ingin menghapus pengguna ${user.name}?`}
+                    />
+                </div>
             );
         },
     },

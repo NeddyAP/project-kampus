@@ -6,9 +6,11 @@ Rules:
 2. Reusability: Prioritize using existing components over creating new ones.
 3. Modular Code: Write modular and reusable code following best practices.
 4. Versioning: Always use the latest versions of tools and libraries unless a specific version is more optimal.
-5. use lowercase for all file names and folders.
-6. use kebab-case for all file names and folders.
-7. Project Date: Project is start in 2025-02-01
+5. use inertia.js form for all form submission.
+6. use inertia.js link for all link.
+7. use lowercase for all file names and folders.
+8. use kebab-case for all file names and folders.
+9. Project Date: Project is start in 2025-02-01
 
 ---
 
