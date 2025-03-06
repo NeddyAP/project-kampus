@@ -1,109 +1,53 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+Catatan perubahan proyek.
 
-## [Unreleased]
+## [Belum Dirilis]
 
-### Added
+## 2025-03-07
 
-- Created reusable UserForm component for create and edit operations
-- Added role selection dropdown using Shadcn UI Select component
-- Improved form validation feedback
-- Added TypeScript types for User interface
-- User management system with data table implementation
-    - Added TanStack React Table integration
-    - Implemented search functionality with debouncing
-    - Added pagination controls
-    - Added Indonesian localization for UI elements
-- Database seeding for users
-    - Created admin user (admin@example.com)
-    - Added 49 dummy users with Indonesian names
-    - Implemented UserFactory with Indonesian locale
-- User Create and Edit Forms
-    - Added form validation using Zod
-    - Implemented password hashing
-    - Added success messages
-    - Added Indonesian form labels and validation messages
-    - Optional password field for user updates
-- Added Action Buttons to User Management
-    - Create new user button with plus icon
-    - Edit button for each user row
-    - Improved UI/UX with proper button spacing and icons
-- User Delete Functionality
-    - Added delete confirmation dialog
-    - Added delete button with icon
-    - Added safety check to prevent self-deletion
-    - Added success/error messages
-    - Added Indonesian translations for confirmation dialogs
-- User role system with Superadmin, Admin, Dosen, and Mahasiswa roles
-- Role-based authorization middleware
-- Role selection in user creation and editing
-- Role validation and filtering
-- Toast notifications system with Indonesian language support using Sonner
-    - Integrated Sonner toast library
-    - Created ToasterProvider component with theme support
-    - Added utility functions for showing success, error, warning, and info toasts
-    - Integrated toast provider in the root application layout
-    - Added FlashMessage component to handle backend flash messages
-    - Integrated toast notifications with Inertia.js flash messages
-    - Standardized flash message format across all CRUD operations
-- Specific user details for role-based profiles
-    - Admin (Staff) specific fields:
-        - Employee ID (ID Pegawai) - Unique identifier
-        - Department (Departemen)
-        - Position (Jabatan)
-        - Employment Status (Status Kepegawaian) - Tetap/Kontrak/Magang
-        - Join Date (Tanggal Bergabung)
-        - Phone Number (Nomor Telepon)
-        - Address (Alamat)
-        - Supervisor Name (Nama Atasan)
-        - Work Location (Lokasi Kerja)
-    - Dosen (Lecturer) specific fields:
-        - NIP (Nomor Induk Pegawai) - Employee identification number
-        - Bidang keahlian - Field of expertise
-        - Pendidikan terakhir - Latest education
-        - Jabatan akademik - Academic position
-        - Status kepegawaian - Employment status (PNS/Non-PNS)
-        - Tahun mulai mengajar - Year started teaching
-    - Mahasiswa (Student) specific fields:
-        - NIM (Nomor Induk Mahasiswa) - Student identification number
-        - Program studi - Study program
-        - Angkatan - Class year/batch
-        - Status akademik - Academic status (Aktif/Cuti/Lulus)
-        - Semester - Current semester
-        - Dosen pembimbing - Academic advisor
-        - IPK - GPA (Grade Point Average)
+### Rencana
 
-### Technical
+- Menambahkan form pengajuan magang dengan 2 kategori: Kuliah Kerja Lapangan (KKL) dan Kuliah Kerja Nyata (KKN).
 
-- Added new components:
-    - DataTable component with sorting and pagination
-    - SearchInput component with debounced search
-- Added useDebounce hook for search optimization
-- Added form components from shadcn/ui
-- Added Zod for form validation
-- Added Lucide React icons for action buttons
-- Added AlertDialog component from shadcn/ui
-- Added delete route handling
+## 2025-03-06
 
-### Dependencies
-
-- Added @tanstack/react-table
-- Added lucide-react for icons
-
-### Changed
-
-- Refactored UserController to use UserService
-- Moved user-related business logic to UserService class
-- Improved code organization and maintainability
-- Made user role unchangeable after creation
-- Removed role field from user update validation
-- Modified edit form to show role as read-only
+- Pembaruan `user-form.tsx`: Menambahkan prop `disabledFields` untuk menonaktifkan bidang peran.
 
 ## [0.0.1] - 2025-02-01
 
-- Initial project setup
+- Pengaturan awal proyek.
 
-## 2025-02-01
+### Diubah
 
-- Updated user-form.tsx to include disabledFields prop and disable the role field when specified.
+- Refaktor `UserController` ke `UserService`.
+- Logika bisnis pengguna dipindahkan ke `UserService`.
+- Peran pengguna tidak dapat diubah setelah pembuatan.
+- Bidang peran read-only pada form edit.
+
+### Dependensi
+
+- @tanstack/react-table
+- lucide-react
+
+### Teknis
+
+- Komponen `DataTable`, `SearchInput`, `AlertDialog`.
+- Hook `useDebounce`.
+- Penggunaan komponen formulir dari shadcn/ui, Zod, dan Lucide React.
+- Penanganan rute hapus.
+
+### Ditambahkan
+
+- Komponen `UserForm` untuk pembuatan dan pengeditan pengguna.
+- Dropdown pemilihan peran (Shadcn UI Select).
+- Umpan balik validasi formulir.
+- Tipe TypeScript untuk antarmuka `User`.
+- Sistem manajemen pengguna dengan tabel data (TanStack React Table), pencarian debounced, paginasi, dan lokalisasi Bahasa Indonesia.
+- Seeding database untuk pengguna (admin dan dummy).
+- Form Pembuatan/Edit Pengguna dengan validasi Zod, hashing kata sandi, dan pesan dalam Bahasa Indonesia.
+- Tombol Aksi pada Manajemen Pengguna.
+- Fitur Hapus Pengguna dengan dialog konfirmasi dan pemeriksaan keamanan.
+- Sistem peran pengguna (Superadmin, Admin, Dosen, Mahasiswa) dan middleware otorisasi.
+- Sistem notifikasi toast (Sonner) dengan dukungan Bahasa Indonesia dan integrasi Inertia.js.
+- Detail pengguna spesifik untuk profil berbasis peran.
