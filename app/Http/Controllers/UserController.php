@@ -14,16 +14,6 @@ class UserController extends Controller
     public function __construct(
         protected UserService $userService
     ) {
-        Inertia::share('auth', function () {
-            return [
-                'user' => auth()->user() ? [
-                    'id' => auth()->user()->id,
-                    'name' => auth()->user()->name,
-                    'email' => auth()->user()->email,
-                    'role' => auth()->user()->role,
-                ] : null,
-            ];
-        });
     }
 
     public function index(Request $request)
@@ -37,7 +27,7 @@ class UserController extends Controller
         return Inertia::render('users/index', [
             'users' => $users,
             'filters' => $request->only(['search', 'sort', 'per_page', 'trashed']),
-            'roles' => User::ROLES,
+            'roles' => User::getRoleNames(),
             'stats' => $stats,
             'can' => [
                 'view_deleted' => auth()->user()->isSuperAdmin(),
@@ -48,7 +38,7 @@ class UserController extends Controller
     public function create()
     {
         return Inertia::render('users/create', [
-            'roles' => User::ROLES,
+            'roles' => User::getRoleNames(),
             'dosen_users' => $this->userService->getDosenUsers(),
         ]);
     }
@@ -75,9 +65,13 @@ class UserController extends Controller
     {
         $user->load(['adminProfile', 'dosenProfile', 'mahasiswaProfile']);
 
+        // Get user's current role
+        $role = $user->roles->first()?->name;
+        $user->role = $role;
+
         return Inertia::render('users/edit', [
             'user' => $user,
-            'roles' => User::ROLES,
+            'roles' => User::getRoleNames(),
             'dosen_users' => $this->userService->getDosenUsers(),
         ]);
     }

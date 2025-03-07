@@ -2,112 +2,94 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
+        'last_seen_at',
     ];
 
-    const ROLES = [
-        'superadmin' => 'Super Admin',
-        'admin' => 'Admin',
-        'dosen' => 'Dosen',
-        'mahasiswa' => 'Mahasiswa',
-    ];
-
-    public function hasRole($role)
-    {
-        return $this->role === $role;
-    }
-
-    public function isSuperAdmin()
-    {
-        return $this->role === 'superadmin';
-    }
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'last_seen_at' => 'datetime',
+    ];
+
+    // Helper methods
+    public function isSuperAdmin(): bool
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'last_seen_at' => 'datetime',
-            'deleted_at' => 'datetime',
-        ];
+        return $this->hasRole('admin');
     }
 
-    public function activities()
-    {
-        return $this->morphMany(Activity::class, 'subject');
-    }
-
-    public function logActivity($action, $description)
-    {
-        return Activity::create([
-            'causer_id' => auth()->id(),
-            'action' => $action,
-            'subject_type' => self::class,
-            'subject_id' => $this->id,
-            'description' => $description,
-        ]);
-    }
-
-    public function adminProfile()
+    // Profiles
+    public function adminProfile(): HasOne
     {
         return $this->hasOne(AdminProfile::class);
     }
 
-    public function dosenProfile()
+    public function dosenProfile(): HasOne
     {
         return $this->hasOne(DosenProfile::class);
     }
 
-    public function mahasiswaProfile()
+    public function mahasiswaProfile(): HasOne
     {
         return $this->hasOne(MahasiswaProfile::class);
     }
 
     public function getProfileAttribute()
     {
-        if ($this->role === 'admin') {
+        if ($this->hasRole('admin')) {
             return $this->adminProfile;
-        } elseif ($this->role === 'dosen') {
+        } elseif ($this->hasRole('dosen')) {
             return $this->dosenProfile;
-        } elseif ($this->role === 'mahasiswa') {
+        } elseif ($this->hasRole('mahasiswa')) {
             return $this->mahasiswaProfile;
         }
-        
         return null;
+    }
+
+    // Relationships for internship
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class);
+    }
+
+    public function internshipBimbingan(): HasMany
+    {
+        return $this->hasMany(Internship::class, 'dosen_id');
+    }
+
+    public function internships(): HasMany
+    {
+        return $this->hasMany(Internship::class, 'mahasiswa_id');
+    }
+
+    // Helper method to get role display names
+    public static function getRoleNames(): array
+    {
+        return [
+            'admin' => 'Administrator',
+            'dosen' => 'Dosen',
+            'mahasiswa' => 'Mahasiswa',
+        ];
     }
 }

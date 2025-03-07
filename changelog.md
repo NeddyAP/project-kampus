@@ -1,53 +1,59 @@
 # Changelog
 
-Catatan perubahan proyek.
+## [2025-03-06] - Sistem Magang & User Management
 
-## [Belum Dirilis]
+### Added - Sistem Magang
+- Sistem manajemen magang dengan fitur:
+  - Form pengajuan magang (KKL/KKN)
+  - Manajemen persetujuan oleh admin
+  - Assignment dosen pembimbing
+  - Timeline aktivitas magang
+  - Upload dokumen (surat pengantar, persetujuan, laporan)
+  - Status tracking dan notifikasi
 
-## 2025-03-07
+### Added - Database Structure
+- Tabel `internships` untuk data magang
+- Tabel `internship_logs` untuk aktivitas magang
+- Tabel `internship_supervisions` untuk data bimbingan
+- Tabel `activities` untuk activity logging system
+- Integrasi dengan spatie/laravel-permission untuk manajemen roles
+- Tabel profil terpisah untuk admin, dosen, dan mahasiswa
 
-### Rencana
+### Added - Components
+- StatusBadge untuk menampilkan status magang
+- FilterForm untuk filter dan pencarian
+- InternshipsTable untuk daftar magang
+- ActivityTimeline untuk riwayat aktivitas
+- ApprovalForm untuk persetujuan/penolakan
+- SupervisorAssignment untuk assignment dosen
 
-- Menambahkan form pengajuan magang dengan 2 kategori: Kuliah Kerja Lapangan (KKL) dan Kuliah Kerja Nyata (KKN).
+### Added - User Management
+- Role-based access control dengan spatie/laravel-permission
+- Profil spesifik untuk setiap role:
+  - Admin: Manajemen sistem
+  - Dosen: Profil akademik dan supervisi
+  - Mahasiswa: Data akademik dan magang
+- Activity logging untuk user actions
+- Dashboard dengan recent activities
+- Proper type definitions dengan TypeScript
+- Improved UI dengan shadcn-ui components
 
-## 2025-03-06
+### Added - Data Seeding
+- Default admin user (admin@gmail.com / a)
+- 5 Dosen dengan profil akademik lengkap
+- 20 Mahasiswa dengan data studi
+- 50 Data magang dengan status bervariasi
+- Log aktivitas dan data bimbingan
+- 20 Sample activity logs
 
-- Pembaruan `user-form.tsx`: Menambahkan prop `disabledFields` untuk menonaktifkan bidang peran.
+### Technical Improvements
+- Type-safe components dengan TypeScript
+- Proper role management dengan spatie/laravel-permission
+- Activity logging system dengan polymorphic relations
+- Improved service layer pattern
+- Proper handling untuk soft deletes
+- Comprehensive data factories dan seeders
 
-## [0.0.1] - 2025-02-01
-
-- Pengaturan awal proyek.
-
-### Diubah
-
-- Refaktor `UserController` ke `UserService`.
-- Logika bisnis pengguna dipindahkan ke `UserService`.
-- Peran pengguna tidak dapat diubah setelah pembuatan.
-- Bidang peran read-only pada form edit.
-
-### Dependensi
-
-- @tanstack/react-table
-- lucide-react
-
-### Teknis
-
-- Komponen `DataTable`, `SearchInput`, `AlertDialog`.
-- Hook `useDebounce`.
-- Penggunaan komponen formulir dari shadcn/ui, Zod, dan Lucide React.
-- Penanganan rute hapus.
-
-### Ditambahkan
-
-- Komponen `UserForm` untuk pembuatan dan pengeditan pengguna.
-- Dropdown pemilihan peran (Shadcn UI Select).
-- Umpan balik validasi formulir.
-- Tipe TypeScript untuk antarmuka `User`.
-- Sistem manajemen pengguna dengan tabel data (TanStack React Table), pencarian debounced, paginasi, dan lokalisasi Bahasa Indonesia.
-- Seeding database untuk pengguna (admin dan dummy).
-- Form Pembuatan/Edit Pengguna dengan validasi Zod, hashing kata sandi, dan pesan dalam Bahasa Indonesia.
-- Tombol Aksi pada Manajemen Pengguna.
-- Fitur Hapus Pengguna dengan dialog konfirmasi dan pemeriksaan keamanan.
-- Sistem peran pengguna (Superadmin, Admin, Dosen, Mahasiswa) dan middleware otorisasi.
-- Sistem notifikasi toast (Sonner) dengan dukungan Bahasa Indonesia dan integrasi Inertia.js.
-- Detail pengguna spesifik untuk profil berbasis peran.
+### Fixed
+- Memperbaiki error "array_key_first(): Argument #1 ($array) must be of type array, Closure given" pada ActivityFactory.
+  Error ini disebabkan oleh penggunaan factory versi lama. Solusi: membersihkan cache dan database.
