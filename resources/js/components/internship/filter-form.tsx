@@ -3,20 +3,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { InternshipStatus, InternshipType } from '@/types/internship';
 
 interface FilterFormProps {
-    search: string;
     status: InternshipStatus | 'ALL';
     type: InternshipType | 'ALL';
-    onSearchChange: (value: string) => void;
     onStatusChange: (value: InternshipStatus | 'ALL') => void;
     onTypeChange: (value: InternshipType | 'ALL') => void;
 }
 
-export const FilterForm = ({ search, status, type, onSearchChange, onStatusChange, onTypeChange }: FilterFormProps) => {
+export const FilterForm = ({ status, type, onStatusChange, onTypeChange }: FilterFormProps) => {
     return (
         <div className="flex flex-col gap-4 md:flex-row">
-            <div className="w-full md:w-1/3">
-                <Input placeholder="Cari berdasarkan nama mahasiswa..." value={search} onChange={(e) => onSearchChange(e.target.value)} />
-            </div>
 
             <div className="w-full md:w-1/4">
                 <Select value={status} onValueChange={(value) => onStatusChange(value as InternshipStatus | 'ALL')}>

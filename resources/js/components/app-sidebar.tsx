@@ -4,24 +4,29 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, Workflow } from 'lucide-react';
+import { BookOpen, FileBox, Folder, LayoutGrid, Users, Workflow } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        url: '/dashboard',
+        url: '/admin/dashboard',
         icon: LayoutGrid,
     },
     {
         title: 'Magang',
-        url: '/internships',
+        url: '/admin/internships',
         icon: Workflow,
     },
     {
         title: 'Users',
-        url: '/users',
+        url: '/admin/users',
         icon: Users,
+    },
+    {
+        title: 'Media Manager',
+        url: '/admin/media',
+        icon: FileBox,
     },
 ];
 

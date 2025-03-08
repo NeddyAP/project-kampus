@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import { Internship } from '@/types/internship';
 import { Head, router } from '@inertiajs/react';
@@ -18,6 +19,17 @@ interface Props {
         nip: string;
     }>;
 }
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Manajemen Magang',
+        href: '/admin/internships',
+    },
+    {
+        title: 'Detail Pengajuan',
+        href: '#',
+    },
+];
 
 const InternshipShow = ({ internship, dosen }: Props) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -78,10 +90,10 @@ const InternshipShow = ({ internship, dosen }: Props) => {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Detail Magang" />
 
-            <div className="container py-8">
+            <div className="flex h-full flex-1 flex-col gap-4 p-4">
                 <div className="mb-8">
                     <Heading title="Detail Magang" description="Informasi lengkap pengajuan magang" />
                 </div>
@@ -259,3 +271,4 @@ const InternshipShow = ({ internship, dosen }: Props) => {
 };
 
 export default InternshipShow;
+

@@ -17,23 +17,21 @@ interface Props {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Manajemen Magang',
-        href: '/internships',
+        href: '/admin/internships',
     },
 ];
 
 
 const InternshipsIndex = ({ internships: initialInternships }: Props) => {
-    const [search, setSearch] = useState('');
     const [status, setStatus] = useState<InternshipStatus | 'ALL'>('ALL');
     const [type, setType] = useState<InternshipType | 'ALL'>('ALL');
 
     // Filter internships berdasarkan search, status, dan type
     const filteredInternships = initialInternships.filter((internship) => {
-        const matchSearch = internship.mahasiswa?.name.toLowerCase().includes(search.toLowerCase());
         const matchStatus = status === 'ALL' ? true : internship.status === status;
         const matchType = type === 'ALL' ? true : internship.type === type;
 
-        return matchSearch && matchStatus && matchType;
+        return matchStatus && matchType;
     });
 
     return (
@@ -43,23 +41,41 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                 <div className="grid gap-4 md:grid-cols-12">
                     <Card className="md:col-span-3">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Pengguna</CardTitle>
+                            <CardTitle className="text-sm font-medium">Ringkasan Magang</CardTitle>
                             <Users className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold"></div>
-                            <p className="text-muted-foreground text-xs">Terdaftar dalam sistem</p>
+                            <div className="text-2xl font-bold">{initialInternships.length}</div>
+                            <p className="text-muted-foreground text-xs">Total pengajuan magang</p>
                         </CardContent>
                     </Card>
 
                     <Card className="md:col-span-3">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Pengguna Aktif</CardTitle>
+                            <CardTitle className="text-sm font-medium">Status Magang</CardTitle>
                             <Signal className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold"></div>
-                            <p className="text-muted-foreground text-xs">Online dalam 24 jam terakhir</p>
+                            <div className="space-y-2">
+                                <div>
+                                    <div className="text-sm">Menunggu Persetujuan</div>
+                                    <div className="text-xl font-bold">
+                                        {initialInternships.filter((i) => i.status === 'MENUNGGU_PERSETUJUAN').length}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-sm">Disetujui</div>
+                                    <div className="text-xl font-bold">
+                                        {initialInternships.filter((i) => i.status === 'DISETUJUI').length}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-sm">Ditolak</div>
+                                    <div className="text-xl font-bold">
+                                        {initialInternships.filter((i) => i.status === 'DITOLAK').length}
+                                    </div>
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -71,7 +87,20 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                         <CardContent className="p-0">
                             <ScrollArea className="h-[125px] px-4">
                                 <div className="space-y-4 pr-4">
-
+                                    {initialInternships
+                                        .slice(0, 5)
+                                        .map((internship) => (
+                                            <div key={internship.id} className="flex items-center gap-4">
+                                                <div className="flex-1">
+                                                    <div className="font-medium">
+                                                        {internship.mahasiswa?.name}
+                                                    </div>
+                                                    <div className="text-muted-foreground text-sm">
+                                                        {internship.type} - {internship.status.replace(/_/g, ' ')}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                 </div>
                             </ScrollArea>
                         </CardContent>
@@ -79,10 +108,8 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                 </div>
 
                 <FilterForm
-                    search={search}
                     status={status}
                     type={type}
-                    onSearchChange={setSearch}
                     onStatusChange={setStatus}
                     onTypeChange={setType}
                 />
