@@ -1,69 +1,44 @@
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 import { InternshipStatus } from '@/types/internship';
 
 interface StatusBadgeProps {
     status: InternshipStatus;
 }
 
-export function StatusBadge({ status }: StatusBadgeProps) {
-    const getStatusConfig = (status: InternshipStatus) => {
-        switch (status) {
-            case 'DRAFT':
-                return {
-                    label: 'Draft',
-                    variant: 'secondary',
-                };
-            case 'PENDING':
-                return {
-                    label: 'Menunggu Persetujuan',
-                    variant: 'warning',
-                };
-            case 'APPROVED':
-                return {
-                    label: 'Disetujui',
-                    variant: 'success',
-                };
-            case 'REJECTED':
-                return {
-                    label: 'Ditolak',
-                    variant: 'destructive',
-                };
-            case 'ONGOING':
-                return {
-                    label: 'Sedang Berlangsung',
-                    variant: 'info',
-                };
-            case 'COMPLETED':
-                return {
-                    label: 'Selesai',
-                    variant: 'success',
-                };
-            case 'CANCELLED':
-                return {
-                    label: 'Dibatalkan',
-                    variant: 'destructive',
-                };
-            default:
-                return {
-                    label: status,
-                    variant: 'secondary',
-                };
-        }
-    };
+const getStatusColor = (status: InternshipStatus) => {
+    switch (status) {
+        case 'MENUNGGU':
+            return 'bg-yellow-500';
+        case 'DISETUJUI':
+            return 'bg-blue-500';
+        case 'DITOLAK':
+            return 'bg-red-500';
+        case 'BERJALAN':
+            return 'bg-green-500';
+        case 'SELESAI':
+            return 'bg-gray-500';
+        default:
+            return 'bg-gray-500';
+    }
+};
 
-    const config = getStatusConfig(status);
+const getStatusText = (status: InternshipStatus) => {
+    switch (status) {
+        case 'MENUNGGU':
+            return 'Menunggu';
+        case 'DISETUJUI':
+            return 'Disetujui';
+        case 'DITOLAK':
+            return 'Ditolak';
+        case 'BERJALAN':
+            return 'Sedang Berjalan';
+        case 'SELESAI':
+            return 'Selesai';
+        default:
+            return status;
+    }
+};
 
-    return (
-        <Badge
-            variant={config.variant as any}
-            className={cn(
-                'min-w-24 justify-center',
-                status === 'PENDING' && 'bg-yellow-500 hover:bg-yellow-600',
-                status === 'ONGOING' && 'bg-blue-500 hover:bg-blue-600',
-            )}
-        >
-            {config.label}
-        </Badge>
-    );
-}
+export const StatusBadge = ({ status }: StatusBadgeProps) => {
+    return <Badge className={`${getStatusColor(status)}`}>{getStatusText(status)}</Badge>;
+};

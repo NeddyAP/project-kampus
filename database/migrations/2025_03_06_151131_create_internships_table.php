@@ -29,12 +29,11 @@ return new class extends Migration {
             
             $table->enum('status', [
                 'DRAFT',
-                'PENDING',
-                'APPROVED',
-                'REJECTED',
-                'ONGOING',
-                'COMPLETED',
-                'CANCELLED'
+                'MENUNGGU_PERSETUJUAN',
+                'DISETUJUI',
+                'DITOLAK',
+                'SEDANG_BERJALAN',
+                'SELESAI'
             ])->default('DRAFT');
             
             $table->text('rejection_reason')->nullable();

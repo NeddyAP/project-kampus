@@ -1,204 +1,261 @@
-import Heading from '@/components/heading';
-import { ActivityTimeline } from '@/components/internship/activity-timeline';
-import { ApprovalForm } from '@/components/internship/approval-form';
+import Heading from '@/components/heading-small';
 import { StatusBadge } from '@/components/internship/status-badge';
-import { SupervisorAssignment } from '@/components/internship/supervisor-assignment';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { User } from '@/types';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import AppLayout from '@/layouts/app-layout';
 import { Internship } from '@/types/internship';
-import { PageProps } from '@inertiajs/core';
-import { Head } from '@inertiajs/react';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
-import { FileText } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
-interface InternshipShowProps extends PageProps {
+interface Props {
     internship: Internship;
-    availableDosen: User[];
+    dosen?: Array<{
+        id: number;
+        name: string;
+        nip: string;
+    }>;
 }
 
-export default function InternshipShow({ internship, availableDosen }: InternshipShowProps) {
-    return (
-        <>
-            <Head title={`Detail Magang - ${internship.mahasiswa?.name}`} />
+const InternshipShow = ({ internship, dosen }: Props) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [status, setStatus] = useState<'DISETUJUI' | 'DITOLAK'>();
+    const [dosenId, setDosenId] = useState<number>();
+    const [notes, setNotes] = useState('');
 
-            <div className="container space-y-6 py-8">
-                {/* Header */}
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div className="space-y-1">
-                        <Heading>Detail Pengajuan Magang</Heading>
-                        <p className="text-muted-foreground">{internship.mahasiswa?.name}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <SupervisorAssignment internship={internship} availableDosen={availableDosen} />
-                        <ApprovalForm internship={internship} />
-                    </div>
+    const handleApprove = async () => {
+        if (!status || !notes) {
+            toast.error('Mohon lengkapi semua field');
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        router.post(
+            `/admin/internships/${internship.id}/approve`,
+            {
+                status,
+                notes,
+            },
+            {
+                onSuccess: () => {
+                    toast.success('Status magang berhasil diperbarui');
+                },
+                onError: () => {
+                    toast.error('Terjadi kesalahan');
+                    setIsSubmitting(false);
+                },
+            },
+        );
+    };
+
+    const handleAssign = async () => {
+        if (!dosenId || !notes) {
+            toast.error('Mohon lengkapi semua field');
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        router.post(
+            `/admin/internships/${internship.id}/assign`,
+            {
+                dosen_id: Number(dosenId),
+                notes,
+            },
+            {
+                onSuccess: () => {
+                    toast.success('Dosen pembimbing berhasil ditugaskan');
+                },
+                onError: () => {
+                    toast.error('Terjadi kesalahan');
+                    setIsSubmitting(false);
+                },
+            },
+        );
+    };
+
+    return (
+        <AppLayout>
+            <Head title="Detail Magang" />
+
+            <div className="container py-8">
+                <div className="mb-8">
+                    <Heading title="Detail Magang" description="Informasi lengkap pengajuan magang" />
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2">
-                    {/* Informasi Utama */}
+                <div className="grid gap-6">
+                    {/* Informasi Magang */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Informasi Pengajuan</CardTitle>
+                            <CardTitle>Informasi Magang</CardTitle>
+                            <CardDescription>Detail pengajuan magang mahasiswa</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Status</p>
+                        <CardContent className="space-y-4">
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">Status</div>
                                 <StatusBadge status={internship.status} />
                             </div>
 
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Kategori</p>
-                                <p className="font-medium">{internship.category}</p>
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">Tipe Magang</div>
+                                <div>{internship.type}</div>
                             </div>
 
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Periode Magang</p>
-                                <div className="font-medium">
-                                    {format(new Date(internship.start_date), 'dd MMMM yyyy', {
-                                        locale: id,
-                                    })}{' '}
-                                    s/d{' '}
-                                    {format(new Date(internship.end_date), 'dd MMMM yyyy', {
-                                        locale: id,
-                                    })}
-                                </div>
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">Nama Mahasiswa</div>
+                                <div>{internship.mahasiswa?.name}</div>
                             </div>
 
-                            <Separator />
-
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Dosen Pembimbing</p>
-                                <p className="font-medium">{internship.dosen?.name ?? 'Belum ditugaskan'}</p>
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">NIM</div>
+                                <div>{internship.mahasiswa?.nim}</div>
                             </div>
 
-                            {internship.approved_by && (
-                                <div className="space-y-1">
-                                    <p className="text-muted-foreground text-sm">Disetujui Oleh</p>
-                                    <p className="font-medium">{internship.approver?.name}</p>
-                                </div>
+                            {internship.dosen && (
+                                <>
+                                    <div className="grid gap-2">
+                                        <div className="text-muted-foreground text-sm">Dosen Pembimbing</div>
+                                        <div>{internship.dosen.name}</div>
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <div className="text-muted-foreground text-sm">NIP</div>
+                                        <div>{internship.dosen.nip}</div>
+                                    </div>
+                                </>
                             )}
-                        </CardContent>
-                    </Card>
 
-                    {/* Informasi Perusahaan */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Informasi Tempat Magang</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Nama Perusahaan</p>
-                                <p className="font-medium">{internship.company_name}</p>
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">Tanggal Mulai</div>
+                                <div>
+                                    {internship.start_date
+                                        ? new Date(internship.start_date).toLocaleDateString('id-ID', {
+                                            day: 'numeric',
+                                            month: 'long',
+                                            year: 'numeric',
+                                        })
+                                        : '-'}
+                                </div>
                             </div>
 
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Alamat Perusahaan</p>
-                                <p className="font-medium">{internship.company_address}</p>
-                            </div>
-
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Nomor Telepon</p>
-                                <p className="font-medium">{internship.company_phone}</p>
-                            </div>
-
-                            <Separator />
-
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Pembimbing Lapangan</p>
-                                <p className="font-medium">{internship.supervisor_name}</p>
-                            </div>
-
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground text-sm">Kontak Pembimbing</p>
-                                <p className="font-medium">{internship.supervisor_phone}</p>
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">Tanggal Selesai</div>
+                                <div>
+                                    {internship.end_date
+                                        ? new Date(internship.end_date).toLocaleDateString('id-ID', {
+                                            day: 'numeric',
+                                            month: 'long',
+                                            year: 'numeric',
+                                        })
+                                        : '-'}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* Form Persetujuan */}
+                    {internship.status === 'MENUNGGU_PERSETUJUAN' && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Persetujuan Magang</CardTitle>
+                                <CardDescription>Berikan persetujuan atau penolakan pengajuan magang</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <div className="text-sm font-medium">Status</div>
+                                    <Select value={status} onValueChange={(value) => setStatus(value as 'DISETUJUI' | 'DITOLAK')}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Pilih status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="DISETUJUI">Disetujui</SelectItem>
+                                            <SelectItem value="DITOLAK">Ditolak</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="text-sm font-medium">Catatan</div>
+                                    <Textarea placeholder="Tambahkan catatan..." value={notes} onChange={(e) => setNotes(e.target.value)} />
+                                </div>
+
+                                <Button onClick={handleApprove} disabled={isSubmitting || !status || !notes}>
+                                    Simpan Persetujuan
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Form Assignment Dosen */}
+                    {internship.status === 'DISETUJUI' && !internship.dosen_id && dosen && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Assignment Dosen Pembimbing</CardTitle>
+                                <CardDescription>Pilih dosen pembimbing untuk mahasiswa</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <div className="text-sm font-medium">Dosen Pembimbing</div>
+                                    <Select value={dosenId?.toString()} onValueChange={(value) => setDosenId(Number(value))}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Pilih dosen pembimbing" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {dosen.map((d) => (
+                                                <SelectItem key={d.id} value={d.id.toString()}>
+                                                    {d.name} ({d.nip})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="text-sm font-medium">Catatan</div>
+                                    <Textarea placeholder="Tambahkan catatan..." value={notes} onChange={(e) => setNotes(e.target.value)} />
+                                </div>
+
+                                <Button onClick={handleAssign} disabled={isSubmitting || !dosenId || !notes}>
+                                    Simpan Assignment
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Timeline Aktivitas */}
+                    {internship.logs && internship.logs.length > 0 && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Timeline Aktivitas</CardTitle>
+                                <CardDescription>Riwayat aktivitas dan perubahan status magang</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-8">
+                                    {internship.logs.map((log) => (
+                                        <div key={log.id} className="flex gap-4">
+                                            <div className="text-muted-foreground w-14 text-sm">
+                                                {new Date(log.created_at).toLocaleDateString('id-ID', {
+                                                    day: 'numeric',
+                                                    month: 'short',
+                                                })}
+                                            </div>
+                                            <div>
+                                                <div className="font-medium">{log.activity}</div>
+                                                {log.notes && <div className="text-muted-foreground mt-1 text-sm">{log.notes}</div>}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
-
-                {/* Dokumen */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Dokumen</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="font-medium">Surat Pengantar</p>
-                                <p className="text-muted-foreground text-sm">Surat pengantar dari mahasiswa</p>
-                            </div>
-                            {internship.cover_letter_path ? (
-                                <Button variant="outline" size="sm" asChild>
-                                    <a href={`/storage/${internship.cover_letter_path}`} target="_blank" className="inline-flex items-center gap-2">
-                                        <FileText className="h-4 w-4" />
-                                        Lihat Dokumen
-                                    </a>
-                                </Button>
-                            ) : (
-                                <p className="text-muted-foreground text-sm">Belum diupload</p>
-                            )}
-                        </div>
-
-                        <Separator />
-
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="font-medium">Surat Persetujuan</p>
-                                <p className="text-muted-foreground text-sm">Surat persetujuan dari kampus</p>
-                            </div>
-                            {internship.approval_letter_path ? (
-                                <Button variant="outline" size="sm" asChild>
-                                    <a
-                                        href={`/storage/${internship.approval_letter_path}`}
-                                        target="_blank"
-                                        className="inline-flex items-center gap-2"
-                                    >
-                                        <FileText className="h-4 w-4" />
-                                        Lihat Dokumen
-                                    </a>
-                                </Button>
-                            ) : (
-                                <p className="text-muted-foreground text-sm">Belum diupload</p>
-                            )}
-                        </div>
-
-                        <Separator />
-
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="font-medium">Laporan Akhir</p>
-                                <p className="text-muted-foreground text-sm">Laporan akhir kegiatan magang</p>
-                            </div>
-                            {internship.report_file_path ? (
-                                <Button variant="outline" size="sm" asChild>
-                                    <a href={`/storage/${internship.report_file_path}`} target="_blank" className="inline-flex items-center gap-2">
-                                        <FileText className="h-4 w-4" />
-                                        Lihat Dokumen
-                                    </a>
-                                </Button>
-                            ) : (
-                                <p className="text-muted-foreground text-sm">Belum diupload</p>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Timeline Aktivitas */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Riwayat Aktivitas</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ActivityTimeline logs={internship.logs || []} />
-                    </CardContent>
-                </Card>
             </div>
-        </>
+        </AppLayout>
     );
-}
+};
 
-// Menandai bahwa ini adalah layout admin
-InternshipShow.layout = 'admin';
+export default InternshipShow;

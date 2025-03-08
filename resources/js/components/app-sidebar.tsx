@@ -15,7 +15,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Magang',
-        url: '/magang',
+        url: '/internships',
         icon: Workflow,
     },
     {

@@ -17,11 +17,11 @@ class InternshipFactory extends Factory
         
         $status = $this->faker->randomElement([
             Internship::STATUS_DRAFT,
-            Internship::STATUS_PENDING,
-            Internship::STATUS_APPROVED,
-            Internship::STATUS_REJECTED,
-            Internship::STATUS_ONGOING,
-            Internship::STATUS_COMPLETED,
+            Internship::STATUS_MENUNGGU,
+            Internship::STATUS_DISETUJUI,
+            Internship::STATUS_DITOLAK,
+            Internship::STATUS_BERJALAN,
+            Internship::STATUS_SELESAI,
         ]);
 
         return [
@@ -34,8 +34,8 @@ class InternshipFactory extends Factory
             'start_date' => $startDate,
             'end_date' => $endDate,
             'status' => $status,
-            'notes' => $status === Internship::STATUS_APPROVED ? $this->faker->sentence() : null,
-            'rejection_reason' => $status === Internship::STATUS_REJECTED ? $this->faker->sentence() : null,
+            'notes' => $status === Internship::STATUS_DISETUJUI ? $this->faker->sentence() : null,
+            'rejection_reason' => $status === Internship::STATUS_DITOLAK ? $this->faker->sentence() : null,
         ];
     }
 
@@ -44,8 +44,8 @@ class InternshipFactory extends Factory
         return $this->afterCreating(function (Internship $internship) {
             // Jika status approved atau completed, set approved_by
             if (in_array($internship->status, [
-                Internship::STATUS_APPROVED,
-                Internship::STATUS_COMPLETED
+                Internship::STATUS_DISETUJUI,
+                Internship::STATUS_SELESAI
             ])) {
                 $internship->approved_by = User::role('admin')->inRandomOrder()->first()->id;
                 $internship->save();

@@ -1,87 +1,51 @@
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { InternshipFilters, InternshipStatus } from '@/types/internship';
-import { useForm } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { InternshipStatus, InternshipType } from '@/types/internship';
 
 interface FilterFormProps {
-    filters: InternshipFilters;
+    search: string;
+    status: InternshipStatus | 'ALL';
+    type: InternshipType | 'ALL';
+    onSearchChange: (value: string) => void;
+    onStatusChange: (value: InternshipStatus | 'ALL') => void;
+    onTypeChange: (value: InternshipType | 'ALL') => void;
 }
 
-type FilterFormData = {
-    status: InternshipStatus | '';
-    category: 'KKL' | 'KKN' | '';
-    search: string;
-    [key: string]: string; // Index signature untuk Inertia Form
-};
-
-export function FilterForm({ filters }: FilterFormProps) {
-    const { data, setData, get, processing } = useForm<FilterFormData>({
-        status: filters.status || '',
-        category: filters.category || '',
-        search: filters.search || '',
-    });
-
-    // Submit form when filters change
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            get(route('admin.magang.index'), {
-                preserveState: true,
-                preserveScroll: true,
-            });
-        }, 300);
-
-        return () => clearTimeout(timeout);
-    }, [data]);
-
-    const handleReset = () => {
-        setData({
-            status: '',
-            category: '',
-            search: '',
-        });
-    };
-
+export const FilterForm = ({ search, status, type, onSearchChange, onStatusChange, onTypeChange }: FilterFormProps) => {
     return (
-        <Card className="p-4">
-            <div className="flex flex-col gap-4 md:flex-row">
-                <div className="flex-1">
-                    <Input placeholder="Cari mahasiswa atau perusahaan..." value={data.search} onChange={(e) => setData('search', e.target.value)} />
-                </div>
+        <div className="flex flex-col gap-4 md:flex-row">
+            <div className="w-full md:w-1/3">
+                <Input placeholder="Cari berdasarkan nama mahasiswa..." value={search} onChange={(e) => onSearchChange(e.target.value)} />
+            </div>
 
-                <Select value={data.status} onValueChange={(value: InternshipStatus | '') => setData('status', value)}>
-                    <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Status" />
+            <div className="w-full md:w-1/4">
+                <Select value={status} onValueChange={(value) => onStatusChange(value as InternshipStatus | 'ALL')}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Status Magang" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="">Semua Status</SelectItem>
-                        <SelectItem value="DRAFT">Draft</SelectItem>
-                        <SelectItem value="PENDING">Menunggu Persetujuan</SelectItem>
-                        <SelectItem value="APPROVED">Disetujui</SelectItem>
-                        <SelectItem value="REJECTED">Ditolak</SelectItem>
-                        <SelectItem value="ONGOING">Sedang Berlangsung</SelectItem>
-                        <SelectItem value="COMPLETED">Selesai</SelectItem>
-                        <SelectItem value="CANCELLED">Dibatalkan</SelectItem>
+                        <SelectItem value="ALL">Semua Status</SelectItem>
+                        <SelectItem value="MENUNGGU_PERSETUJUAN">Menunggu Persetujuan</SelectItem>
+                        <SelectItem value="DISETUJUI">Disetujui</SelectItem>
+                        <SelectItem value="DITOLAK">Ditolak</SelectItem>
+                        <SelectItem value="SEDANG_BERJALAN">Sedang Berjalan</SelectItem>
+                        <SelectItem value="SELESAI">Selesai</SelectItem>
                     </SelectContent>
                 </Select>
+            </div>
 
-                <Select value={data.category} onValueChange={(value: 'KKL' | 'KKN' | '') => setData('category', value)}>
-                    <SelectTrigger className="w-full md:w-[180px]">
-                        <SelectValue placeholder="Kategori" />
+            <div className="w-full md:w-1/4">
+                <Select value={type} onValueChange={(value) => onTypeChange(value as InternshipType | 'ALL')}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Tipe Magang" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="">Semua Kategori</SelectItem>
+                        <SelectItem value="ALL">Semua Tipe</SelectItem>
                         <SelectItem value="KKL">KKL</SelectItem>
                         <SelectItem value="KKN">KKN</SelectItem>
                     </SelectContent>
                 </Select>
-
-                <Button variant="outline" disabled={processing} onClick={handleReset}>
-                    Reset Filter
-                </Button>
             </div>
-        </Card>
+        </div>
     );
-}
+};

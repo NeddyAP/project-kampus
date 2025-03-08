@@ -36,8 +36,8 @@ class InternshipSeeder extends Seeder
 
                 // Jika status ongoing atau completed, buat data bimbingan
                 if (in_array($internship->status, [
-                    Internship::STATUS_ONGOING,
-                    Internship::STATUS_COMPLETED
+                    Internship::STATUS_BERJALAN,
+                    Internship::STATUS_SELESAI
                 ])) {
                     // Buat 2-5 data bimbingan
                     $supervisions = \App\Models\InternshipSupervision::factory()
@@ -47,7 +47,7 @@ class InternshipSeeder extends Seeder
                         ]);
 
                     // Jika completed, tambahkan evaluasi akhir
-                    if ($internship->status === Internship::STATUS_COMPLETED) {
+                    if ($internship->status === Internship::STATUS_SELESAI) {
                         $supervisions->push(
                             \App\Models\InternshipSupervision::factory()
                                 ->finalEvaluation()

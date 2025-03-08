@@ -12,6 +12,7 @@ export interface Auth {
 declare module '@inertiajs/core' {
     interface PageProps {
         auth: Auth;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key: string]: any;
     }
 }

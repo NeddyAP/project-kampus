@@ -39,12 +39,11 @@ class Internship extends Model
 
     // Status constants
     const STATUS_DRAFT = 'DRAFT';
-    const STATUS_PENDING = 'PENDING';
-    const STATUS_APPROVED = 'APPROVED';
-    const STATUS_REJECTED = 'REJECTED';
-    const STATUS_ONGOING = 'ONGOING';
-    const STATUS_COMPLETED = 'COMPLETED';
-    const STATUS_CANCELLED = 'CANCELLED';
+    const STATUS_MENUNGGU = 'MENUNGGU_PERSETUJUAN';
+    const STATUS_DISETUJUI = 'DISETUJUI';
+    const STATUS_DITOLAK = 'DITOLAK';
+    const STATUS_BERJALAN = 'SEDANG_BERJALAN';
+    const STATUS_SELESAI = 'SELESAI';
 
     // Category constants
     const CATEGORY_KKL = 'KKL';
@@ -91,23 +90,23 @@ class Internship extends Model
     public function isActive(): bool
     {
         return in_array($this->status, [
-            self::STATUS_APPROVED,
-            self::STATUS_ONGOING
+            self::STATUS_DISETUJUI,
+            self::STATUS_BERJALAN
         ]);
     }
 
     public function canBeApproved(): bool
     {
-        return $this->status === self::STATUS_PENDING;
+        return $this->status === self::STATUS_MENUNGGU;
     }
 
     public function canBeRejected(): bool
     {
-        return $this->status === self::STATUS_PENDING;
+        return $this->status === self::STATUS_MENUNGGU;
     }
 
     public function canBeCompleted(): bool
     {
-        return $this->status === self::STATUS_ONGOING;
+        return $this->status === self::STATUS_BERJALAN;
     }
 }
