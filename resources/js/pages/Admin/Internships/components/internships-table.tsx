@@ -42,7 +42,7 @@ export function InternshipsTable({ internships, pagination, filters }: Internshi
             header: 'NIM',
         },
         {
-            accessorKey: 'type',
+            accessorKey: 'category',
             header: ({ column }) => (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                     Tipe

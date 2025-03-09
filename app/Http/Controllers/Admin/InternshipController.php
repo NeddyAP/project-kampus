@@ -18,8 +18,8 @@ class InternshipController extends Controller
             $query->where('status', $request->status);
         }
 
-        if ($request->has('type') && $request->type !== 'ALL') {
-            $query->where('type', $request->type);
+        if ($request->has('category') && $request->category !== 'ALL') {
+            $query->where('category', $request->category);
         }
 
         if ($request->has('search')) {
@@ -47,6 +47,10 @@ class InternshipController extends Controller
             'menunggu_persetujuan' => Internship::where('status', 'MENUNGGU_PERSETUJUAN')->count(),
             'disetujui' => Internship::where('status', 'DISETUJUI')->count(),
             'ditolak' => Internship::where('status', 'DITOLAK')->count(),
+            'category_count' => Internship::select('category')
+                ->groupBy('category')
+                ->selectRaw('count(*) as count')
+                ->pluck('count'),
         ];
 
         // Get recent activities
@@ -58,7 +62,7 @@ class InternshipController extends Controller
                 return [
                     'id' => $internship->id,
                     'mahasiswa_name' => $internship->mahasiswa->name ?? 'Unknown',
-                    'type' => $internship->type,
+                    'category' => $internship->category,
                     'status' => $internship->status,
                     'created_at' => $internship->created_at->diffForHumans(),
                 ];
@@ -66,7 +70,7 @@ class InternshipController extends Controller
 
         return Inertia::render('Admin/internships/index', [
             'internships' => $internships,
-            'filters' => $request->only(['search', 'status', 'type', 'sort', 'order', 'per_page']),
+            'filters' => $request->only(['search', 'status', 'category', 'sort', 'order', 'per_page']),
             'stats' => $stats,
             'recentActivities' => $recentActivities,
         ]);
