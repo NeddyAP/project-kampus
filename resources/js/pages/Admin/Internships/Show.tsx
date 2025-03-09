@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Internship } from '@/types/internship';
+import { Internship, InternshipLog } from '@/types/internship';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -46,10 +46,18 @@ const InternshipShow = ({ internship, dosen }: Props) => {
         setIsSubmitting(true);
 
         router.post(
-            `/admin/internships/${internship.id}/approve`,
+            route('admin.internships.approve', { internship: internship.id }),
             {
                 status,
                 notes,
+                type: 'STATUS_CHANGE',
+                title: status === 'DISETUJUI' ? 'Pengajuan disetujui' : 'Pengajuan ditolak',
+                description: notes,
+                metadata: {
+                    old_status: internship.status,
+                    new_status: status,
+                    notes: notes
+                }
             },
             {
                 onSuccess: () => {
@@ -72,10 +80,18 @@ const InternshipShow = ({ internship, dosen }: Props) => {
         setIsSubmitting(true);
 
         router.post(
-            `/admin/internships/${internship.id}/assign`,
+            route('admin.internships.assign', { internship: internship.id }),
             {
-                dosen_id: Number(dosenId),
+                dosen_id: dosenId,
                 notes,
+                type: 'STATUS_CHANGE',
+                title: 'Dosen pembimbing ditugaskan',
+                description: notes,
+                metadata: {
+                    old_status: internship.status,
+                    new_status: 'SEDANG_BERJALAN',
+                    notes: notes
+                }
             },
             {
                 onSuccess: () => {
@@ -113,17 +129,33 @@ const InternshipShow = ({ internship, dosen }: Props) => {
 
                             <div className="grid gap-2">
                                 <div className="text-muted-foreground text-sm">Tipe Magang</div>
-                                <div>{internship.type}</div>
+                                <div>{internship.category}</div>
+                            </div>
+
+                            {/* Add company information */}
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">Perusahaan</div>
+                                <div>{internship.company_name}</div>
                             </div>
 
                             <div className="grid gap-2">
-                                <div className="text-muted-foreground text-sm">Nama Mahasiswa</div>
-                                <div>{internship.mahasiswa?.name}</div>
+                                <div className="text-muted-foreground text-sm">Alamat Perusahaan</div>
+                                <div>{internship.company_address}</div>
                             </div>
 
                             <div className="grid gap-2">
-                                <div className="text-muted-foreground text-sm">NIM</div>
-                                <div>{internship.mahasiswa?.nim}</div>
+                                <div className="text-muted-foreground text-sm">Telepon Perusahaan</div>
+                                <div>{internship.company_phone}</div>
+                            </div>
+
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">Pembimbing Lapangan</div>
+                                <div>{internship.supervisor_name}</div>
+                            </div>
+
+                            <div className="grid gap-2">
+                                <div className="text-muted-foreground text-sm">Telepon Pembimbing</div>
+                                <div>{internship.supervisor_phone}</div>
                             </div>
 
                             {internship.dosen && (
@@ -145,10 +177,10 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                                 <div>
                                     {internship.start_date
                                         ? new Date(internship.start_date).toLocaleDateString('id-ID', {
-                                              day: 'numeric',
-                                              month: 'long',
-                                              year: 'numeric',
-                                          })
+                                            day: 'numeric',
+                                            month: 'long',
+                                            year: 'numeric',
+                                        })
                                         : '-'}
                                 </div>
                             </div>
@@ -158,10 +190,10 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                                 <div>
                                     {internship.end_date
                                         ? new Date(internship.end_date).toLocaleDateString('id-ID', {
-                                              day: 'numeric',
-                                              month: 'long',
-                                              year: 'numeric',
-                                          })
+                                            day: 'numeric',
+                                            month: 'long',
+                                            year: 'numeric',
+                                        })
                                         : '-'}
                                 </div>
                             </div>
@@ -255,8 +287,18 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                                                 })}
                                             </div>
                                             <div>
-                                                <div className="font-medium">{log.activity}</div>
-                                                {log.notes && <div className="text-muted-foreground mt-1 text-sm">{log.notes}</div>}
+                                                <div className="font-medium">{log.title}</div>
+                                                {log.description && (
+                                                    <div className="text-muted-foreground mt-1 text-sm">{log.description}</div>
+                                                )}
+                                                {log.metadata && log.metadata.notes && (
+                                                    <div className="text-muted-foreground mt-1 text-sm">{log.metadata.notes}</div>
+                                                )}
+                                                {log.user && (
+                                                    <div className="text-muted-foreground mt-1 text-xs">
+                                                        Oleh: {log.user.name}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     ))}

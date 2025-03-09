@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('internship_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            
+
             $table->enum('type', [
                 'STATUS_CHANGE',
                 'COMMENT',
@@ -19,13 +19,12 @@ return new class extends Migration {
                 'ACTIVITY_REPORT',
                 'SUPERVISION'
             ]);
-            
+
             $table->string('title');
             $table->text('description')->nullable();
-            $table->json('metadata')->nullable(); // Untuk menyimpan data tambahan seperti status sebelum/sesudah
-            
-            $table->string('attachment_path')->nullable(); // Untuk file lampiran jika ada
-            
+            $table->json('metadata')->nullable();
+
+            $table->string('attachment_path')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

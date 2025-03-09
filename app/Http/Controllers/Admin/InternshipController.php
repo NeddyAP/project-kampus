@@ -26,7 +26,7 @@ class InternshipController extends Controller
             $search = $request->search;
             $query->whereHas('mahasiswa', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('nim', 'like', "%{$search}%");
+                    ->orWhere('nim', 'like', "%{$search}%");
             });
         }
 
@@ -88,14 +88,23 @@ class InternshipController extends Controller
             'notes' => 'required|string|max:255'
         ]);
 
+        $oldStatus = $internship->status;
         $internship->update([
-            'status' => $request->status
+            'status' => $request->status,
+            'rejection_reason' => $request->status === 'DITOLAK' ? $request->notes : null,
         ]);
 
         // Catat log persetujuan
         $internship->logs()->create([
-            'activity' => $request->status === 'DISETUJUI' ? 'Pengajuan disetujui' : 'Pengajuan ditolak',
-            'notes' => $request->notes
+            'user_id' => auth()->id(),
+            'type' => 'STATUS_CHANGE',
+            'title' => $request->status === 'DISETUJUI' ? 'Pengajuan disetujui' : 'Pengajuan ditolak',
+            'description' => $request->notes,
+            'metadata' => [
+                'old_status' => $oldStatus,
+                'new_status' => $request->status,
+                'notes' => $request->notes
+            ]
         ]);
 
         return redirect()
@@ -112,19 +121,28 @@ class InternshipController extends Controller
 
         $internship->update([
             'dosen_id' => $request->dosen_id,
-            'status' => 'BERJALAN'
+            'status' => 'SEDANG_BERJALAN'
         ]);
 
         // Catat log assignment dosen
         $internship->logs()->create([
-            'activity' => 'Dosen pembimbing ditugaskan',
-            'notes' => $request->notes
+            'user_id' => auth()->id(),
+            'type' => 'STATUS_CHANGE',
+            'title' => 'Dosen pembimbing ditugaskan',
+            'description' => $request->notes,
+            'metadata' => [
+                'old_status' => 'DISETUJUI',
+                'new_status' => 'SEDANG_BERJALAN',
+                'notes' => $request->notes
+            ]
         ]);
 
-        // Buat data supervisi
-        $internship->supervision()->create([
+        // Buat data supervisi awal
+        $internship->supervisions()->create([
             'dosen_id' => $request->dosen_id,
-            'notes' => $request->notes
+            'supervision_date' => now(),
+            'supervision_type' => 'ONLINE',
+            'supervisor_notes' => $request->notes
         ]);
 
         return redirect()

@@ -7,13 +7,15 @@ interface StatusBadgeProps {
 
 const getStatusColor = (status: InternshipStatus) => {
     switch (status) {
-        case 'MENUNGGU':
+        case 'DRAFT':
+            return 'bg-yellow-500';
+        case 'MENUNGGU_PERSETUJUAN':
             return 'bg-yellow-500';
         case 'DISETUJUI':
             return 'bg-blue-500';
         case 'DITOLAK':
             return 'bg-red-500';
-        case 'BERJALAN':
+        case 'SEDANG_BERJALAN':
             return 'bg-green-500';
         case 'SELESAI':
             return 'bg-gray-500';
@@ -24,18 +26,20 @@ const getStatusColor = (status: InternshipStatus) => {
 
 const getStatusText = (status: InternshipStatus) => {
     switch (status) {
-        case 'MENUNGGU':
-            return 'Menunggu';
+        case 'DRAFT':
+            return 'Draft';
+        case 'MENUNGGU_PERSETUJUAN':
+            return 'Menunggu Persetujuan';
         case 'DISETUJUI':
             return 'Disetujui';
         case 'DITOLAK':
             return 'Ditolak';
-        case 'BERJALAN':
+        case 'SEDANG_BERJALAN':
             return 'Sedang Berjalan';
         case 'SELESAI':
             return 'Selesai';
         default:
-            return status;
+            return 'Tidak Diketahui';
     }
 };
 

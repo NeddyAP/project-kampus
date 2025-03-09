@@ -50,10 +50,6 @@ export function ApprovalForm({ internship }: ApprovalFormProps) {
         });
     };
 
-    if (!internship.canBeApproved()) {
-        return null;
-    }
-
     return (
         <div className="flex gap-3">
             {/* Dialog Persetujuan */}

@@ -14,8 +14,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Manajemen Magang
     Route::get('/internships', [InternshipController::class, 'index'])
         ->name('admin.internships.index');
-    Route::get('/internships/{internship}', [InternshipController::class, 'show'])
-        ->name('admin.internships.show');
     Route::post('/internships/{internship}/approve', [InternshipController::class, 'approve'])
         ->name('admin.internships.approve');
     Route::post('/internships/{internship}/assign', [InternshipController::class, 'assign'])
