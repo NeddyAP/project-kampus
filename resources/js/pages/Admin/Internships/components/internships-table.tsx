@@ -2,6 +2,7 @@ import { createActionColumn } from '@/components/data-table/columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/utils';
+import { PaginationLink } from '@/types';
 import { Internship } from '@/types/internship';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp } from 'lucide-react';
@@ -9,6 +10,14 @@ import { StatusBadge } from './status-badge';
 
 interface InternshipsTableProps {
     internships: Internship[];
+    pagination?: {
+        current_page: number;
+        last_page: number;
+        per_page: number;
+        total: number;
+        links: PaginationLink[];
+    };
+    filters?: Record<string, string>;
 }
 
 const columns: ColumnDef<Internship>[] = [
@@ -100,14 +109,17 @@ const columns: ColumnDef<Internship>[] = [
     }),
 ];
 
-export function InternshipsTable({ internships }: InternshipsTableProps) {
+export function InternshipsTable({ internships, pagination, filters }: InternshipsTableProps) {
     return (
         <DataTable
             columns={columns}
             data={internships}
-            searchable
-            searchColumn="mahasiswa.name"
+            pagination={pagination}
+            searchable={true}
             searchPlaceholder="Cari berdasarkan nama mahasiswa..."
+            searchColumn="mahasiswa.name"
+            searchParam="search"
+            filters={filters}
         />
     );
 }

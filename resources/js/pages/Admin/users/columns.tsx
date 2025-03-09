@@ -33,7 +33,7 @@ function UserActionsCell({ row }: UserActionsCellProps) {
         <div className="flex justify-end gap-2">
             {user.deleted_at ? (
                 isSuperAdmin && (
-                    <Button variant="outline" size="icon" onClick={() => router.post(route('users.restore', user.id))}>
+                    <Button variant="outline" size="icon" onClick={() => router.post(route('admin.users.restore', user.id))}>
                         <RefreshCw className="h-4 w-4" />
                     </Button>
                 )

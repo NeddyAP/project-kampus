@@ -117,17 +117,6 @@ export default function MahasiswaProfileForm({ data, setData, errors, dosen_user
                                     <CommandEmpty>Dosen tidak ditemukan.</CommandEmpty>
                                 ) : (
                                     <CommandGroup>
-                                        <CommandItem
-                                            key="null-option"
-                                            onSelect={() => {
-                                                setData('dosen_pembimbing_id', null);
-                                                setSearchValue('');
-                                                setOpen(false);
-                                            }}
-                                        >
-                                            <Check className={cn('mr-2 h-4 w-4', !data.dosen_pembimbing_id ? 'opacity-100' : 'opacity-0')} />
-                                            Tidak Ada
-                                        </CommandItem>
                                         {filteredDosen.map((dosen) => (
                                             <CommandItem
                                                 key={dosen.id}

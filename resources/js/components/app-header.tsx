@@ -23,7 +23,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Users',
-        url: route('users.index'),
+        url: route('admin.users.index'),
         icon: Users,
     },
 ];

@@ -77,7 +77,17 @@ class UserService
             // Create profile based on role
             switch ($data['role']) {
                 case 'admin':
-                    $user->adminProfile()->create([]);
+                    $user->adminProfile()->create([
+                        'employee_id' => $data['employee_id'] ?? null,
+                        'department' => $data['department'] ?? null,
+                        'position' => $data['position'] ?? null,
+                        'employment_status' => $data['employment_status'] ?? 'Tetap',
+                        'join_date' => $data['join_date'] ?? null,
+                        'phone_number' => $data['phone_number'] ?? null,
+                        'address' => $data['address'] ?? null,
+                        'supervisor_name' => $data['supervisor_name'] ?? null,
+                        'work_location' => $data['work_location'] ?? null,
+                    ]);
                     break;
                     
                 case 'dosen':
@@ -120,6 +130,20 @@ class UserService
             // Update profile based on role
             $role = $user->roles->first()?->name;
             switch ($role) {
+                case 'admin':
+                    $user->adminProfile()->update([
+                        'employee_id' => $data['employee_id'] ?? null,
+                        'department' => $data['department'] ?? null,
+                        'position' => $data['position'] ?? null,
+                        'employment_status' => $data['employment_status'] ?? 'Tetap',
+                        'join_date' => $data['join_date'] ?? null,
+                        'phone_number' => $data['phone_number'] ?? null,
+                        'address' => $data['address'] ?? null,
+                        'supervisor_name' => $data['supervisor_name'] ?? null,
+                        'work_location' => $data['work_location'] ?? null,
+                    ]);
+                    break;
+                    
                 case 'dosen':
                     $user->dosenProfile()->update([
                         'nip' => $data['nip'],

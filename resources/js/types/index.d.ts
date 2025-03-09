@@ -40,4 +40,51 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+    role?: string;
+    admin_profile?: AdminProfile;
+    dosen_profile?: DosenProfile;
+    mahasiswa_profile?: MahasiswaProfile;
+}
+
+export interface AdminProfile {
+    id?: number;
+    user_id?: number;
+    employee_id?: string;
+    department?: string;
+    position?: string;
+    employment_status?: 'Tetap' | 'Kontrak' | 'Magang';
+    join_date?: string;
+    phone_number?: string;
+    address?: string;
+    supervisor_name?: string;
+    work_location?: string;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface DosenProfile {
+    id?: number;
+    user_id?: number;
+    nip?: string;
+    bidang_keahlian?: string;
+    pendidikan_terakhir?: string;
+    jabatan_akademik?: string;
+    status_kepegawaian?: 'PNS' | 'Non-PNS';
+    tahun_mulai_mengajar?: number;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface MahasiswaProfile {
+    id?: number;
+    user_id?: number;
+    nim?: string;
+    program_studi?: string;
+    angkatan?: number;
+    status_akademik?: 'Aktif' | 'Cuti' | 'Lulus';
+    semester?: number;
+    dosen_pembimbing_id?: number | null;
+    ipk?: string | number;
+    created_at?: string;
+    updated_at?: string;
 }

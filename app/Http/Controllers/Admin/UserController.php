@@ -26,13 +26,65 @@ class UserController extends Controller
     {
         abort_if(!auth()->user()->isSuperAdmin() && $request->has('trashed'), 403);
 
-        $users = $this->userService->getFilteredUsers($request);
+        $query = User::with(['roles', 'adminProfile', 'dosenProfile', 'mahasiswaProfile'])
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->role, function ($query, $role) {
+                $query->whereHas('roles', function ($q) use ($role) {
+                    $q->where('name', $role);
+                });
+            })
+            ->when(
+                $request->sort,
+                fn($query, $sort) => $query->orderBy($sort, $request->order ?? 'asc'),
+                fn($query) => $query->orderBy('created_at', 'desc')
+            )
+            ->when(
+                $request->trashed,
+                fn($query) => $query->onlyTrashed(),
+                fn($query) => $query->withoutTrashed()
+            );
+
+        // Get paginated results
+        $users = $query->paginate($request->per_page ?? 10)
+            ->withQueryString()
+            ->through(function ($user) {
+                $role = $user->roles->first()?->name;
+                $user->role = $role;
+
+                // Get the appropriate profile based on role
+                switch ($role) {
+                    case 'admin':
+                        $user->profile_data = $user->adminProfile;
+                        break;
+                    case 'dosen':
+                        $user->profile_data = $user->dosenProfile;
+                        break;
+                    case 'mahasiswa':
+                        $user->profile_data = $user->mahasiswaProfile;
+                        break;
+                }
+
+                return $user;
+            });
+
+        // Get recent activities
         $recentActivities = $this->userService->getRecentActivities();
-        $stats = $this->userService->getStats($recentActivities);
+        
+        // Get stats
+        $stats = [
+            'total' => User::count(),
+            'active_users' => User::where('last_seen_at', '>=', now()->subDay())->count(),
+            'recent_activities' => $recentActivities,
+        ];
 
         return Inertia::render('Admin/users/index', [
             'users' => $users,
-            'filters' => $request->only(['search', 'sort', 'per_page', 'trashed']),
+            'filters' => $request->only(['search', 'sort', 'order', 'per_page', 'trashed', 'role']),
             'roles' => User::getRoleNames(),
             'stats' => $stats,
             'can' => [

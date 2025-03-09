@@ -1,20 +1,24 @@
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useForm } from '@inertiajs/react';
+import { InfoIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import AdminProfileForm from './admin-profile-form';
 import DosenProfileForm from './dosen-profile-form';
 import MahasiswaProfileForm from './mahasiswa-profile-form';
 import { FormData, UserFormProps } from './user-form-types';
 
 export default function UserForm({ user, roles, mode, dosen_users, disabledFields = [] }: UserFormProps) {
+    const [activeTab, setActiveTab] = useState('basic');
     const { data, setData, post, put, processing, errors } = useForm<FormData>({
         name: user?.name || '',
         email: user?.email || '',
         password: '',
-        role: user?.role || 'mahasiswa',
+        role: user?.role || '',
         // Admin profile fields
         employee_id: user?.admin_profile?.employee_id || '',
         department: user?.admin_profile?.department || '',
@@ -42,21 +46,40 @@ export default function UserForm({ user, roles, mode, dosen_users, disabledField
         ipk: user?.mahasiswa_profile?.ipk?.toString() || '',
     });
 
+    // Set default role for create mode if not provided
+    useEffect(() => {
+        if (mode === 'create' && !data.role) {
+            setData('role', Object.keys(roles)[0] || 'mahasiswa');
+        }
+    }, []);
+
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (mode === 'create') {
-            post(route('users.store'));
+            post(route('admin.users.store'));
         } else {
-            put(route('users.update', user?.id));
+            put(route('admin.users.update', user?.id));
         }
     }
 
+    function handleRoleChange(value: string) {
+        setData('role', value);
+    }
+
+    function handleNextTab() {
+        setActiveTab('profile');
+    }
+
+    const isBasicInfoValid = data.name && data.email && (mode === 'edit' || data.password) && data.role;
+
     return (
         <form onSubmit={handleSubmit}>
-            <Tabs defaultValue="basic" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="basic">Informasi Dasar</TabsTrigger>
-                    <TabsTrigger value="profile">Informasi Profil</TabsTrigger>
+                    <TabsTrigger value="profile" disabled={!data.role}>
+                        Informasi Profil
+                    </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="basic" className="space-y-6">
@@ -93,7 +116,7 @@ export default function UserForm({ user, roles, mode, dosen_users, disabledField
 
                     <div className="space-y-2">
                         <Label htmlFor="role">Role</Label>
-                        <Select value={data.role} onValueChange={(value) => setData('role', value)} disabled={disabledFields.includes('role')}>
+                        <Select value={data.role} onValueChange={handleRoleChange} disabled={disabledFields.includes('role')}>
                             <SelectTrigger disabled={disabledFields.includes('role')}>
                                 <SelectValue placeholder="Pilih role" />
                             </SelectTrigger>
@@ -106,6 +129,23 @@ export default function UserForm({ user, roles, mode, dosen_users, disabledField
                             </SelectContent>
                         </Select>
                         {errors.role && <p className="text-sm text-red-500">{errors.role}</p>}
+                    </div>
+
+                    {data.role && (
+                        <Alert className="mt-4">
+                            <InfoIcon className="h-4 w-4" />
+                            <AlertTitle>Informasi Profil</AlertTitle>
+                            <AlertDescription>
+                                Silakan klik tombol "Lanjutkan" di bawah untuk mengisi data profil{' '}
+                                {data.role === 'admin' ? 'administrator' : data.role === 'dosen' ? 'dosen' : 'mahasiswa'}.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+
+                    <div className="mt-6">
+                        <Button type="button" onClick={handleNextTab} disabled={!isBasicInfoValid}>
+                            Lanjutkan
+                        </Button>
                     </div>
                 </TabsContent>
 
@@ -159,14 +199,27 @@ export default function UserForm({ user, roles, mode, dosen_users, disabledField
                             dosen_users={dosen_users}
                         />
                     )}
+
+                    {!data.role && (
+                        <Alert className="mt-4 border-yellow-500 bg-yellow-50 text-yellow-900 dark:border-yellow-700 dark:bg-yellow-950 dark:text-yellow-300">
+                            <InfoIcon className="h-4 w-4" />
+                            <AlertTitle>Role Belum Dipilih</AlertTitle>
+                            <AlertDescription>
+                                Silakan pilih role terlebih dahulu pada tab "Informasi Dasar" untuk menampilkan formulir profil yang sesuai.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+
+                    <div className="mt-6 flex gap-4">
+                        <Button type="button" variant="outline" onClick={() => setActiveTab('basic')}>
+                            Kembali
+                        </Button>
+                        <Button type="submit" disabled={processing}>
+                            {processing ? 'Menyimpan...' : 'Simpan'}
+                        </Button>
+                    </div>
                 </TabsContent>
             </Tabs>
-
-            <div className="mt-6">
-                <Button type="submit" disabled={processing}>
-                    {processing ? 'Menyimpan...' : 'Simpan'}
-                </Button>
-            </div>
         </form>
     );
 }

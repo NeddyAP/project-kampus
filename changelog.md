@@ -1,5 +1,157 @@
 # Changelog
 
+## [2025-03-22] - Perbaikan Error User::ROLES
+
+### Fixed
+- Memperbaiki error "Undefined constant App\Models\User::ROLES":
+  - Menghapus kolom enum 'role' dari tabel users karena sudah menggunakan Spatie Permission
+  - Mengubah referensi User::ROLES menjadi User::getRoleNames() di StoreUserRequest
+  - Memastikan konsistensi penggunaan role di seluruh aplikasi
+  - Menyelaraskan migrasi database dengan implementasi permission
+
+## [2025-03-21] - Perbaikan Format Role di User Management
+
+### Fixed
+- Memperbaiki format role yang sebelumnya berupa angka menjadi string:
+  - Mengubah UserController untuk mengirimkan data role lengkap (key-value pairs)
+  - Menyesuaikan komponen user-form.tsx untuk menangani format role baru
+  - Memperbaiki filter role di halaman index pengguna
+  - Memastikan konsistensi antara backend dan frontend dalam penanganan role
+  - Meningkatkan keterbacaan dengan menampilkan nama role yang lebih deskriptif
+
+## [2025-03-20] - Perbaikan Form Profil Pengguna
+
+### Fixed
+- Memperbaiki masalah form profil yang tidak muncul di tab Informasi Profil:
+  - Menghapus fungsi renderProfileForm dan menggunakan conditional rendering langsung
+  - Menambahkan default role untuk mode create
+  - Menambahkan pesan informasi ketika role belum dipilih
+  - Memastikan form profil yang sesuai ditampilkan berdasarkan role yang dipilih
+  - Memperbaiki alur navigasi antar tab
+
+## [2025-03-19] - Perbaikan Navigasi Form Pengguna
+
+### Updated
+- Perbaikan navigasi form pengguna untuk pengalaman yang lebih baik:
+  - Menghapus perpindahan tab otomatis saat memilih role
+  - Menambahkan tombol "Lanjutkan" di tab Informasi Dasar untuk navigasi manual
+  - Menambahkan tombol "Kembali" di tab Informasi Profil
+  - Menonaktifkan tab Informasi Profil sampai role dipilih
+  - Memindahkan tombol "Simpan" ke tab Informasi Profil saja
+  - Validasi input dasar sebelum dapat melanjutkan ke tab profil
+
+## [2025-03-18] - Peningkatan User Form & Pemilihan Role
+
+### Added
+- Peningkatan form pengguna untuk menampilkan profil berdasarkan role:
+  - Penambahan navigasi otomatis ke tab profil saat role dipilih
+  - Penambahan pesan informasi ketika role belum dipilih
+  - Penambahan pesan panduan untuk mengisi profil sesuai role
+  - Perbaikan tipe data User untuk mendukung properti role dan profil
+  - Optimalisasi UX dengan feedback visual yang lebih baik
+
+## [2025-03-17] - Perbaikan Admin Profile Form
+
+### Fixed
+- Memperbaiki form profil admin yang tidak menyimpan data dengan benar:
+  - Mengupdate UserService untuk menyimpan data profil admin saat pembuatan user baru
+  - Mengupdate UserService untuk memperbarui data profil admin saat update user
+  - Memastikan semua field profil admin (ID Pegawai, Departemen, Jabatan, dll) tersimpan dengan benar
+  - Memperbaiki konsistensi antara frontend form dan backend service
+
+## [2025-03-16] - Perbaikan Error Filter Role
+
+### Fixed
+- Memperbaiki error "Uncaught TypeError: roles.map is not a function":
+  - Mengubah format data roles dari associative array menjadi indexed array
+  - Menggunakan array_keys() untuk mendapatkan daftar role yang valid
+  - Memastikan konsistensi format data roles di semua controller methods
+  - Perbaikan pada UserController untuk method index, create, dan edit
+
+## [2025-03-15] - Peningkatan Navigasi Pagination & Filter Role
+
+### Added
+- Peningkatan navigasi pagination:
+  - Penambahan tombol "First Page" untuk langsung ke halaman pertama
+  - Penambahan tombol "Previous Page" untuk ke halaman sebelumnya
+  - Penambahan tombol "Next Page" untuk ke halaman berikutnya
+  - Penambahan tombol "Last Page" untuk langsung ke halaman terakhir
+  - Optimalisasi UX dengan ikon yang intuitif
+- Penambahan filter berdasarkan role di halaman Manajemen Pengguna:
+  - Filter untuk melihat pengguna berdasarkan role (admin, dosen, mahasiswa)
+  - Integrasi dengan server-side filtering
+  - Preservasi filter saat navigasi antar halaman
+  - UI yang konsisten dengan filter lainnya
+
+## [2025-03-14] - Perbaikan Pagination & Preservasi Filter
+
+### Fixed
+- Perbaikan pagination yang menyebabkan refresh dan kembali ke halaman pertama:
+  - Implementasi handlePageNavigation untuk mempertahankan semua filter saat berpindah halaman
+  - Perbaikan handlePerPageChange untuk mempertahankan filter saat mengubah jumlah data per halaman
+  - Memastikan parameter URL dipertahankan saat navigasi
+  - Optimalisasi UI untuk tampilan yang lebih responsif
+- Penyempurnaan layout:
+  - Perbaikan tata letak untuk tampilan mobile
+  - Penambahan flex-wrap untuk mencegah overflow pada layar kecil
+  - Pengelompokan kontrol pagination dan per-page selector
+
+## [2025-03-13] - Penghapusan Duplikasi DataTable & Perbaikan Search
+
+### Fixed
+- Menghapus duplikasi DataTable component:
+  - Menghapus file `resources/js/components/ui/data-table.tsx` yang duplikat
+  - Memastikan semua komponen menggunakan DataTable dari `resources/js/components/data-table/data-table.tsx`
+- Perbaikan search functionality di DataTable:
+  - Implementasi debouncing untuk mengurangi request ke server
+  - Penambahan UI yang lebih baik dengan ikon search dan clear
+  - Perbaikan state management untuk search query
+  - Memastikan konsistensi antara client-side dan server-side search
+
+## [2025-03-12] - Perbaikan Duplikasi Search & Optimalisasi Komponen
+
+### Fixed
+- Mengatasi duplikasi search functionality:
+  - Menghapus custom search di FilterForm dan menggunakan search bawaan DataTable
+  - Menghapus komponen FilterForm yang menyebabkan unlimited refresh
+  - Memindahkan filter status dan tipe langsung ke halaman index
+- Optimalisasi performa:
+  - Mengurangi jumlah re-render yang tidak perlu
+  - Menghilangkan efek samping yang menyebabkan refresh berulang
+  - Menyederhanakan alur data untuk pencarian dan filter
+
+## [2025-03-11] - Perbaikan Duplikasi DataTable & Konsistensi Komponen
+
+### Fixed
+- Mengatasi duplikasi DataTable component:
+  - Standardisasi penggunaan DataTable dari direktori components/data-table
+  - Menghapus referensi ganda ke DataTable dari direktori components/ui
+  - Memastikan konsistensi implementasi di seluruh aplikasi
+- Penyempurnaan integrasi server-side pagination:
+  - Perbaikan handling search parameter di InternshipsTable
+  - Optimalisasi FilterForm untuk mendukung pencarian
+  - Konsistensi implementasi pencarian di UserIndex dan InternshipsIndex
+  - Memastikan semua komponen menggunakan pattern yang sama
+
+## [2025-03-10] - Implementasi Server-side Pagination & Penyeragaman UI
+
+### Updated
+- Implementasi server-side pagination pada halaman Manajemen Magang:
+  - Migrasi dari client-side filtering ke server-side filtering
+  - Optimalisasi performa dengan pagination dari database
+  - Penambahan filter pencarian berdasarkan nama mahasiswa
+  - Penyempurnaan filter berdasarkan status dan tipe magang
+  - Integrasi dengan DataTable component
+- Penyeragaman UI pada halaman Manajemen Pengguna:
+  - Menyesuaikan tampilan dengan halaman Manajemen Magang
+  - Implementasi filter pencarian yang lebih responsif
+  - Perbaikan tampilan aktivitas terakhir
+  - Optimalisasi tata letak untuk konsistensi UX
+- Refactoring controller untuk konsistensi:
+  - Standarisasi format response di InternshipController
+  - Standarisasi format response di UserController
+  - Optimalisasi query database
+
 ## [2025-03-08] - Penyempurnaan Data Table & Admin Panel
 
 ### Updated
@@ -22,104 +174,17 @@
   - Internships table
   - Media manager grid
 
-## [2025-03-08] - Implementasi Admin Panel & Routing
-
-### Added - Admin Panel
-- Dashboard admin dengan:
-  - Statistik pengguna (total, dosen, mahasiswa)
-  - Statistik magang (total, menunggu, berjalan, selesai)
-  - Aktivitas terbaru pengguna
-  - Daftar magang terbaru
-- Manajemen pengguna:
-  - CRUD untuk admin, dosen, dan mahasiswa
-  - Pengelolaan profil spesifik per role
-  - Filter dan pencarian pengguna
-  - Statistik pengguna
-
-## [2025-03-08] - Penyempurnaan Routing & Media Manager
+## [2025-03-11] - Implementasi Server-side Pagination untuk Magang & Update User Index Page
 
 ### Updated
-- Standarisasi routing dengan prefix '/admin':
-  - Memindahkan semua route admin ke dalam prefix '/admin'
-  - Menyesuaikan URL di komponen navigasi dan breadcrumb
-  - Meningkatkan konsistensi path URL di seluruh aplikasi
-
-## [2025-03-08] - Implementasi Media Manager & Penyempurnaan Tampilan
-
-### Added
-- Media Manager untuk admin:
-  - Grid view untuk semua berkas yang diunggah
-  - Filter berdasarkan tipe file (Gambar/Dokumen)
-  - Fitur pencarian berdasarkan nama file
-  - Pratinjau untuk file gambar dan PDF
-  - Informasi detail file (ukuran, tanggal upload, pengunggah)
-  - Fitur download berkas
-
-## [2025-03-08] - Penyempurnaan Tampilan Manajemen Magang
-
-### Updated
-- Penyempurnaan tampilan dashboard magang:
-  - Menambahkan statistik total pengajuan magang
-  - Menampilkan ringkasan status magang (Menunggu Persetujuan, Disetujui, Ditolak)
-  - Optimalisasi tampilan aktivitas terbaru
-  - Penambahan breadcrumb pada halaman detail magang
-- Improvisasi UX dengan informasi status yang lebih jelas
-- Penyesuaian tata letak untuk kemudahan navigasi
-
-## [2025-03-06] - Sistem Magang & User Management
-
-### Added - Sistem Magang
-- Sistem manajemen magang dengan fitur:
-  - Form pengajuan magang (KKL/KKN)
-  - Manajemen persetujuan oleh admin
-  - Assignment dosen pembimbing
-  - Timeline aktivitas magang
-  - Upload dokumen (surat pengantar, persetujuan, laporan)
-  - Status tracking dan notifikasi
-
-### Added - Database Structure
-- Tabel `internships` untuk data magang
-- Tabel `internship_logs` untuk aktivitas magang
-- Tabel `internship_supervisions` untuk data bimbingan
-- Tabel `activities` untuk activity logging system
-- Integrasi dengan spatie/laravel-permission untuk manajemen roles
-- Tabel profil terpisah untuk admin, dosen, dan mahasiswa
-
-### Added - Components
-- StatusBadge untuk menampilkan status magang
-- FilterForm untuk filter dan pencarian
-- InternshipsTable untuk daftar magang
-- ActivityTimeline untuk riwayat aktivitas
-- ApprovalForm untuk persetujuan/penolakan
-- SupervisorAssignment untuk assignment dosen
-
-### Added - User Management
-- Role-based access control dengan spatie/laravel-permission
-- Profil spesifik untuk setiap role:
-  - Admin: Manajemen sistem
-  - Dosen: Profil akademik dan supervisi
-  - Mahasiswa: Data akademik dan magang
-- Activity logging untuk user actions
-- Dashboard dengan recent activities
-- Proper type definitions dengan TypeScript
-- Improved UI dengan shadcn-ui components
-
-### Added - Data Seeding
-- Default admin user (admin@gmail.com / a)
-- 5 Dosen dengan profil akademik lengkap
-- 20 Mahasiswa dengan data studi
-- 50 Data magang dengan status bervariasi
-- Log aktivitas dan data bimbingan
-- 20 Sample activity logs
-
-### Technical Improvements
-- Type-safe components dengan TypeScript
-- Proper role management dengan spatie/laravel-permission
-- Activity logging system dengan polymorphic relations
-- Improved service layer pattern
-- Proper handling untuk soft deletes
-- Comprehensive data factories dan seeders
-
-### Fixed
-- Memperbaiki error "array_key_first(): Argument #1 ($array) must be of type array, Closure given" pada ActivityFactory.
-  Error ini disebabkan oleh penggunaan factory versi lama. Solusi: membersihkan cache dan database.
+- Implementasi server-side pagination pada halaman Manajemen Magang:
+  - Migrasi dari client-side filtering ke server-side filtering
+  - Optimalisasi performa dengan pagination dari database
+  - Penambahan filter pencarian berdasarkan nama mahasiswa
+  - Penyempurnaan filter berdasarkan status dan tipe magang
+  - Integrasi dengan DataTable component
+- Update halaman User Index:
+  - Implementasi server-side pagination
+  - Penambahan filter pencarian berdasarkan nama pengguna
+  - Penyempurnaan filter berdasarkan role
+  - Integrasi dengan DataTable component

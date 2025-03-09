@@ -1,16 +1,29 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, PaginatedData } from '@/types';
 import { Internship, InternshipStatus, InternshipType } from '@/types/internship';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Activity, Signal, Users } from 'lucide-react';
-import { useState } from 'react';
-import { FilterForm } from './components/filter-form';
 import { InternshipsTable } from './components/internships-table';
 
 interface Props {
-    internships: Internship[];
+    internships: PaginatedData<Internship>;
+    filters: Record<string, string>;
+    stats: {
+        total: number;
+        menunggu_persetujuan: number;
+        disetujui: number;
+        ditolak: number;
+    };
+    recentActivities: {
+        id: number;
+        mahasiswa_name: string;
+        type: string;
+        status: string;
+        created_at: string;
+    }[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -20,17 +33,29 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const InternshipsIndex = ({ internships: initialInternships }: Props) => {
-    const [status, setStatus] = useState<InternshipStatus | 'ALL'>('ALL');
-    const [type, setType] = useState<InternshipType | 'ALL'>('ALL');
+const InternshipsIndex = ({ internships, filters, stats, recentActivities }: Props) => {
+    const handleStatusChange = (value: InternshipStatus | 'ALL') => {
+        updateFilters('status', value);
+    };
 
-    // Filter internships berdasarkan search, status, dan type
-    const filteredInternships = initialInternships.filter((internship) => {
-        const matchStatus = status === 'ALL' ? true : internship.status === status;
-        const matchType = type === 'ALL' ? true : internship.type === type;
+    const handleTypeChange = (value: InternshipType | 'ALL') => {
+        updateFilters('type', value);
+    };
 
-        return matchStatus && matchType;
-    });
+    const updateFilters = (key: string, value: string) => {
+        const url = new URL(window.location.href);
+
+        // Reset to page 1 when changing filters
+        url.searchParams.delete('page');
+
+        if (value && value !== 'ALL') {
+            url.searchParams.set(key, value);
+        } else {
+            url.searchParams.delete(key);
+        }
+
+        router.get(url.toString(), {}, { preserveState: true, preserveScroll: true });
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -43,7 +68,7 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                             <Users className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{initialInternships.length}</div>
+                            <div className="text-2xl font-bold">{stats.total}</div>
                             <p className="text-muted-foreground text-xs">Total pengajuan magang</p>
                         </CardContent>
                     </Card>
@@ -57,17 +82,15 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                             <div className="space-y-2">
                                 <div>
                                     <div className="text-sm">Menunggu Persetujuan</div>
-                                    <div className="text-xl font-bold">
-                                        {initialInternships.filter((i) => i.status === 'MENUNGGU_PERSETUJUAN').length}
-                                    </div>
+                                    <div className="text-xl font-bold">{stats.menunggu_persetujuan}</div>
                                 </div>
                                 <div>
                                     <div className="text-sm">Disetujui</div>
-                                    <div className="text-xl font-bold">{initialInternships.filter((i) => i.status === 'DISETUJUI').length}</div>
+                                    <div className="text-xl font-bold">{stats.disetujui}</div>
                                 </div>
                                 <div>
                                     <div className="text-sm">Ditolak</div>
-                                    <div className="text-xl font-bold">{initialInternships.filter((i) => i.status === 'DITOLAK').length}</div>
+                                    <div className="text-xl font-bold">{stats.ditolak}</div>
                                 </div>
                             </div>
                         </CardContent>
@@ -81,14 +104,15 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                         <CardContent className="p-0">
                             <ScrollArea className="h-[125px] px-4">
                                 <div className="space-y-4 pr-4">
-                                    {initialInternships.slice(0, 5).map((internship) => (
-                                        <div key={internship.id} className="flex items-center gap-4">
+                                    {recentActivities.map((activity, index) => (
+                                        <div key={index} className="flex items-center gap-4">
                                             <div className="flex-1">
-                                                <div className="font-medium">{internship.mahasiswa?.name}</div>
+                                                <div className="font-medium">{activity.mahasiswa_name}</div>
                                                 <div className="text-muted-foreground text-sm">
-                                                    {internship.type} - {internship.status.replace(/_/g, ' ')}
+                                                    {activity.type} - {activity.status.replace(/_/g, ' ')}
                                                 </div>
                                             </div>
+                                            <div className="text-muted-foreground text-sm">{activity.created_at}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -97,9 +121,47 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                     </Card>
                 </div>
 
-                <FilterForm status={status} type={type} onStatusChange={setStatus} onTypeChange={setType} />
+                <div className="flex flex-col gap-4 md:flex-row">
+                    <div className="w-full md:w-1/2">
+                        <Select value={filters.status || 'ALL'} onValueChange={(value) => handleStatusChange(value as InternshipStatus | 'ALL')}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Status Magang" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ALL">Semua Status</SelectItem>
+                                <SelectItem value="MENUNGGU_PERSETUJUAN">Menunggu Persetujuan</SelectItem>
+                                <SelectItem value="DISETUJUI">Disetujui</SelectItem>
+                                <SelectItem value="DITOLAK">Ditolak</SelectItem>
+                                <SelectItem value="SEDANG_BERJALAN">Sedang Berjalan</SelectItem>
+                                <SelectItem value="SELESAI">Selesai</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="w-full md:w-1/2">
+                        <Select value={filters.type || 'ALL'} onValueChange={(value) => handleTypeChange(value as InternshipType | 'ALL')}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Tipe Magang" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ALL">Semua Tipe</SelectItem>
+                                <SelectItem value="KKL">KKL</SelectItem>
+                                <SelectItem value="KKN">KKN</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
 
-                <InternshipsTable internships={filteredInternships} />
+                <InternshipsTable
+                    internships={internships.data}
+                    pagination={{
+                        current_page: internships.current_page,
+                        last_page: internships.last_page,
+                        per_page: internships.per_page,
+                        total: internships.total,
+                        links: internships.links,
+                    }}
+                    filters={filters}
+                />
             </div>
         </AppLayout>
     );

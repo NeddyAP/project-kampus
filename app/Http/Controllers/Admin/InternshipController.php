@@ -9,14 +9,66 @@ use Inertia\Inertia;
 
 class InternshipController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $internships = Internship::with(['mahasiswa:id,name,email,nim', 'dosen:id,name,email,nip'])
+        $query = Internship::with(['mahasiswa:id,name,email,nim', 'dosen:id,name,email,nip']);
+
+        // Apply filters
+        if ($request->has('status') && $request->status !== 'ALL') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->has('type') && $request->type !== 'ALL') {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->whereHas('mahasiswa', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('nim', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply sorting
+        $query->when(
+            $request->sort,
+            fn($q, $sort) => $q->orderBy($sort, $request->order ?? 'asc'),
+            fn($q) => $q->latest()
+        );
+
+        // Get paginated results
+        $internships = $query->paginate($request->per_page ?? 10)
+            ->withQueryString();
+
+        // Get stats for dashboard cards
+        $stats = [
+            'total' => Internship::count(),
+            'menunggu_persetujuan' => Internship::where('status', 'MENUNGGU_PERSETUJUAN')->count(),
+            'disetujui' => Internship::where('status', 'DISETUJUI')->count(),
+            'ditolak' => Internship::where('status', 'DITOLAK')->count(),
+        ];
+
+        // Get recent activities
+        $recentActivities = Internship::with('mahasiswa:id,name')
             ->latest()
-            ->get();
+            ->take(5)
+            ->get()
+            ->map(function ($internship) {
+                return [
+                    'id' => $internship->id,
+                    'mahasiswa_name' => $internship->mahasiswa->name ?? 'Unknown',
+                    'type' => $internship->type,
+                    'status' => $internship->status,
+                    'created_at' => $internship->created_at->diffForHumans(),
+                ];
+            });
 
         return Inertia::render('Admin/internships/index', [
-            'internships' => $internships
+            'internships' => $internships,
+            'filters' => $request->only(['search', 'status', 'type', 'sort', 'order', 'per_page']),
+            'stats' => $stats,
+            'recentActivities' => $recentActivities,
         ]);
     }
 

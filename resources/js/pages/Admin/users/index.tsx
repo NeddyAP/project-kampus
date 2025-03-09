@@ -1,29 +1,59 @@
+import { DataTable } from '@/components/data-table/data-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { PaginatedData, User, type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { PaginatedData, type BreadcrumbItem } from '@/types';
+import { Head, router } from '@inertiajs/react';
 import { Activity, Plus, Signal, Users } from 'lucide-react';
 import { columns } from './columns';
+
+// Define the User type with the required properties
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    profile_data?: Record<string, unknown>;
+    created_at: string;
+    updated_at: string;
+    deleted_at?: string;
+}
 
 interface Props {
     users: PaginatedData<User>;
     filters: Record<string, string>;
     stats: {
+        total: number;
         active_users: number;
         recent_activities: { description: string; time: string }[];
     };
+    roles: Record<string, string>;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
-        href: '/users',
+        title: 'Manajemen Pengguna',
+        href: '/admin/users',
     },
 ];
 
-export default function UserIndex({ users, filters, stats }: Props) {
+export default function UserIndex({ users, filters, stats, roles }: Props) {
+    const handleRoleChange = (value: string) => {
+        const url = new URL(window.location.href);
+
+        // Reset to page 1 when changing role
+        url.searchParams.delete('page');
+
+        if (value && value !== 'ALL') {
+            url.searchParams.set('role', value);
+        } else {
+            url.searchParams.delete('role');
+        }
+
+        router.get(url.toString(), {}, { preserveState: true, preserveScroll: true });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Pengguna" />
@@ -35,7 +65,7 @@ export default function UserIndex({ users, filters, stats }: Props) {
                             <Users className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{users.total}</div>
+                            <div className="text-2xl font-bold">{stats.total}</div>
                             <p className="text-muted-foreground text-xs">Terdaftar dalam sistem</p>
                         </CardContent>
                     </Card>
@@ -61,12 +91,11 @@ export default function UserIndex({ users, filters, stats }: Props) {
                                 <div className="space-y-4 pr-4">
                                     {stats.recent_activities.length > 0 ? (
                                         stats.recent_activities.map((activity, index) => (
-                                            <div
-                                                key={index}
-                                                className="border-border/50 flex items-start justify-between gap-4 border-b pb-4 text-sm last:border-0 last:pb-0"
-                                            >
-                                                <span className="flex-1">{activity.description}</span>
-                                                <span className="text-muted-foreground whitespace-nowrap">{activity.time}</span>
+                                            <div key={index} className="flex items-center gap-4">
+                                                <div className="flex-1">
+                                                    <div className="text-muted-foreground text-sm">{activity.description}</div>
+                                                </div>
+                                                <div className="text-muted-foreground text-sm">{activity.time}</div>
                                             </div>
                                         ))
                                     ) : (
@@ -78,31 +107,46 @@ export default function UserIndex({ users, filters, stats }: Props) {
                     </Card>
                 </div>
 
-                <Card className="flex-1">
-                    <CardContent className="p-4">
-                        <DataTable
-                            columns={columns}
-                            data={users.data}
-                            pagination={{
-                                current_page: users.current_page,
-                                last_page: users.last_page,
-                                per_page: users.per_page,
-                                total: users.total,
-                                links: users.links,
-                            }}
-                            searchable={true}
-                            searchPlaceholder="Cari pengguna..."
-                            searchParam="search"
-                            filters={filters}
-                            createButton={{
-                                href: '/users/create',
-                                text: 'Tambah Pengguna',
-                                icon: <Plus className="mr-2 h-4 w-4" />,
-                                show: true,
-                            }}
-                        />
-                    </CardContent>
-                </Card>
+                <div className="flex flex-col gap-4 md:flex-row">
+                    <div className="w-full md:w-1/2">
+                        <Select value={filters.role || 'ALL'} onValueChange={handleRoleChange}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Filter berdasarkan Role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ALL">Semua Role</SelectItem>
+                                {Object.entries(roles).map(([value, label]) => (
+                                    <SelectItem key={value} value={value}>
+                                        {label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
+                <DataTable
+                    columns={columns}
+                    data={users.data}
+                    pagination={{
+                        current_page: users.current_page,
+                        last_page: users.last_page,
+                        per_page: users.per_page,
+                        total: users.total,
+                        links: users.links,
+                    }}
+                    searchable={true}
+                    searchPlaceholder="Cari pengguna..."
+                    searchColumn="name"
+                    searchParam="search"
+                    filters={filters}
+                    createButton={{
+                        href: '/admin/users/create',
+                        text: 'Tambah Pengguna',
+                        icon: <Plus className="mr-2 h-4 w-4" />,
+                        show: true,
+                    }}
+                />
             </div>
         </AppLayout>
     );
