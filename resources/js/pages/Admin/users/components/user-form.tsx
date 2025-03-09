@@ -51,7 +51,7 @@ export default function UserForm({ user, roles, mode, dosen_users, disabledField
         if (mode === 'create' && !data.role) {
             setData('role', Object.keys(roles)[0] || 'mahasiswa');
         }
-    }, []);
+    }, [mode, data.role, roles, setData]);
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
