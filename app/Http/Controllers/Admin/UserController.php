@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Services\UserService;
 use App\Models\User;
 use App\Models\DosenProfile;
 use App\Models\MahasiswaProfile;
@@ -14,171 +17,120 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index()
+    public function __construct(
+        protected UserService $userService
+    ) {
+    }
+
+    public function index(Request $request)
     {
-        $users = User::with(['roles', 'dosenProfile', 'mahasiswaProfile'])
-            ->when(request('search'), function ($query, $search) {
-                $query->where(function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                });
-            })
-            ->latest()
-            ->paginate(10)
-            ->through(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->roles->first()?->name,
-                    'profile' => $user->dosenProfile ?? $user->mahasiswaProfile,
-                    'created_at' => $user->created_at,
-                ];
-            });
+        abort_if(!auth()->user()->isSuperAdmin() && $request->has('trashed'), 403);
+
+        $users = $this->userService->getFilteredUsers($request);
+        $recentActivities = $this->userService->getRecentActivities();
+        $stats = $this->userService->getStats($recentActivities);
 
         return Inertia::render('Admin/users/index', [
             'users' => $users,
-            'filters' => request()->only(['search']),
+            'filters' => $request->only(['search', 'sort', 'per_page', 'trashed']),
+            'roles' => User::getRoleNames(),
+            'stats' => $stats,
+            'can' => [
+                'view_deleted' => auth()->user()->isSuperAdmin(),
+            ],
         ]);
     }
 
     public function create()
     {
-        $roles = Role::all();
-
         return Inertia::render('Admin/users/create', [
-            'roles' => $roles,
+            'roles' => User::getRoleNames(),
+            'dosen_users' => $this->userService->getDosenUsers(),
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role' => 'required|exists:roles,name',
-            // Data profil dosen
-            'nip' => Rule::requiredIf($request->role === 'dosen'),
-            'bidang_keahlian' => Rule::requiredIf($request->role === 'dosen'),
-            // Data profil mahasiswa
-            'nim' => Rule::requiredIf($request->role === 'mahasiswa'),
-            'program_studi' => Rule::requiredIf($request->role === 'mahasiswa'),
-            'angkatan' => Rule::requiredIf($request->role === 'mahasiswa'),
-        ]);
+        try {
+            $this->userService->createUser($request->validated());
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $user->assignRole($request->role);
-
-        // Buat profil berdasarkan role
-        if ($request->role === 'dosen') {
-            DosenProfile::create([
-                'user_id' => $user->id,
-                'nip' => $request->nip,
-                'bidang_keahlian' => $request->bidang_keahlian,
-            ]);
-        } elseif ($request->role === 'mahasiswa') {
-            MahasiswaProfile::create([
-                'user_id' => $user->id,
-                'nim' => $request->nim,
-                'program_studi' => $request->program_studi,
-                'angkatan' => $request->angkatan,
+            return redirect()->route('admin.users.index')
+                ->with('flash', [
+                    'type' => 'success',
+                    'message' => 'Pengguna berhasil ditambahkan'
+                ]);
+        } catch (\Exception $e) {
+            return back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ]);
         }
-
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'Pengguna berhasil ditambahkan');
     }
 
     public function edit(User $user)
     {
-        $user->load(['roles', 'dosenProfile', 'mahasiswaProfile']);
-        $roles = Role::all();
+        $user->load(['adminProfile', 'dosenProfile', 'mahasiswaProfile']);
+
+        // Get user's current role
+        $role = $user->roles->first()?->name;
+        $user->role = $role;
 
         return Inertia::render('Admin/users/edit', [
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->roles->first()?->name,
-                'profile' => $user->dosenProfile ?? $user->mahasiswaProfile,
-            ],
-            'roles' => $roles,
+            'user' => $user,
+            'roles' => User::getRoleNames(),
+            'dosen_users' => $this->userService->getDosenUsers(),
         ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8',
-            'role' => 'required|exists:roles,name',
-            // Data profil dosen
-            'nip' => Rule::requiredIf($request->role === 'dosen'),
-            'bidang_keahlian' => Rule::requiredIf($request->role === 'dosen'),
-            // Data profil mahasiswa
-            'nim' => Rule::requiredIf($request->role === 'mahasiswa'),
-            'program_studi' => Rule::requiredIf($request->role === 'mahasiswa'),
-            'angkatan' => Rule::requiredIf($request->role === 'mahasiswa'),
-        ]);
+        try {
+            $this->userService->updateUser($user, $request->validated());
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
-
-        if ($request->password) {
-            $user->update(['password' => Hash::make($request->password)]);
+            return redirect()->route('admin.users.index')
+                ->with('flash', [
+                    'type' => 'success',
+                    'message' => 'Pengguna berhasil diperbarui'
+                ]);
+        } catch (\Exception $e) {
+            return back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
         }
-
-        // Update role jika berbeda
-        if ($user->roles->first()?->name !== $request->role) {
-            $user->syncRoles($request->role);
-        }
-
-        // Update atau buat profil berdasarkan role
-        if ($request->role === 'dosen') {
-            $user->dosenProfile()->updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'nip' => $request->nip,
-                    'bidang_keahlian' => $request->bidang_keahlian,
-                ]
-            );
-        } elseif ($request->role === 'mahasiswa') {
-            $user->mahasiswaProfile()->updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'nim' => $request->nim,
-                    'program_studi' => $request->program_studi,
-                    'angkatan' => $request->angkatan,
-                ]
-            );
-        }
-
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'Pengguna berhasil diperbarui');
     }
 
     public function destroy(User $user)
     {
-        // Hapus profil terkait
-        $user->dosenProfile?->delete();
-        $user->mahasiswaProfile?->delete();
-        
-        // Hapus user
-        $user->delete();
+        try {
+            $this->userService->deleteUser($user);
 
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'Pengguna berhasil dihapus');
+            return back()->with('flash', [
+                'type' => 'success',
+                'message' => 'Pengguna berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('flash', [
+                'type' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            $this->userService->restoreUser($id);
+
+            return back()->with('flash', [
+                'type' => 'success',
+                'message' => 'Pengguna berhasil dipulihkan'
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('flash', [
+                'type' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

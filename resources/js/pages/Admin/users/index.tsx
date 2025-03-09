@@ -1,163 +1,85 @@
-import { createActionColumn } from '@/components/data-table/columns';
-import { DataTable } from '@/components/data-table/data-table';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DataTable } from '@/components/ui/data-table';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/app-layout';
-import { formatDate } from '@/lib/utils';
-import { BreadcrumbItem, PaginatedData } from '@/types';
+import { PaginatedData, User, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { ColumnDef } from '@tanstack/react-table';
-import { ArrowDown, ArrowUp, GraduationCap, Plus, School2, UserCog } from 'lucide-react';
-
-interface UserProfile {
-    nim?: string;
-    nip?: string;
-    program_studi?: string;
-    bidang_keahlian?: string;
-    angkatan?: string;
-}
-
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-    profile: UserProfile;
-    created_at: string;
-}
+import { Activity, Plus, Signal, Users } from 'lucide-react';
+import { columns } from './columns';
 
 interface Props {
     users: PaginatedData<User>;
     filters: Record<string, string>;
+    stats: {
+        active_users: number;
+        recent_activities: { description: string; time: string }[];
+    };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Manajemen Pengguna',
-        href: '/admin/users',
+        title: 'Users',
+        href: '/users',
     },
 ];
 
-const columns: ColumnDef<User>[] = [
-    {
-        accessorKey: 'name',
-        header: ({ column }) => (
-            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
-                Nama
-                {column.getIsSorted() === 'asc' ? (
-                    <ArrowUp className="ml-2 h-4 w-4" />
-                ) : column.getIsSorted() === 'desc' ? (
-                    <ArrowDown className="ml-2 h-4 w-4" />
-                ) : null}
-            </Button>
-        ),
-    },
-    {
-        accessorKey: 'email',
-        header: ({ column }) => (
-            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
-                Email
-                {column.getIsSorted() === 'asc' ? (
-                    <ArrowUp className="ml-2 h-4 w-4" />
-                ) : column.getIsSorted() === 'desc' ? (
-                    <ArrowDown className="ml-2 h-4 w-4" />
-                ) : null}
-            </Button>
-        ),
-    },
-    {
-        accessorKey: 'role',
-        header: ({ column }) => (
-            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
-                Role
-                {column.getIsSorted() === 'asc' ? (
-                    <ArrowUp className="ml-2 h-4 w-4" />
-                ) : column.getIsSorted() === 'desc' ? (
-                    <ArrowDown className="ml-2 h-4 w-4" />
-                ) : null}
-            </Button>
-        ),
-        cell: ({ row }) => <span className="capitalize">{row.getValue('role')}</span>,
-    },
-    {
-        id: 'identifier',
-        header: 'NIM/NIP',
-        cell: ({ row }) => {
-            const profile = row.original.profile;
-            return profile?.nim || profile?.nip || '-';
-        },
-    },
-    {
-        id: 'program',
-        header: 'Program/Bidang',
-        cell: ({ row }) => {
-            const profile = row.original.profile;
-            return profile?.program_studi || profile?.bidang_keahlian || '-';
-        },
-    },
-    {
-        accessorKey: 'created_at',
-        header: ({ column }) => (
-            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
-                Tanggal Daftar
-                {column.getIsSorted() === 'asc' ? (
-                    <ArrowUp className="ml-2 h-4 w-4" />
-                ) : column.getIsSorted() === 'desc' ? (
-                    <ArrowDown className="ml-2 h-4 w-4" />
-                ) : null}
-            </Button>
-        ),
-        cell: ({ row }) => formatDate(row.getValue('created_at')),
-    },
-    createActionColumn<User>({
-        editUrl: (user) => `/admin/users/${user.id}/edit`,
-        deleteUrl: (user) => `/admin/users/${user.id}`,
-    }),
-];
-
-const UsersIndex = ({ users, filters }: Props) => {
+export default function UserIndex({ users, filters, stats }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Pengguna" />
-
             <div className="flex h-full flex-1 flex-col gap-4 p-4">
-                <div className="grid gap-4 md:grid-cols-3">
-                    <Card>
+                <div className="grid gap-4 md:grid-cols-12">
+                    <Card className="md:col-span-3">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Pengguna</CardTitle>
-                            <UserCog className="text-muted-foreground h-4 w-4" />
+                            <Users className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{users.total}</div>
-                            <p className="text-muted-foreground text-xs">Pengguna terdaftar</p>
+                            <p className="text-muted-foreground text-xs">Terdaftar dalam sistem</p>
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="md:col-span-3">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Dosen</CardTitle>
-                            <School2 className="text-muted-foreground h-4 w-4" />
+                            <CardTitle className="text-sm font-medium">Pengguna Aktif</CardTitle>
+                            <Signal className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{users.data.filter((u) => u.role === 'dosen').length}</div>
-                            <p className="text-muted-foreground text-xs">Dosen terdaftar</p>
+                            <div className="text-2xl font-bold">{stats.active_users}</div>
+                            <p className="text-muted-foreground text-xs">Online dalam 24 jam terakhir</p>
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="md:col-span-6">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Mahasiswa</CardTitle>
-                            <GraduationCap className="text-muted-foreground h-4 w-4" />
+                            <CardTitle className="text-sm font-medium">Aktivitas Terakhir</CardTitle>
+                            <Activity className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{users.data.filter((u) => u.role === 'mahasiswa').length}</div>
-                            <p className="text-muted-foreground text-xs">Mahasiswa terdaftar</p>
+                        <CardContent className="p-0">
+                            <ScrollArea className="h-[125px] px-4">
+                                <div className="space-y-4 pr-4">
+                                    {stats.recent_activities.length > 0 ? (
+                                        stats.recent_activities.map((activity, index) => (
+                                            <div
+                                                key={index}
+                                                className="border-border/50 flex items-start justify-between gap-4 border-b pb-4 text-sm last:border-0 last:pb-0"
+                                            >
+                                                <span className="flex-1">{activity.description}</span>
+                                                <span className="text-muted-foreground whitespace-nowrap">{activity.time}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-muted-foreground text-sm">Belum ada aktivitas</p>
+                                    )}
+                                </div>
+                            </ScrollArea>
                         </CardContent>
                     </Card>
                 </div>
 
-                <Card>
-                    <CardContent className="p-0">
+                <Card className="flex-1">
+                    <CardContent className="p-4">
                         <DataTable
                             columns={columns}
                             data={users.data}
@@ -168,12 +90,12 @@ const UsersIndex = ({ users, filters }: Props) => {
                                 total: users.total,
                                 links: users.links,
                             }}
-                            searchable
+                            searchable={true}
+                            searchPlaceholder="Cari pengguna..."
                             searchParam="search"
-                            searchPlaceholder="Cari berdasarkan nama atau email..."
                             filters={filters}
                             createButton={{
-                                href: '/admin/users/create',
+                                href: '/users/create',
                                 text: 'Tambah Pengguna',
                                 icon: <Plus className="mr-2 h-4 w-4" />,
                                 show: true,
@@ -184,6 +106,4 @@ const UsersIndex = ({ users, filters }: Props) => {
             </div>
         </AppLayout>
     );
-};
-
-export default UsersIndex;
+}

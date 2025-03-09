@@ -40,7 +40,7 @@ function UserActionsCell({ row }: UserActionsCellProps) {
             ) : (
                 <>
                     <Button variant="outline" size="icon" asChild>
-                        <Link href={route('users.edit', user.id)}>
+                        <Link href={route('admin.users.edit', user.id)}>
                             <Edit2 className="h-4 w-4" />
                         </Link>
                     </Button>
