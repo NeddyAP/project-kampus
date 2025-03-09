@@ -99,25 +99,15 @@ const Dashboard = ({ stats, recentActivities, recentInternships }: Props) => {
                             <div className="space-y-8">
                                 {recentActivities.map((activity) => (
                                     <div key={activity.id} className="flex gap-4">
-                                        <div className="text-muted-foreground w-14 text-sm">
-                                            {formatDate(activity.created_at, { dayOnly: true })}
-                                        </div>
+                                        <div className="text-muted-foreground w-14 text-sm">{formatDate(activity.created_at, { dayOnly: true })}</div>
                                         <div>
                                             <div className="font-medium">{activity.description}</div>
-                                            {activity.causer_name && (
-                                                <div className="text-muted-foreground text-sm">
-                                                    oleh {activity.causer_name}
-                                                </div>
-                                            )}
+                                            {activity.causer_name && <div className="text-muted-foreground text-sm">oleh {activity.causer_name}</div>}
                                         </div>
                                     </div>
                                 ))}
 
-                                {recentActivities.length === 0 && (
-                                    <div className="text-muted-foreground text-center">
-                                        Belum ada aktivitas
-                                    </div>
-                                )}
+                                {recentActivities.length === 0 && <div className="text-muted-foreground text-center">Belum ada aktivitas</div>}
                             </div>
                         </CardContent>
                     </Card>
@@ -141,18 +131,14 @@ const Dashboard = ({ stats, recentActivities, recentInternships }: Props) => {
                                                 {internship.type} - {internship.status.replace(/_/g, ' ')}
                                             </div>
                                             {internship.dosen_name && (
-                                                <div className="text-muted-foreground text-sm">
-                                                    Pembimbing: {internship.dosen_name}
-                                                </div>
+                                                <div className="text-muted-foreground text-sm">Pembimbing: {internship.dosen_name}</div>
                                             )}
                                         </div>
                                     </div>
                                 ))}
 
                                 {recentInternships.length === 0 && (
-                                    <div className="text-muted-foreground text-center">
-                                        Belum ada pengajuan magang
-                                    </div>
+                                    <div className="text-muted-foreground text-center">Belum ada pengajuan magang</div>
                                 )}
                             </div>
                         </CardContent>

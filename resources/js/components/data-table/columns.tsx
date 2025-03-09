@@ -1,8 +1,8 @@
-import { Button } from '../ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import { type ColumnDef } from '@tanstack/react-table';
+import { MoreHorizontal } from 'lucide-react';
+import { Button } from '../ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface MenuItem {
     label: string;
@@ -51,12 +51,7 @@ export function createActionColumn<T>({
                         )}
                         {deleteUrl && (
                             <DropdownMenuItem asChild>
-                                <Link
-                                    href={deleteUrl(data)}
-                                    method="delete"
-                                    as="button"
-                                    className="cursor-pointer text-destructive"
-                                >
+                                <Link href={deleteUrl(data)} method="delete" as="button" className="text-destructive cursor-pointer">
                                     Hapus
                                 </Link>
                             </DropdownMenuItem>

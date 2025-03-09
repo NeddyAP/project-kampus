@@ -1,11 +1,11 @@
 import { createActionColumn } from '@/components/data-table/columns';
 import { DataTable } from '@/components/data-table/data-table';
-import { StatusBadge } from '@/components/internship/status-badge';
 import { Button } from '@/components/ui/button';
+import { formatDate } from '@/lib/utils';
 import { Internship } from '@/types/internship';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+import { StatusBadge } from './status-badge';
 
 interface InternshipsTableProps {
     internships: Internship[];
@@ -16,11 +16,7 @@ const columns: ColumnDef<Internship>[] = [
         id: 'mahasiswa.name',
         accessorFn: (row) => row.mahasiswa?.name,
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="-ml-4"
-            >
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                 Nama Mahasiswa
                 {column.getIsSorted() === 'asc' ? (
                     <ArrowUp className="ml-2 h-4 w-4" />
@@ -38,11 +34,7 @@ const columns: ColumnDef<Internship>[] = [
     {
         accessorKey: 'type',
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="-ml-4"
-            >
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                 Tipe
                 {column.getIsSorted() === 'asc' ? (
                     <ArrowUp className="ml-2 h-4 w-4" />
@@ -60,11 +52,7 @@ const columns: ColumnDef<Internship>[] = [
     {
         accessorKey: 'start_date',
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="-ml-4"
-            >
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                 Tanggal Mulai
                 {column.getIsSorted() === 'asc' ? (
                     <ArrowUp className="ml-2 h-4 w-4" />
@@ -81,11 +69,7 @@ const columns: ColumnDef<Internship>[] = [
     {
         accessorKey: 'end_date',
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="-ml-4"
-            >
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                 Tanggal Selesai
                 {column.getIsSorted() === 'asc' ? (
                     <ArrowUp className="ml-2 h-4 w-4" />
@@ -101,16 +85,18 @@ const columns: ColumnDef<Internship>[] = [
     },
     createActionColumn<Internship>({
         viewUrl: (internship) => `/admin/internships/${internship.id}`,
-        additionalMenuItems: (internship) => [
-            internship.status === 'MENUNGGU_PERSETUJUAN' && {
-                label: 'Persetujuan',
-                href: `/admin/internships/${internship.id}/approval`,
-            },
-            internship.status === 'DISETUJUI' && !internship.dosen_id && {
-                label: 'Assignment Dosen',
-                href: `/admin/internships/${internship.id}/assign`,
-            },
-        ].filter(Boolean),
+        additionalMenuItems: (internship) =>
+            [
+                internship.status === 'MENUNGGU_PERSETUJUAN' && {
+                    label: 'Persetujuan',
+                    href: `/admin/internships/${internship.id}/approval`,
+                },
+                internship.status === 'DISETUJUI' &&
+                    !internship.dosen_id && {
+                        label: 'Assignment Dosen',
+                        href: `/admin/internships/${internship.id}/assign`,
+                    },
+            ].filter(Boolean),
     }),
 ];
 

@@ -1,14 +1,13 @@
+import { createActionColumn } from '@/components/data-table/columns';
 import { DataTable } from '@/components/data-table/data-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { ColumnDef } from '@tanstack/react-table';
-import { Plus, School2, GraduationCap, UserCog, ArrowUp, ArrowDown } from 'lucide-react';
-import { createActionColumn } from '@/components/data-table/columns';
 import { formatDate } from '@/lib/utils';
-import { PaginatedData } from '@/types';
+import { BreadcrumbItem, PaginatedData } from '@/types';
+import { Head } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { ArrowDown, ArrowUp, GraduationCap, Plus, School2, UserCog } from 'lucide-react';
 
 interface UserProfile {
     nim?: string;
@@ -43,11 +42,7 @@ const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'name',
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="-ml-4"
-            >
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                 Nama
                 {column.getIsSorted() === 'asc' ? (
                     <ArrowUp className="ml-2 h-4 w-4" />
@@ -60,11 +55,7 @@ const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'email',
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="-ml-4"
-            >
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                 Email
                 {column.getIsSorted() === 'asc' ? (
                     <ArrowUp className="ml-2 h-4 w-4" />
@@ -77,11 +68,7 @@ const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'role',
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="-ml-4"
-            >
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                 Role
                 {column.getIsSorted() === 'asc' ? (
                     <ArrowUp className="ml-2 h-4 w-4" />
@@ -90,9 +77,7 @@ const columns: ColumnDef<User>[] = [
                 ) : null}
             </Button>
         ),
-        cell: ({ row }) => (
-            <span className="capitalize">{row.getValue('role')}</span>
-        ),
+        cell: ({ row }) => <span className="capitalize">{row.getValue('role')}</span>,
     },
     {
         id: 'identifier',
@@ -113,11 +98,7 @@ const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'created_at',
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="-ml-4"
-            >
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')} className="-ml-4">
                 Tanggal Daftar
                 {column.getIsSorted() === 'asc' ? (
                     <ArrowUp className="ml-2 h-4 w-4" />
@@ -158,9 +139,7 @@ const UsersIndex = ({ users, filters }: Props) => {
                             <School2 className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">
-                                {users.data.filter((u) => u.role === 'dosen').length}
-                            </div>
+                            <div className="text-2xl font-bold">{users.data.filter((u) => u.role === 'dosen').length}</div>
                             <p className="text-muted-foreground text-xs">Dosen terdaftar</p>
                         </CardContent>
                     </Card>
@@ -171,9 +150,7 @@ const UsersIndex = ({ users, filters }: Props) => {
                             <GraduationCap className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">
-                                {users.data.filter((u) => u.role === 'mahasiswa').length}
-                            </div>
+                            <div className="text-2xl font-bold">{users.data.filter((u) => u.role === 'mahasiswa').length}</div>
                             <p className="text-muted-foreground text-xs">Mahasiswa terdaftar</p>
                         </CardContent>
                     </Card>

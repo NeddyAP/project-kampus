@@ -21,7 +21,7 @@ interface FormatDateOptions {
 
 export function formatDate(dateString: string, options: FormatDateOptions = {}): string {
     const date = new Date(dateString);
-    
+
     if (options.dayOnly) {
         return date.toLocaleDateString('id-ID', {
             day: 'numeric',

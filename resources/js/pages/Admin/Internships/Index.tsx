@@ -1,6 +1,3 @@
-import Heading from '@/components/heading-small';
-import { FilterForm } from '@/components/internship/filter-form';
-import { InternshipsTable } from '@/components/internship/internships-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/app-layout';
@@ -9,6 +6,8 @@ import { Internship, InternshipStatus, InternshipType } from '@/types/internship
 import { Head } from '@inertiajs/react';
 import { Activity, Signal, Users } from 'lucide-react';
 import { useState } from 'react';
+import { FilterForm } from './components/filter-form';
+import { InternshipsTable } from './components/internships-table';
 
 interface Props {
     internships: Internship[];
@@ -20,7 +19,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/admin/internships',
     },
 ];
-
 
 const InternshipsIndex = ({ internships: initialInternships }: Props) => {
     const [status, setStatus] = useState<InternshipStatus | 'ALL'>('ALL');
@@ -65,15 +63,11 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                                 </div>
                                 <div>
                                     <div className="text-sm">Disetujui</div>
-                                    <div className="text-xl font-bold">
-                                        {initialInternships.filter((i) => i.status === 'DISETUJUI').length}
-                                    </div>
+                                    <div className="text-xl font-bold">{initialInternships.filter((i) => i.status === 'DISETUJUI').length}</div>
                                 </div>
                                 <div>
                                     <div className="text-sm">Ditolak</div>
-                                    <div className="text-xl font-bold">
-                                        {initialInternships.filter((i) => i.status === 'DITOLAK').length}
-                                    </div>
+                                    <div className="text-xl font-bold">{initialInternships.filter((i) => i.status === 'DITOLAK').length}</div>
                                 </div>
                             </div>
                         </CardContent>
@@ -87,36 +81,27 @@ const InternshipsIndex = ({ internships: initialInternships }: Props) => {
                         <CardContent className="p-0">
                             <ScrollArea className="h-[125px] px-4">
                                 <div className="space-y-4 pr-4">
-                                    {initialInternships
-                                        .slice(0, 5)
-                                        .map((internship) => (
-                                            <div key={internship.id} className="flex items-center gap-4">
-                                                <div className="flex-1">
-                                                    <div className="font-medium">
-                                                        {internship.mahasiswa?.name}
-                                                    </div>
-                                                    <div className="text-muted-foreground text-sm">
-                                                        {internship.type} - {internship.status.replace(/_/g, ' ')}
-                                                    </div>
+                                    {initialInternships.slice(0, 5).map((internship) => (
+                                        <div key={internship.id} className="flex items-center gap-4">
+                                            <div className="flex-1">
+                                                <div className="font-medium">{internship.mahasiswa?.name}</div>
+                                                <div className="text-muted-foreground text-sm">
+                                                    {internship.type} - {internship.status.replace(/_/g, ' ')}
                                                 </div>
                                             </div>
-                                        ))}
+                                        </div>
+                                    ))}
                                 </div>
                             </ScrollArea>
                         </CardContent>
                     </Card>
                 </div>
 
-                <FilterForm
-                    status={status}
-                    type={type}
-                    onStatusChange={setStatus}
-                    onTypeChange={setType}
-                />
+                <FilterForm status={status} type={type} onStatusChange={setStatus} onTypeChange={setType} />
 
                 <InternshipsTable internships={filteredInternships} />
             </div>
-        </AppLayout >
+        </AppLayout>
     );
 };
 

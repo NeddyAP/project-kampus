@@ -1,4 +1,3 @@
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { InternshipStatus, InternshipType } from '@/types/internship';
 
@@ -12,7 +11,6 @@ interface FilterFormProps {
 export const FilterForm = ({ status, type, onStatusChange, onTypeChange }: FilterFormProps) => {
     return (
         <div className="flex flex-col gap-4 md:flex-row">
-
             <div className="w-full md:w-1/4">
                 <Select value={status} onValueChange={(value) => onStatusChange(value as InternshipStatus | 'ALL')}>
                     <SelectTrigger>

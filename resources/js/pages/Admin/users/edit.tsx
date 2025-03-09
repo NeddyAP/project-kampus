@@ -70,20 +70,24 @@ const EditUser = ({ user, roles }: Props) => {
         const { password, ...submitData } = formData;
         const finalData = password ? { ...submitData, password } : submitData;
 
-        router.post(`/admin/users/${user.id}`, {
-            ...submitData,
-            _method: 'PUT',
-        }, {
-            onSuccess: () => {
-                toast.success('Pengguna berhasil diperbarui');
+        router.post(
+            `/admin/users/${user.id}`,
+            {
+                ...submitData,
+                _method: 'PUT',
             },
-            onError: (errors) => {
-                setIsSubmitting(false);
-                Object.keys(errors).forEach((key) => {
-                    toast.error(errors[key]);
-                });
+            {
+                onSuccess: () => {
+                    toast.success('Pengguna berhasil diperbarui');
+                },
+                onError: (errors) => {
+                    setIsSubmitting(false);
+                    Object.keys(errors).forEach((key) => {
+                        toast.error(errors[key]);
+                    });
+                },
             },
-        });
+        );
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,25 +115,12 @@ const EditUser = ({ user, roles }: Props) => {
                             <CardContent className="space-y-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Nama Lengkap</Label>
-                                    <Input
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                    <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
                                 </div>
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
                                 </div>
 
                                 <div className="grid gap-2">
@@ -172,13 +163,7 @@ const EditUser = ({ user, roles }: Props) => {
                                 <CardContent className="space-y-4">
                                     <div className="grid gap-2">
                                         <Label htmlFor="nip">NIP</Label>
-                                        <Input
-                                            id="nip"
-                                            name="nip"
-                                            value={formData.nip}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <Input id="nip" name="nip" value={formData.nip} onChange={handleChange} required />
                                     </div>
 
                                     <div className="grid gap-2">
@@ -205,13 +190,7 @@ const EditUser = ({ user, roles }: Props) => {
                                 <CardContent className="space-y-4">
                                     <div className="grid gap-2">
                                         <Label htmlFor="nim">NIM</Label>
-                                        <Input
-                                            id="nim"
-                                            name="nim"
-                                            value={formData.nim}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <Input id="nim" name="nim" value={formData.nim} onChange={handleChange} required />
                                     </div>
 
                                     <div className="grid gap-2">
@@ -227,13 +206,7 @@ const EditUser = ({ user, roles }: Props) => {
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="angkatan">Angkatan</Label>
-                                        <Input
-                                            id="angkatan"
-                                            name="angkatan"
-                                            value={formData.angkatan}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <Input id="angkatan" name="angkatan" value={formData.angkatan} onChange={handleChange} required />
                                     </div>
                                 </CardContent>
                             </Card>

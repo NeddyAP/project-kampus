@@ -1,6 +1,6 @@
 import { Table } from '@tanstack/react-table';
-import { Button } from '../ui/button';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { Button } from '../ui/button';
 
 interface PaginationControlsProps<TData> {
     table: Table<TData>;
@@ -24,7 +24,7 @@ export function PaginationControls<TData>({ table }: PaginationControlsProps<TDa
 
         // Calculate start and end of visible pages
         let start = Math.max(currentPage - 1, 2);
-        let end = Math.min(start + maxVisiblePages - 3, totalPages - 1);
+        const end = Math.min(start + maxVisiblePages - 3, totalPages - 1);
 
         // Adjust start if we're near the end
         if (end === totalPages - 1) {
@@ -55,25 +55,15 @@ export function PaginationControls<TData>({ table }: PaginationControlsProps<TDa
     return (
         <div className="flex items-center justify-between space-x-2">
             <div className="flex items-center space-x-2">
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}
-                >
+                <Button variant="outline" size="icon" onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
                     <ChevronsLeft className="h-4 w-4" />
                 </Button>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
+                <Button variant="outline" size="icon" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
 
                 <div className="flex items-center space-x-1">
-                    {getPageNumbers().map((pageNum, idx) => (
+                    {getPageNumbers().map((pageNum, idx) =>
                         typeof pageNum === 'number' ? (
                             <Button
                                 key={idx}
@@ -88,24 +78,14 @@ export function PaginationControls<TData>({ table }: PaginationControlsProps<TDa
                             <span key={idx} className="px-2">
                                 {pageNum}
                             </span>
-                        )
-                    ))}
+                        ),
+                    )}
                 </div>
 
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
+                <Button variant="outline" size="icon" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
                     <ChevronRight className="h-4 w-4" />
                 </Button>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}
-                >
+                <Button variant="outline" size="icon" onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
                     <ChevronsRight className="h-4 w-4" />
                 </Button>
             </div>

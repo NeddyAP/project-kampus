@@ -1,4 +1,3 @@
-import { StatusBadge } from '@/components/internship/status-badge';
 import { Button } from '@/components/ui/button';
 import { Internship } from '@/types/internship';
 import { Link } from '@inertiajs/react';
@@ -6,6 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { Eye } from 'lucide-react';
+import { StatusBadge } from './components/status-badge';
 
 export const columns: ColumnDef<Internship>[] = [
     {

@@ -1,15 +1,15 @@
 import Heading from '@/components/heading-small';
-import { StatusBadge } from '@/components/internship/status-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
+import { BreadcrumbItem } from '@/types';
 import { Internship } from '@/types/internship';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { StatusBadge } from './components/status-badge';
 
 interface Props {
     internship: Internship;
@@ -145,10 +145,10 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                                 <div>
                                     {internship.start_date
                                         ? new Date(internship.start_date).toLocaleDateString('id-ID', {
-                                            day: 'numeric',
-                                            month: 'long',
-                                            year: 'numeric',
-                                        })
+                                              day: 'numeric',
+                                              month: 'long',
+                                              year: 'numeric',
+                                          })
                                         : '-'}
                                 </div>
                             </div>
@@ -158,10 +158,10 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                                 <div>
                                     {internship.end_date
                                         ? new Date(internship.end_date).toLocaleDateString('id-ID', {
-                                            day: 'numeric',
-                                            month: 'long',
-                                            year: 'numeric',
-                                        })
+                                              day: 'numeric',
+                                              month: 'long',
+                                              year: 'numeric',
+                                          })
                                         : '-'}
                                 </div>
                             </div>
@@ -271,4 +271,3 @@ const InternshipShow = ({ internship, dosen }: Props) => {
 };
 
 export default InternshipShow;
-

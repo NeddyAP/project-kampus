@@ -1,3 +1,4 @@
+import { Link, router } from '@inertiajs/react';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -10,21 +11,13 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '../ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { PaginationControls } from './pagination-controls';
-import { Link, router } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
 
 const PAGE_SIZES = [10, 25, 50, 100];
 
@@ -92,21 +85,24 @@ export function DataTable<TData, TValue>({
         state: {
             sorting,
             columnFilters,
-            pagination: isServerSide && pagination
-                ? { pageIndex: pagination.current_page - 1, pageSize: pagination.per_page }
-                : { pageIndex, pageSize },
+            pagination:
+                isServerSide && pagination ? { pageIndex: pagination.current_page - 1, pageSize: pagination.per_page } : { pageIndex, pageSize },
         },
     });
 
     const handleSearch = (value: string) => {
         if (isServerSide) {
-            router.get(window.location.pathname, {
-                ...filters,
-                [searchParam]: value,
-            }, {
-                preserveState: true,
-                preserveScroll: true,
-            });
+            router.get(
+                window.location.pathname,
+                {
+                    ...filters,
+                    [searchParam]: value,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                },
+            );
         } else {
             table.getColumn(searchColumn)?.setFilterValue(value);
         }
@@ -118,7 +114,7 @@ export function DataTable<TData, TValue>({
                 {searchable && (
                     <Input
                         placeholder={searchPlaceholder}
-                        value={isServerSide ? filters[searchParam] || '' : (table.getColumn(searchColumn)?.getFilterValue() as string) ?? ''}
+                        value={isServerSide ? filters[searchParam] || '' : ((table.getColumn(searchColumn)?.getFilterValue() as string) ?? '')}
                         onChange={(event) => handleSearch(event.target.value)}
                         className="max-w-sm"
                     />
@@ -126,13 +122,8 @@ export function DataTable<TData, TValue>({
 
                 {!isServerSide && (
                     <div className="flex items-center space-x-2">
-                        <p className="text-sm text-muted-foreground">
-                            Tampilkan
-                        </p>
-                        <Select
-                            value={table.getState().pagination.pageSize.toString()}
-                            onValueChange={(value) => table.setPageSize(Number(value))}
-                        >
+                        <p className="text-muted-foreground text-sm">Tampilkan</p>
+                        <Select value={table.getState().pagination.pageSize.toString()} onValueChange={(value) => table.setPageSize(Number(value))}>
                             <SelectTrigger className="h-8 w-[70px]">
                                 <SelectValue />
                             </SelectTrigger>
@@ -144,7 +135,7 @@ export function DataTable<TData, TValue>({
                                 ))}
                             </SelectContent>
                         </Select>
-                        <p className="text-sm text-muted-foreground">data</p>
+                        <p className="text-muted-foreground text-sm">data</p>
                     </div>
                 )}
 
@@ -165,12 +156,7 @@ export function DataTable<TData, TValue>({
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
                                     <TableHead key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext(),
-                                            )}
+                                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                     </TableHead>
                                 ))}
                             </TableRow>
@@ -179,26 +165,15 @@ export function DataTable<TData, TValue>({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && 'selected'}
-                                >
+                                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext(),
-                                            )}
-                                        </TableCell>
+                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                                     ))}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 text-center"
-                                >
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
                                     Tidak ada data
                                 </TableCell>
                             </TableRow>
@@ -208,7 +183,7 @@ export function DataTable<TData, TValue>({
             </div>
 
             <div className="flex items-center justify-between space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground">
+                <div className="text-muted-foreground flex-1 text-sm">
                     Total {isServerSide && pagination ? pagination.total : table.getFilteredRowModel().rows.length} data
                 </div>
                 {isServerSide && pagination ? (

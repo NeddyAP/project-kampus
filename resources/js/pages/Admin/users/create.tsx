@@ -87,37 +87,17 @@ const CreateUser = ({ roles }: Props) => {
                             <CardContent className="space-y-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Nama Lengkap</Label>
-                                    <Input
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                    <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
                                 </div>
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
                                 </div>
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="password">Password</Label>
-                                    <Input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        required
-                                    />
+                                    <Input id="password" name="password" type="password" value={formData.password} onChange={handleChange} required />
                                 </div>
 
                                 <div className="grid gap-2">
@@ -148,13 +128,7 @@ const CreateUser = ({ roles }: Props) => {
                                 <CardContent className="space-y-4">
                                     <div className="grid gap-2">
                                         <Label htmlFor="nip">NIP</Label>
-                                        <Input
-                                            id="nip"
-                                            name="nip"
-                                            value={formData.nip}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <Input id="nip" name="nip" value={formData.nip} onChange={handleChange} required />
                                     </div>
 
                                     <div className="grid gap-2">
@@ -181,13 +155,7 @@ const CreateUser = ({ roles }: Props) => {
                                 <CardContent className="space-y-4">
                                     <div className="grid gap-2">
                                         <Label htmlFor="nim">NIM</Label>
-                                        <Input
-                                            id="nim"
-                                            name="nim"
-                                            value={formData.nim}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <Input id="nim" name="nim" value={formData.nim} onChange={handleChange} required />
                                     </div>
 
                                     <div className="grid gap-2">
@@ -203,13 +171,7 @@ const CreateUser = ({ roles }: Props) => {
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="angkatan">Angkatan</Label>
-                                        <Input
-                                            id="angkatan"
-                                            name="angkatan"
-                                            value={formData.angkatan}
-                                            onChange={handleChange}
-                                            required
-                                        />
+                                        <Input id="angkatan" name="angkatan" value={formData.angkatan} onChange={handleChange} required />
                                     </div>
                                 </CardContent>
                             </Card>

@@ -1,9 +1,8 @@
-import Heading from '@/components/heading-small';
-import { MediaGrid } from '@/components/media/media-grid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
+import { MediaGrid } from '@/pages/Admin/media/components/media-grid';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { FileBox } from 'lucide-react';
@@ -47,10 +46,10 @@ const MediaIndex = ({ media: initialMedia }: Props) => {
             type === 'ALL'
                 ? true
                 : type === 'IMAGE'
-                ? item.mime_type.startsWith('image/')
-                : type === 'DOCUMENT'
-                ? item.mime_type.includes('pdf') || item.mime_type.includes('document')
-                : true;
+                  ? item.mime_type.startsWith('image/')
+                  : type === 'DOCUMENT'
+                    ? item.mime_type.includes('pdf') || item.mime_type.includes('document')
+                    : true;
 
         return matchSearch && matchType;
     });
@@ -108,11 +107,7 @@ const MediaIndex = ({ media: initialMedia }: Props) => {
                     <CardContent className="p-4">
                         <div className="flex flex-col gap-4 md:flex-row">
                             <div className="flex-1">
-                                <Input
-                                    placeholder="Cari berdasarkan nama file..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                />
+                                <Input placeholder="Cari berdasarkan nama file..." value={search} onChange={(e) => setSearch(e.target.value)} />
                             </div>
 
                             <div className="w-full md:w-48">

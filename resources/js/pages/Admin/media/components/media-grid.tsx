@@ -39,17 +39,13 @@ export const MediaGrid = ({ media, onDownload, onPreview }: Props) => {
                         </div>
 
                         <div className="space-y-2">
-                            <div className="font-medium line-clamp-1" title={item.filename}>
+                            <div className="line-clamp-1 font-medium" title={item.filename}>
                                 {item.filename}
                             </div>
 
-                            <div className="text-muted-foreground text-sm">
-                                Diunggah oleh: {item.internship.mahasiswa.name}
-                            </div>
+                            <div className="text-muted-foreground text-sm">Diunggah oleh: {item.internship.mahasiswa.name}</div>
 
-                            <div className="text-muted-foreground text-sm">
-                                Ukuran: {formatBytes(item.size)}
-                            </div>
+                            <div className="text-muted-foreground text-sm">Ukuran: {formatBytes(item.size)}</div>
 
                             <div className="text-muted-foreground text-sm">
                                 Tanggal:{' '}
@@ -61,22 +57,12 @@ export const MediaGrid = ({ media, onDownload, onPreview }: Props) => {
                             </div>
 
                             <div className="flex gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="w-full"
-                                    onClick={() => onDownload(item)}
-                                >
+                                <Button variant="outline" size="sm" className="w-full" onClick={() => onDownload(item)}>
                                     Unduh
                                 </Button>
 
                                 {isPreviewable(item.mime_type) && (
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="w-full"
-                                        onClick={() => onPreview(item)}
-                                    >
+                                    <Button variant="outline" size="sm" className="w-full" onClick={() => onPreview(item)}>
                                         Pratinjau
                                     </Button>
                                 )}
