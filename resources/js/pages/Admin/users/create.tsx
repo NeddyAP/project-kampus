@@ -9,8 +9,8 @@ interface Props {
 }
 
 const breadcrumbs = [
-    { title: 'User Management', href: '/users' },
-    { title: 'Tambah Pengguna', href: '/users/create' },
+    { title: 'User Management', href: '/admin/users' },
+    { title: 'Tambah Pengguna', href: '/admin/users/create' },
 ];
 
 export default function UserCreate({ roles, dosen_users }: Props) {

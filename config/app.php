@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'upload_max_filesize' => env('UPLOAD_MAX_FILESIZE', '2M'),
+    'post_max_size' => env('POST_MAX_SIZE', '8M'),
+
 ];

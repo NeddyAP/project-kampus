@@ -19,8 +19,7 @@ class UserController extends Controller
 {
     public function __construct(
         protected UserService $userService
-    ) {
-    }
+    ) {}
 
     public function index(Request $request)
     {
@@ -74,7 +73,7 @@ class UserController extends Controller
 
         // Get recent activities
         $recentActivities = $this->userService->getRecentActivities();
-        
+
         // Get stats
         $stats = [
             'total' => User::count(),

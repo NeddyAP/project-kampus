@@ -2,14 +2,28 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\MahasiswaInternshipController;
+use App\Http\Controllers\DosenInternshipController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Mahasiswa Internship Routes
+Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->group(function () {
+    Route::get('/magang', [MahasiswaInternshipController::class, 'index'])->name('mahasiswa.magang.index');
+    Route::get('/magang/create', [MahasiswaInternshipController::class, 'create'])->name('mahasiswa.magang.create');
+    Route::post('/magang', [MahasiswaInternshipController::class, 'store'])->name('mahasiswa.magang.store');
+    Route::get('/magang/{internship}', [MahasiswaInternshipController::class, 'show'])->name('mahasiswa.magang.show');
+    Route::post('/magang/{internship}/log', [MahasiswaInternshipController::class, 'storeLog'])->name('mahasiswa.magang.log.store');
+});
+
+// Dosen Internship Routes
+Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->group(function () {
+    Route::get('/bimbingan', [DosenInternshipController::class, 'index'])->name('dosen.bimbingan.index');
+    Route::get('/bimbingan/{internship}', [DosenInternshipController::class, 'show'])->name('dosen.bimbingan.show');
+    Route::post('/bimbingan/{internship}/supervision', [DosenInternshipController::class, 'storeSupervision'])->name('dosen.bimbingan.supervision.store');
+});
 
 require __DIR__ . '/admin.php';
 require __DIR__ . '/settings.php';

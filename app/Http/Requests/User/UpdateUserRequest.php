@@ -68,7 +68,21 @@ class UpdateUserRequest extends FormRequest
             'angkatan' => ['required_if:role,mahasiswa', 'nullable', 'integer', 'min:2000', 'max:' . (date('Y') + 1)],
             'status_akademik' => ['required_if:role,mahasiswa', 'nullable', Rule::in(['Aktif', 'Cuti', 'Lulus'])],
             'semester' => ['required_if:role,mahasiswa', 'nullable', 'integer', 'min:1', 'max:14'],
-            'dosen_pembimbing_id' => ['nullable', 'exists:users,id'],
+            'dosen_pembimbing_id' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    // Only validate if role is mahasiswa and a value is provided
+                    if ($this->role === 'mahasiswa' && $value !== null) {
+                        $dosenExists = User::whereHas('roles', function ($query) {
+                            $query->where('name', 'dosen');
+                        })->where('id', $value)->exists();
+
+                        if (!$dosenExists) {
+                            $fail('Dosen pembimbing tidak valid.');
+                        }
+                    }
+                }
+            ],
             'ipk' => ['nullable', 'numeric', 'min:0', 'max:4.00'],
         ];
     }

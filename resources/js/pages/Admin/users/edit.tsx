@@ -10,8 +10,8 @@ interface Props {
 }
 
 const breadcrumbs = [
-    { title: 'User Management', href: '/users' },
-    { title: 'Edit Pengguna', href: '/users/edit' },
+    { title: 'User Management', href: '/admin/users' },
+    { title: 'Edit Pengguna', href: '/admin/users/edit' },
 ];
 
 export default function UserEdit({ user, roles, dosen_users }: Props) {

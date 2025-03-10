@@ -1,5 +1,30 @@
 # Changelog
 
+## [2025-03-23] - Implementasi Sistem Magang untuk Mahasiswa dan Dosen
+
+### Added
+- Implementasi sistem magang untuk mahasiswa:
+  - Halaman daftar magang dengan tampilan card dan indikator progres
+  - Halaman detail magang dengan informasi lengkap dan status
+  - Fitur pengajuan magang baru dengan form lengkap
+  - Fitur pencatatan log aktivitas magang
+  - Visualisasi progres magang dengan progress bar
+  - Tampilan status magang dengan badge berwarna
+  - Integrasi dengan sistem file untuk upload dokumen
+
+- Implementasi sistem magang untuk dosen:
+  - Halaman daftar bimbingan magang dengan tampilan card
+  - Halaman detail bimbingan dengan informasi lengkap
+  - Fitur pemberian catatan bimbingan kepada mahasiswa
+  - Fitur melihat log aktivitas mahasiswa
+  - Visualisasi progres bimbingan dengan progress bar
+
+- Implementasi backend:
+  - Controller untuk manajemen magang mahasiswa (MahasiswaInternshipController)
+  - Controller untuk manajemen bimbingan dosen (DosenInternshipController)
+  - Rute terpisah untuk mahasiswa dan dosen
+  - Validasi data dan keamanan akses
+
 ## [2025-03-22] - Perbaikan Error User::ROLES
 
 ### Fixed
@@ -173,18 +198,3 @@
   - User management table
   - Internships table
   - Media manager grid
-
-## [2025-03-11] - Implementasi Server-side Pagination untuk Magang & Update User Index Page
-
-### Updated
-- Implementasi server-side pagination pada halaman Manajemen Magang:
-  - Migrasi dari client-side filtering ke server-side filtering
-  - Optimalisasi performa dengan pagination dari database
-  - Penambahan filter pencarian berdasarkan nama mahasiswa
-  - Penyempurnaan filter berdasarkan status dan tipe magang
-  - Integrasi dengan DataTable component
-- Update halaman User Index:
-  - Implementasi server-side pagination
-  - Penambahan filter pencarian berdasarkan nama pengguna
-  - Penyempurnaan filter berdasarkan role
-  - Integrasi dengan DataTable component
