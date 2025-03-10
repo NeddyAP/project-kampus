@@ -13,38 +13,58 @@ export default function Welcome() {
                 <header className="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
                     <nav className="flex items-center justify-end gap-4">
                         {auth.user ? (
-                            <Link
-                                href={route('admin.dashboard')}
-                                className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                            >
-                                Dashboard
-                            </Link>
-                        ) : (
-                            <>
+                            auth.roles.isAdmin ? (
                                 <Link
-                                    href={route('login')}
-                                    className="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-                                >
-                                    Log in
-                                </Link>
-                                <Link
-                                    href={route('register')}
+                                    href={route('admin.dashboard')}
                                     className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                                 >
-                                    Register
+                                    Dashboard
                                 </Link>
-                            </>
+                            ) : auth.roles.isDosen ? (
+                                <Link
+                                    href={route('dosen.bimbingan.index')}
+                                    className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                                >
+                                    Bimbingan
+                                </Link>
+                            ) : auth.roles.isMahasiswa ? (
+                                <Link
+                                    href={route('mahasiswa.magang.index')}
+                                    className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                                >
+                                    Magang
+                                </Link>
+                            ) : null
+                        ) : (
+                            <Link
+                                href={route('login')}
+                                className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                            >
+                                Login
+                            </Link>
                         )}
                     </nav>
                 </header>
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <main className="flex w-full max-w-[335px] flex-col-reverse lg:max-w-4xl lg:flex-row">
                         <div className="flex-1 rounded-br-lg rounded-bl-lg bg-white p-6 pb-12 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-tl-lg lg:rounded-br-none lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
-                            <h1 className="mb-1 font-medium">Sistem Informasi Kampus</h1>
+                            <h1 className="mb-1 font-medium">
+                                <>Sistem Informasi Kampus</>
+                            </h1>
                             <p className="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
-                                Selamat datang di Sistem Informasi Kampus.
-                                <br />
-                                Silakan login untuk mengakses fitur-fitur berikut:
+                                {auth.user ? (
+                                    <>
+                                        Anda masuk sebagai {auth.roles.isAdmin ? 'Admin' : auth.roles.isDosen ? 'Dosen' : 'Mahasiswa'}.
+                                        <br />
+                                        Silakan akses fitur-fitur berikut:
+                                    </>
+                                ) : (
+                                    <>
+                                        Selamat datang di Sistem Informasi Kampus.
+                                        <br />
+                                        Silakan login untuk mengakses fitur-fitur berikut:
+                                    </>
+                                )}
                             </p>
                             <ul className="mb-4 flex flex-col lg:mb-6">
                                 <li className="relative flex items-center gap-4 py-2 before:absolute before:top-1/2 before:bottom-0 before:left-[0.4rem] before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A]">
@@ -119,7 +139,9 @@ export default function Welcome() {
                                 {auth.user ? (
                                     <li>
                                         <Link
-                                            href={route('admin.dashboard')}
+                                            href={auth.roles.isAdmin ? route('admin.dashboard') :
+                                                auth.roles.isDosen ? route('dosen.bimbingan.index') :
+                                                    route('mahasiswa.magang.index')}
                                             className="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white"
                                         >
                                             Akses Dashboard
@@ -140,43 +162,20 @@ export default function Welcome() {
                         <div className="relative -mb-px aspect-[335/376] w-full shrink-0 overflow-hidden rounded-t-lg bg-[#fff2f2] lg:mb-0 lg:-ml-px lg:aspect-auto lg:w-[438px] lg:rounded-t-none lg:rounded-r-lg dark:bg-[#1D0002]">
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <div className="p-8 text-center">
-                                    <h2 className="mb-4 text-2xl font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Sistem Magang Kampus</h2>
-                                    <p className="mb-6 text-[#706f6c] dark:text-[#A1A09A]">
-                                        Platform terintegrasi untuk pengelolaan magang mahasiswa dengan bimbingan dosen
-                                    </p>
-                                    <div className="flex justify-center space-x-4">
+                                    <h2 className="mb-4 text-2xl font-bold text-[#1b1b18] dark:text-[#EDEDEC]">
                                         {auth.user ? (
-                                            auth.user.role === 'mahasiswa' ? (
-                                                <Link
-                                                    href={route('mahasiswa.magang.index')}
-                                                    className="inline-block rounded-sm border border-[#f53003] bg-[#f53003] px-5 py-1.5 text-sm leading-normal text-white hover:bg-[#e52d02] dark:border-[#FF4433] dark:bg-[#FF4433] dark:hover:bg-[#e53e2e]"
-                                                >
-                                                    Akses Magang
-                                                </Link>
-                                            ) : auth.user.role === 'dosen' ? (
-                                                <Link
-                                                    href={route('dosen.bimbingan.index')}
-                                                    className="inline-block rounded-sm border border-[#f53003] bg-[#f53003] px-5 py-1.5 text-sm leading-normal text-white hover:bg-[#e52d02] dark:border-[#FF4433] dark:bg-[#FF4433] dark:hover:bg-[#e53e2e]"
-                                                >
-                                                    Akses Bimbingan
-                                                </Link>
-                                            ) : (
-                                                <Link
-                                                    href={route('admin.dashboard')}
-                                                    className="inline-block rounded-sm border border-[#f53003] bg-[#f53003] px-5 py-1.5 text-sm leading-normal text-white hover:bg-[#e52d02] dark:border-[#FF4433] dark:bg-[#FF4433] dark:hover:bg-[#e53e2e]"
-                                                >
-                                                    Dashboard
-                                                </Link>
-                                            )
+                                            <>Selamat Datang, {auth.user.name}</>
                                         ) : (
-                                            <Link
-                                                href={route('login')}
-                                                className="inline-block rounded-sm border border-[#f53003] bg-[#f53003] px-5 py-1.5 text-sm leading-normal text-white hover:bg-[#e52d02] dark:border-[#FF4433] dark:bg-[#FF4433] dark:hover:bg-[#e53e2e]"
-                                            >
-                                                Login
-                                            </Link>
+                                            <>Sistem Informasi Kampus</>
                                         )}
-                                    </div>
+                                    </h2>
+                                    <p className="mb-6 text-[#706f6c] dark:text-[#A1A09A]">
+                                        {auth.user ? (
+                                            'Akses cepat ke fitur-fitur utama sistem magang'
+                                        ) : (
+                                            'Platform terintegrasi untuk pengelolaan magang mahasiswa dengan bimbingan dosen'
+                                        )}
+                                    </p>
                                 </div>
                             </div>
                             <div className="absolute inset-0 rounded-t-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-t-none lg:rounded-r-lg dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]" />

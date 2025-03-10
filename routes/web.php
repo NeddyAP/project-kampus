@@ -4,10 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\MahasiswaInternshipController;
 use App\Http\Controllers\DosenInternshipController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Mahasiswa Internship Routes
 Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->group(function () {

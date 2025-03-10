@@ -40,7 +40,6 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    role?: string;
     admin_profile?: AdminProfile;
     dosen_profile?: DosenProfile;
     mahasiswa_profile?: MahasiswaProfile;

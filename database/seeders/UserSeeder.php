@@ -18,6 +18,20 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ])->assignRole('admin');
 
+        User::create([
+            'name' => 'Mahasiswa',
+            'email' => 'mahasiswa@gmail.com',
+            'password' => Hash::make('a'),
+            'email_verified_at' => now(),
+        ])->assignRole('mahasiswa');
+
+        User::create([
+            'name' => 'Dosen',
+            'email' => 'dosen@gmail.com',
+            'password' => Hash::make('a'),
+            'email_verified_at' => now(),
+        ])->assignRole('dosen');
+
         // Create 10 dosen
         User::factory()
             ->count(10)
