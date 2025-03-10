@@ -37,5 +37,6 @@ Rules:
 
 ### Always Run Debuging Command:
 
-1. npm run format
-2. npm run lint
+1. gunakan sentry mcp server untuk mendeteksi error dan perbaiki
+2. npm run format
+3. npm run lint
