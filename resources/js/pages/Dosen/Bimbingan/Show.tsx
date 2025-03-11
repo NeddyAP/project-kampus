@@ -8,8 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import { CalendarIcon } from 'lucide-react';
 
 interface InternshipLog {
     id: number;
@@ -17,6 +20,7 @@ interface InternshipLog {
     title: string;
     description: string;
     attachment_path: string | null;
+    metadata: any;
     created_at: string;
     user: {
         id: number;
@@ -71,6 +75,12 @@ export default function DosenBimbinganShow({ internship }: Props) {
         title: '',
         notes: '',
         attachment: null as File | null,
+    });
+
+    const { data: attendanceData, setData: setAttendanceData, post: postAttendance, processing: attendanceProcessing, errors: attendanceErrors, reset: resetAttendance } = useForm({
+        is_present: 'true',
+        notes: '',
+        date: new Date().toISOString().split('T')[0],
     });
 
     // Function to calculate progress percentage
@@ -159,6 +169,16 @@ export default function DosenBimbinganShow({ internship }: Props) {
         post(route('dosen.bimbingan.supervision.store', internship.id), {
             onSuccess: () => {
                 reset('title', 'notes', 'attachment');
+            },
+        });
+    };
+
+    // Function to handle attendance form submission
+    const handleAttendanceSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        postAttendance(route('dosen.bimbingan.attendance.store', internship.id), {
+            onSuccess: () => {
+                resetAttendance('notes');
             },
         });
     };
@@ -262,29 +282,32 @@ export default function DosenBimbinganShow({ internship }: Props) {
 
                     <div className="mb-4 flex space-x-4 border-b">
                         <button
-                            className={`border-b-2 px-4 py-2 ${
-                                activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                            }`}
+                            className={`border-b-2 px-4 py-2 ${activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+}`}
                             onClick={() => setActiveTab('detail')}
                         >
-                            Detail
-                        </button>
+Detail</button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${
-                                activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                            }`}
+                            className={`border-b-2 px-4 py-2 ${activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+}`}
                             onClick={() => setActiveTab('logs')}
                         >
-                            Log Aktivitas
-                        </button>
+Log Aktivitas</button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${
-                                activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                            }`}
+                            className={`border-b-2 px-4 py-2 ${activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+}`}
                             onClick={() => setActiveTab('supervisions')}
                         >
-                            Bimbingan
-                        </button>
+Bimbingan</button>
+                        <button
+                            className={`border-b-2 px-4 py-2 ${activeTab === 'attendance' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+}`}
+                            onClick={() => setActiveTab('attendance')}
+                        >
+Kehadiran
+ Bimbingan
+</button>
+
                     </div>
 
                     {activeTab === 'detail' && (
@@ -508,6 +531,105 @@ export default function DosenBimbinganShow({ internship }: Props) {
                                                                 Lihat Lampiran
                                                             </a>
                                                         )}
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </div>
+                    )}
+
+                    {activeTab === 'attendance' && (
+                        <div className="space-y-6">
+                            {internship.status === 'SEDANG_BERJALAN' && (
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Catat Kehadiran Bimbingan</CardTitle>
+                                        <CardDescription>Catat kehadiran mahasiswa dalam sesi bimbingan</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <form onSubmit={handleAttendanceSubmit}>
+                                            <div className="mb-4">
+                                                <label htmlFor="date" className="mb-2 block text-sm font-medium">
+                                                    Tanggal
+                                                </label>
+                                                <div className="relative">
+                                                    <Input
+                                                        id="date"
+                                                        type="date"
+                                                        value={attendanceData.date}
+                                                        onChange={(e) => setAttendanceData('date', e.target.value)}
+                                                        className="w-full"
+                                                        max={new Date().toISOString().split('T')[0]}
+                                                    />
+                                                    <CalendarIcon className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                </div>
+                                                {attendanceErrors.date && <p className="text-destructive mt-1 text-sm">{attendanceErrors.date}</p>}
+                                            </div>
+
+                                            <div className="mb-4">
+                                                <label className="mb-2 block text-sm font-medium">Status Kehadiran</label>
+                                                <RadioGroup
+                                                    value={attendanceData.is_present}
+                                                    onValueChange={(value) => setAttendanceData('is_present', value)}
+                                                    className="flex gap-4"
+                                                >
+                                                    <div className="flex items-center space-x-2">
+                                                        <RadioGroupItem value="true" id="present" />
+                                                        <Label htmlFor="present">Hadir</Label>
+                                                    </div>
+                                                    <div className="flex items-center space-x-2">
+                                                        <RadioGroupItem value="false" id="absent" />
+                                                        <Label htmlFor="absent">Tidak Hadir</Label>
+                                                    </div>
+                                                </RadioGroup>
+                                            </div>
+
+                                            <div className="mb-4">
+                                                <label htmlFor="attendance_notes" className="mb-2 block text-sm font-medium">
+                                                    Catatan
+                                                </label>
+                                                <Textarea
+                                                    id="attendance_notes"
+                                                    value={attendanceData.notes}
+                                                    onChange={(e) => setAttendanceData('notes', e.target.value)}
+                                                    placeholder="Tambahkan catatan terkait sesi bimbingan"
+                                                    rows={4}
+                                                    className="w-full"
+                                                />
+                                                {attendanceErrors.notes && <p className="text-destructive mt-1 text-sm">{attendanceErrors.notes}</p>}
+                                            </div>
+
+                                            <Button type="submit" disabled={attendanceProcessing}>
+                                                Simpan Kehadiran
+                                            </Button>
+                                        </form>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Riwayat Kehadiran Bimbingan</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {internship.logs.filter((log) => log.type === 'ATTENDANCE').length === 0 ? (
+                                        <p className="text-muted-foreground text-center">Belum ada catatan kehadiran bimbingan</p>
+                                    ) : (
+                                        <div className="space-y-6">
+                                            {internship.logs
+                                                .filter((log) => log.type === 'ATTENDANCE')
+                                                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                                .map((log) => (
+                                                    <div key={log.id} className="rounded-lg border p-4">
+                                                        <div className="mb-2 flex items-center justify-between">
+                                                            <h3 className="font-medium">{formatDate(log.metadata.date)}</h3>
+                                                            <Badge variant={log.metadata.is_present ? 'default' : 'destructive'}>
+                                                                {log.metadata.is_present ? 'Hadir' : 'Tidak Hadir'}
+                                                            </Badge>
+                                                        </div>
+                                                        <p className="text-sm whitespace-pre-wrap">{log.description}</p>
                                                     </div>
                                                 ))}
                                         </div>

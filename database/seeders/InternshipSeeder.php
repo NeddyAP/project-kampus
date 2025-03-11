@@ -34,27 +34,24 @@ class InternshipSeeder extends Seeder
                         ])
                 );
 
-                // Jika status ongoing atau completed, buat data bimbingan
+                // Jika status ongoing atau approved, buat data bimbingan
                 if (in_array($internship->status, [
                     Internship::STATUS_BERJALAN,
-                    Internship::STATUS_SELESAI
+                    Internship::STATUS_DISETUJUI
                 ])) {
-                    // Buat 2-5 data bimbingan
+                    // Buat 2-5 data bimbingan biasa
                     $supervisions = \App\Models\InternshipSupervision::factory()
                         ->count(random_int(2, 5))
                         ->make([
                             'dosen_id' => $internship->dosen_id
                         ]);
 
-                    // Jika completed, tambahkan evaluasi akhir
-                    if ($internship->status === Internship::STATUS_SELESAI) {
-                        $supervisions->push(
-                            \App\Models\InternshipSupervision::factory()
-                                ->finalEvaluation()
-                                ->make([
-                                    'dosen_id' => $internship->dosen_id,
-                                    'supervision_date' => now()
-                                ])
+                    // Jika sedang berjalan, tambahkan 1-3 jadwal bimbingan yang akan datang
+                    if ($internship->status === Internship::STATUS_BERJALAN) {
+                        $supervisions->push(...\App\Models\InternshipSupervision::factory()
+                            ->count(random_int(1, 3))
+                            ->scheduled()
+                            ->make(['dosen_id' => $internship->dosen_id])
                         );
                     }
 

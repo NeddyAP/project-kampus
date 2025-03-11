@@ -12,41 +12,23 @@ class InternshipSupervisionFactory extends Factory
     public function definition(): array
     {
         return [
-            'supervision_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'supervision_type' => $this->faker->randomElement(['ONLINE', 'OFFLINE', 'HYBRID']),
-            'supervision_location' => $this->faker->randomElement([
-                'Google Meet',
-                'Zoom Meeting',
-                'Ruang Dosen',
-                'Lab Komputer',
-                null
-            ]),
-            'progress_notes' => $this->faker->paragraph(),
-            'improvements_needed' => $this->faker->boolean(70) ? $this->faker->sentence() : null,
-            'progress_score' => $this->faker->numberBetween(60, 100),
-            'final_evaluation' => null,
-            'final_score' => null,
-            'supervisor_notes' => $this->faker->boolean(70) ? $this->faker->sentence() : null,
+            'title' => $this->faker->sentence(),
+            'notes' => $this->faker->paragraph(2),
             'attachment_path' => $this->faker->boolean(30) ? 'internships/dummy/supervision.pdf' : null,
+            'scheduled_at' => $this->faker->optional(0.7)->dateTimeBetween('now', '+1 month'),
         ];
     }
 
     /**
-     * Factory state untuk bimbingan akhir
+     * Factory state untuk bimbingan terjadwal
      */
-    public function finalEvaluation()
+    public function scheduled()
     {
         return $this->state(function (array $attributes) {
             return [
-                'final_evaluation' => [
-                    'attendance' => $this->faker->numberBetween(70, 100),
-                    'task_completion' => $this->faker->numberBetween(70, 100),
-                    'innovation' => $this->faker->numberBetween(70, 100),
-                    'teamwork' => $this->faker->numberBetween(70, 100),
-                    'communication' => $this->faker->numberBetween(70, 100),
-                ],
-                'final_score' => $this->faker->numberBetween(70, 100),
-                'supervisor_notes' => 'Evaluasi akhir magang: ' . $this->faker->sentence(),
+                'title' => 'Bimbingan: ' . $this->faker->sentence(),
+                'notes' => $this->faker->paragraph(),
+                'scheduled_at' => $this->faker->dateTimeBetween('now', '+2 weeks'),
             ];
         });
     }

@@ -31,6 +31,7 @@ class InternshipLog extends Model
     const TYPE_DOCUMENT_UPLOAD = 'DOCUMENT_UPLOAD';
     const TYPE_ACTIVITY_REPORT = 'ACTIVITY_REPORT';
     const TYPE_SUPERVISION = 'SUPERVISION';
+    const TYPE_ATTENDANCE = 'ATTENDANCE';
 
     // Relationships
     public function internship(): BelongsTo
