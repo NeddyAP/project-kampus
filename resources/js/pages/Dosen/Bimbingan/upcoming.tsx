@@ -1,17 +1,17 @@
 import { AppContent } from '@/components/app-content';
 import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
+import { UpcomingSupervision, upcomingColumns } from '@/components/data-table/columns';
+import { DataTable } from '@/components/data-table/data-table';
+import TextLink from '@/components/text-link';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { useState } from 'react';
-import TextLink from '@/components/text-link';
 import { ChevronLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/data-table/data-table';
-import { UpcomingSupervision, upcomingColumns } from '@/components/data-table/columns';
+import { useState } from 'react';
 
 interface Props {
     upcomingSupervisions: {
@@ -65,12 +65,12 @@ export default function JadwalBimbinganAkanDatang({ upcomingSupervisions, filter
             <AppContent>
                 <div className="container mx-auto py-10">
                     <Link href={route('dosen.bimbingan.index')} className="mb-4 flex items-center space-x-2 text-sm hover:underline">
-                        <ChevronLeft className="w-4 h-4 mr-1" />
+                        <ChevronLeft className="mr-1 h-4 w-4" />
                         Kembali ke Dashboard
                     </Link>
 
                     {/* Buat Jadwal Card */}
-                    <Card className='mb-6'>
+                    <Card className="mb-6">
                         <CardHeader>
                             <CardTitle>Buat Jadwal Bimbingan</CardTitle>
                             <CardDescription>Buat jadwal bimbingan untuk semua mahasiswa yang dibimbing</CardDescription>
@@ -101,7 +101,7 @@ export default function JadwalBimbinganAkanDatang({ upcomingSupervisions, filter
                     {/* Form Isi Kehadiran */}
                     {selectedSupervision && (
                         <div>
-                            <Card className="mb-6 mt-6">
+                            <Card className="mt-6 mb-6">
                                 <CardHeader>
                                     <CardTitle>Isi Kehadiran Mahasiswa</CardTitle>
                                     <CardDescription>Catat kehadiran mahasiswa dalam sesi bimbingan</CardDescription>

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Supervision\CreateGuidanceScheduleRequest;
 use App\Http\Requests\Supervision\RecordAttendanceRequest;
 use App\Models\Internship;
-use App\Models\InternshipLog;
 use App\Models\InternshipSupervision;
 use App\Services\InternshipSupervisionService;
 use Illuminate\Http\Request;
@@ -73,7 +72,7 @@ class DosenInternshipController extends Controller
 
         return Inertia::render('dosen/bimbingan/upcoming', [
             'upcomingSupervisions' => $upcomingSupervisions,
-            'filters' => $request->only(['search', 'date', 'sort_field', 'sort_order', 'per_page'])
+            'filters' => $request->only(['search', 'date', 'sort_field', 'sort_order', 'per_page']),
         ]);
     }
 
@@ -88,19 +87,19 @@ class DosenInternshipController extends Controller
             ->with('mahasiswa'); // Sesuaikan dengan relasi yang ada
 
         // Filter berdasarkan pencarian
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $query->whereHas('mahasiswa', function (Builder $query) use ($filters) {
-                $query->where('name', 'like', '%' . $filters['search'] . '%');
+                $query->where('name', 'like', '%'.$filters['search'].'%');
             });
         }
 
         // Filter berdasarkan status
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
         // Filter berdasarkan kategori (KKL/KKN)
-        if (!empty($filters['category'])) {
+        if (! empty($filters['category'])) {
             $query->where('category', $filters['category']);
         }
 

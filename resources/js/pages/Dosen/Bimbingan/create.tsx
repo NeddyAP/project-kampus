@@ -9,7 +9,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CalendarIcon, ChevronLeft, Clock } from 'lucide-react';
-import TextLink from '@/components/text-link';
 
 export default function BuatJadwalBimbingan() {
     // Form untuk membuat jadwal bimbingan
@@ -52,7 +51,7 @@ export default function BuatJadwalBimbingan() {
             <AppContent>
                 <div className="container mx-auto py-10">
                     <Link href={route('dosen.bimbingan.upcoming')} className="mb-4 flex items-center space-x-2 text-sm hover:underline">
-                        <ChevronLeft className="w-4 h-4 mr-1" />
+                        <ChevronLeft className="mr-1 h-4 w-4" />
                         Kembali ke Jadwal Bimbingan
                     </Link>
                     <Card className="mb-6">

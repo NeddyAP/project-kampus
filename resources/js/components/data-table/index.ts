@@ -1,3 +1,3 @@
+export { internshipColumns, upcomingColumns } from './columns';
+export type { InternshipData, UpcomingSupervision } from './columns';
 export { DataTable } from './data-table';
-export { upcomingColumns, internshipColumns } from './columns';
-export type { UpcomingSupervision, InternshipData } from './columns';

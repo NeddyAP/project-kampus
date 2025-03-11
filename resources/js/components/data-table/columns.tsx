@@ -1,9 +1,5 @@
-import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Link } from '@inertiajs/react';
-import { MoreHorizontal } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,6 +8,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Progress } from '@/components/ui/progress';
+import { Link } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { MoreHorizontal } from 'lucide-react';
+import { JSX } from 'react';
 
 // Interfaces untuk data tabel
 export interface UpcomingSupervision {
@@ -48,7 +49,6 @@ export const createActionColumn = <TData extends { id: number }>({
     remove = true,
     viewRoute = '',
     editRoute = '',
-    deleteRoute = '',
     onDelete,
 }: {
     view?: boolean;
@@ -56,9 +56,8 @@ export const createActionColumn = <TData extends { id: number }>({
     remove?: boolean;
     viewRoute?: string;
     editRoute?: string;
-    deleteRoute?: string;
     onDelete?: (id: number) => void;
-}): ColumnDef<TData, any> => ({
+}): ColumnDef<TData, JSX.Element> => ({
     id: 'actions',
     header: 'Aksi',
     cell: ({ row }) => {
@@ -87,10 +86,7 @@ export const createActionColumn = <TData extends { id: number }>({
                     {remove && (
                         <>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                className="text-destructive"
-                                onClick={() => onDelete && onDelete(id)}
-                            >
+                            <DropdownMenuItem className="text-destructive" onClick={() => onDelete && onDelete(id)}>
                                 Hapus
                             </DropdownMenuItem>
                         </>
@@ -188,12 +184,12 @@ export const upcomingColumns: ColumnDef<UpcomingSupervision>[] = [
         header: 'Tanggal & Waktu',
         cell: ({ row }) => formatDateTime(row.original.scheduled_at),
         enableSorting: true,
-        sortingFn: (rowA, rowB, columnId) => {
+        sortingFn: (rowA, rowB) => {
             // Ensure we sort by date in ISO format (year->month->date->time)
             const dateA = new Date(rowA.original.scheduled_at).getTime();
             const dateB = new Date(rowB.original.scheduled_at).getTime();
             return dateA - dateB;
-        }
+        },
     },
     {
         accessorKey: 'title',
@@ -204,9 +200,7 @@ export const upcomingColumns: ColumnDef<UpcomingSupervision>[] = [
     {
         accessorKey: 'notes',
         header: 'Catatan',
-        cell: ({ row }) => (
-            <div className="max-w-md truncate">{row.original.notes}</div>
-        ),
+        cell: ({ row }) => <div className="max-w-md truncate">{row.original.notes}</div>,
         enableSorting: false,
     },
     {
@@ -253,11 +247,7 @@ export const internshipColumns: ColumnDef<InternshipData>[] = [
     {
         accessorKey: 'status',
         header: 'Status',
-        cell: ({ row }) => (
-            <Badge variant={getStatusBadgeVariant(row.original.status)}>
-                {getStatusDisplay(row.original.status)}
-            </Badge>
-        ),
+        cell: ({ row }) => <Badge variant={getStatusBadgeVariant(row.original.status)}>{getStatusDisplay(row.original.status)}</Badge>,
         enableSorting: true,
         enableColumnFilter: true,
     },
@@ -283,9 +273,7 @@ export const internshipColumns: ColumnDef<InternshipData>[] = [
         header: 'Aksi',
         cell: ({ row }) => (
             <Button variant="outline" size="sm" asChild className="w-[100px]">
-                <Link href={route('dosen.bimbingan.show', row.original.id)}>
-                    Detail
-                </Link>
+                <Link href={route('dosen.bimbingan.show', row.original.id)}>Detail</Link>
             </Button>
         ),
         enableSorting: false,

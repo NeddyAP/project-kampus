@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -11,18 +10,14 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
+import * as React from 'react';
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { ChevronDown, ChevronsUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Link } from '@inertiajs/react';
+import { ArrowDown, ArrowUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -114,7 +109,7 @@ export function DataTable<TData, TValue>({
     // Helper to render sort indicator icon
     const getSortIcon = (column: any) => {
         if (!column.getCanSort()) return null;
-        
+
         if (column.getIsSorted() === 'asc') {
             return <ArrowUp className="ml-2 h-4 w-4" />;
         }
@@ -187,9 +182,7 @@ export function DataTable<TData, TValue>({
                                             {header.isPlaceholder ? null : (
                                                 <div
                                                     {...{
-                                                        className: canSort
-                                                            ? 'cursor-pointer select-none flex items-center gap-1'
-                                                            : '',
+                                                        className: canSort ? 'cursor-pointer select-none flex items-center gap-1' : '',
                                                         onClick: canSort ? header.column.getToggleSortingHandler() : undefined,
                                                     }}
                                                 >
@@ -208,9 +201,7 @@ export function DataTable<TData, TValue>({
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
+                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                                     ))}
                                 </TableRow>
                             ))
@@ -227,9 +218,8 @@ export function DataTable<TData, TValue>({
 
             {pagination && (
                 <div className="flex items-center justify-between space-x-2 py-4">
-                    <div className="flex-1 text-sm text-muted-foreground">
-                        Menampilkan {pagination.current_page} dari {pagination.last_page} halaman
-                        ({pagination.total} total data)
+                    <div className="text-muted-foreground flex-1 text-sm">
+                        Menampilkan {pagination.current_page} dari {pagination.last_page} halaman ({pagination.total} total data)
                     </div>
                     <div className="flex items-center space-x-2">
                         <Button

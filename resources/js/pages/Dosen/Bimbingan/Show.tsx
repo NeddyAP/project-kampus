@@ -290,29 +290,33 @@ export default function DosenBimbinganShow({ internship }: Props) {
 
                     <div className="mb-4 flex space-x-4 border-b">
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                                }`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('detail')}
                         >
                             Detail
                         </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                                }`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('logs')}
                         >
                             Log Aktivitas
                         </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                                }`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('supervisions')}
                         >
                             Bimbingan
                         </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'attendance' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                                }`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'attendance' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('attendance')}
                         >
                             Kehadiran Bimbingan
