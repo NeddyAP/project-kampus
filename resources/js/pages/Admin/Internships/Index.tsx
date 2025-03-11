@@ -6,7 +6,8 @@ import { BreadcrumbItem, PaginatedData } from '@/types';
 import { Internship, InternshipStatus, InternshipType } from '@/types/internship';
 import { Head, router } from '@inertiajs/react';
 import { Activity, Signal, Users } from 'lucide-react';
-import { InternshipsTable } from './components/internships-table';
+import { DataTable } from '@/components/data-table/data-table';
+import { columns } from './columns';
 
 interface Props {
     internships: PaginatedData<Internship>;
@@ -151,8 +152,9 @@ const InternshipsIndex = ({ internships, filters, stats, recentActivities }: Pro
                     </div>
                 </div>
 
-                <InternshipsTable
-                    internships={internships.data}
+                <DataTable
+                    columns={columns}
+                    data={internships.data}
                     pagination={{
                         current_page: internships.current_page,
                         last_page: internships.last_page,
@@ -160,6 +162,10 @@ const InternshipsIndex = ({ internships, filters, stats, recentActivities }: Pro
                         total: internships.total,
                         links: internships.links,
                     }}
+                    searchable={true}
+                    searchPlaceholder="Cari magang..."
+                    searchColumn="mahasiswa_name"
+                    searchParam="search"
                     filters={filters}
                 />
             </div>

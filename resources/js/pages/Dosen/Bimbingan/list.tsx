@@ -17,63 +17,49 @@ interface Props {
         last_page: number;
         per_page: number;
         total: number;
+        links: any[];
     };
-    filters?: {
-        search?: string;
-        status?: string;
-        category?: string;
-        sort_field?: string;
-        sort_order?: 'asc' | 'desc';
-        per_page?: number;
-    };
+    filters?: Record<string, string | number>;
 }
 
-export default function DaftarMahasiswaBimbingan({ internships, filters }: Props) {
-    const [category, setCategory] = useState<string>(filters?.category || '');
-    const [status, setStatus] = useState<string>(filters?.status || '');
+export default function DaftarMahasiswaBimbingan({ internships, filters = {} }: Props) {
+    const [category, setCategory] = useState<string>(filters?.category?.toString() || '');
+    const [status, setStatus] = useState<string>(filters?.status?.toString() || '');
 
     const handleCategoryChange = (value: string) => {
         setCategory(value);
-        router.get(
-            route('dosen.bimbingan.list'),
-            {
-                ...filters,
-                category: value,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-            },
-        );
+        updateFilters({ category: value });
     };
 
     const handleStatusChange = (value: string) => {
         setStatus(value);
-        router.get(
-            route('dosen.bimbingan.list'),
-            {
-                ...filters,
-                status: value,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-            },
-        );
+        updateFilters({ status: value });
     };
 
     const handleResetFilter = () => {
         setCategory('');
         setStatus('');
+        updateFilters({ category: '', status: '' });
+    };
+
+    const updateFilters = (newFilters: Record<string, string>) => {
+        const currentFilters = { ...filters };
+        
+        // Update filters dengan nilai baru
+        Object.entries(newFilters).forEach(([key, value]) => {
+            if (value) {
+                currentFilters[key] = value;
+            } else {
+                delete currentFilters[key];
+            }
+        });
+
+        // Reset ke halaman pertama saat filter berubah
+        delete currentFilters.page;
+
         router.get(
             route('dosen.bimbingan.list'),
-            {
-                ...filters,
-                category: '',
-                status: '',
-            },
+            currentFilters,
             {
                 preserveState: true,
                 preserveScroll: true,
@@ -160,18 +146,7 @@ export default function DaftarMahasiswaBimbingan({ internships, filters }: Props
                             {isFiltersActive && (
                                 <div className="mt-2 flex w-full flex-wrap gap-2">
                                     {category && <Badge variant="outline">Kategori: {category}</Badge>}
-                                    {status && (
-                                        <Badge variant="outline">
-                                            Status:{' '}
-                                            {status === 'pending'
-                                                ? 'Pending'
-                                                : status === 'active'
-                                                  ? 'Aktif'
-                                                  : status === 'completed'
-                                                    ? 'Selesai'
-                                                    : 'Ditolak'}
-                                        </Badge>
-                                    )}
+                                    {status && <Badge variant="outline">Status: {status.replace(/_/g, ' ')}</Badge>}
                                 </div>
                             )}
                         </div>
@@ -179,8 +154,18 @@ export default function DaftarMahasiswaBimbingan({ internships, filters }: Props
                         <DataTable
                             columns={internshipColumns}
                             data={internships.data}
+                            pagination={{
+                                current_page: internships.current_page,
+                                last_page: internships.last_page,
+                                per_page: internships.per_page,
+                                total: internships.total,
+                                links: internships.links,
+                            }}
+                            searchable={true}
                             searchPlaceholder="Cari berdasarkan nama mahasiswa..."
                             searchColumn="mahasiswa_name"
+                            searchParam="search"
+                            filters={filters}
                         />
                     </div>
                 </div>

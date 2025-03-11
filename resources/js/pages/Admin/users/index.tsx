@@ -8,7 +8,6 @@ import { Head, router } from '@inertiajs/react';
 import { Activity, Plus, Signal, Users } from 'lucide-react';
 import { columns } from './columns';
 
-// Define the User type with the required properties
 interface User {
     id: number;
     name: string;

@@ -20,17 +20,12 @@ interface Props {
         last_page: number;
         per_page: number;
         total: number;
+        links: any[];
     };
-    filters?: {
-        search?: string;
-        date?: string;
-        sort_field?: string;
-        sort_order?: 'asc' | 'desc';
-        per_page?: number;
-    };
+    filters?: Record<string, string | number>;
 }
 
-export default function JadwalBimbinganAkanDatang({ upcomingSupervisions, filters }: Props) {
+export default function JadwalBimbinganAkanDatang({ upcomingSupervisions, filters = {} }: Props) {
     const [selectedSupervision, setSelectedSupervision] = useState<number | null>(null);
 
     // Form untuk absensi
@@ -91,8 +86,18 @@ export default function JadwalBimbinganAkanDatang({ upcomingSupervisions, filter
                             <DataTable
                                 columns={upcomingColumns}
                                 data={upcomingSupervisions.data}
+                                pagination={{
+                                    current_page: upcomingSupervisions.current_page,
+                                    last_page: upcomingSupervisions.last_page,
+                                    per_page: upcomingSupervisions.per_page,
+                                    total: upcomingSupervisions.total,
+                                    links: upcomingSupervisions.links,
+                                }}
+                                searchable={true}
                                 searchPlaceholder="Cari berdasarkan judul bimbingan..."
                                 searchColumn="title"
+                                searchParam="search"
+                                filters={filters}
                                 defaultSort={{ id: 'scheduled_at', desc: false }}
                             />
                         </CardContent>

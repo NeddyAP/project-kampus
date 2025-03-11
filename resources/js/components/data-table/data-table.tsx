@@ -16,8 +16,8 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Link } from '@inertiajs/react';
-import { ArrowDown, ArrowUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
+import { Link, router } from '@inertiajs/react';
+import { ArrowDown, ArrowUp, ChevronDown, ChevronFirst, ChevronLast, ChevronsLeft, ChevronsRight, ChevronsUpDown } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -27,7 +27,7 @@ interface DataTableProps<TData, TValue> {
     searchColumn?: string;
     searchable?: boolean;
     searchParam?: string;
-    filters?: Record<string, string>;
+    filters?: Record<string, string | number>;
     pagination?: {
         current_page: number;
         last_page: number;
@@ -91,19 +91,42 @@ export function DataTable<TData, TValue>({
     const searchableColumn = searchColumn ? table.getColumn(searchColumn) : filterableColumns[0];
 
     const handleSearch = (value: string) => {
-        if (searchableColumn) {
-            searchableColumn.setFilterValue(value);
+        const url = new URL(window.location.href);
+        if (value) {
+            url.searchParams.set(searchParam, value);
+        } else {
+            url.searchParams.delete(searchParam);
         }
+        url.searchParams.delete('page'); // Reset halaman saat pencarian
+        
+        const currentFilters = { ...filters };
+        if (value) {
+            currentFilters[searchParam] = value;
+        } else {
+            delete currentFilters[searchParam];
+        }
+        delete currentFilters.page;
+
+        router.get(url.pathname, currentFilters, { 
+            preserveState: true,
+            preserveScroll: true
+        });
     };
 
     const updatePageUrl = (page: number) => {
-        const url = new URL(window.location.href);
+        const currentFilters = { ...filters };
+        
         if (page > 1) {
-            url.searchParams.set('page', page.toString());
+            currentFilters.page = page;
         } else {
-            url.searchParams.delete('page');
+            delete currentFilters.page;
         }
-        window.history.pushState({}, '', url.toString());
+
+        // Gunakan Inertia router untuk navigasi
+        router.get(window.location.pathname, currentFilters, {
+            preserveState: true,
+            preserveScroll: true
+        });
     };
 
     // Helper to render sort indicator icon
@@ -119,6 +142,34 @@ export function DataTable<TData, TValue>({
         return <ChevronsUpDown className="ml-2 h-4 w-4" />;
     };
 
+    // Generate array of page numbers to display
+    const getPageNumbers = () => {
+        if (!pagination) return [];
+
+        const { current_page, last_page } = pagination;
+        const delta = 2; // Number of pages to show before and after current page
+        const pages: (number | string)[] = [];
+
+        for (let i = 1; i <= last_page; i++) {
+            if (
+                i === 1 || // First page
+                i === last_page || // Last page
+                (i >= current_page - delta && i <= current_page + delta) // Pages around current
+            ) {
+                pages.push(i);
+            } else if (
+                i === current_page - delta - 1 ||
+                i === current_page + delta + 1
+            ) {
+                pages.push('...');
+            }
+        }
+
+        return pages;
+    };
+
+    const pageNumbers = pagination ? getPageNumbers() : [];
+
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -126,7 +177,7 @@ export function DataTable<TData, TValue>({
                     {searchable && (
                         <Input
                             placeholder={searchPlaceholder}
-                            value={(searchableColumn?.getFilterValue() as string) ?? ''}
+                            value={(filters[searchParam] || '').toString()}
                             onChange={(event) => handleSearch(event.target.value)}
                             className="max-w-sm"
                         />
@@ -222,29 +273,76 @@ export function DataTable<TData, TValue>({
                         Menampilkan {pagination.current_page} dari {pagination.last_page} halaman ({pagination.total} total data)
                     </div>
                     <div className="flex items-center space-x-2">
+                        {/* Skip to First */}
                         <Button
                             variant="outline"
-                            size="sm"
+                            size="icon"
+                            onClick={() => updatePageUrl(1)}
+                            disabled={pagination.current_page <= 1}
+                            title="Ke halaman pertama"
+                        >
+                            <ChevronFirst className="h-4 w-4" />
+                        </Button>
+
+                        {/* Previous */}
+                        <Button
+                            variant="outline"
+                            size="icon"
                             onClick={() => {
                                 if (pagination.current_page > 1) {
                                     updatePageUrl(pagination.current_page - 1);
                                 }
                             }}
                             disabled={pagination.current_page <= 1}
+                            title="Halaman sebelumnya"
                         >
-                            Sebelumnya
+                            <ChevronsLeft className="h-4 w-4" />
                         </Button>
+
+                        {/* Page Numbers */}
+                        {pageNumbers.map((pageNum, idx) => (
+                            <React.Fragment key={idx}>
+                                {typeof pageNum === 'number' ? (
+                                    <Button
+                                        variant={pageNum === pagination.current_page ? 'default' : 'outline'}
+                                        size="icon"
+                                        onClick={() => updatePageUrl(pageNum)}
+                                        className="w-8"
+                                    >
+                                        {pageNum}
+                                    </Button>
+                                ) : (
+                                    <Button variant="outline" size="icon" disabled className="w-8">
+                                        ...
+                                    </Button>
+                                )}
+                            </React.Fragment>
+                        ))}
+
+                        {/* Next */}
                         <Button
                             variant="outline"
-                            size="sm"
+                            size="icon"
                             onClick={() => {
                                 if (pagination.current_page < pagination.last_page) {
                                     updatePageUrl(pagination.current_page + 1);
                                 }
                             }}
                             disabled={pagination.current_page >= pagination.last_page}
+                            title="Halaman selanjutnya"
                         >
-                            Selanjutnya
+                            <ChevronsRight className="h-4 w-4" />
+                        </Button>
+
+                        {/* Skip to Last */}
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => updatePageUrl(pagination.last_page)}
+                            disabled={pagination.current_page >= pagination.last_page}
+                            title="Ke halaman terakhir"
+                        >
+                            <ChevronLast className="h-4 w-4" />
                         </Button>
                     </div>
                 </div>
