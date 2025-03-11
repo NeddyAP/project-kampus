@@ -79,7 +79,7 @@ class DosenInternshipController extends Controller
             ->latest()
             ->get();
 
-        return Inertia::render('Dosen/Bimbingan/Index', [
+        return Inertia::render('dosen/bimbingan/index', [
             'internships' => $internships,
             'upcomingSupervisions' => $upcomingSupervisions,
             'guidances' => $guidances,
@@ -100,7 +100,7 @@ class DosenInternshipController extends Controller
 
         $internship->load(['mahasiswa:id,name', 'logs.user:id,name', 'supervisions.dosen:id,name']);
 
-        return Inertia::render('Dosen/Bimbingan/Show', [
+        return Inertia::render('dosen/bimbingan/show', [
             'internship' => $internship,
         ]);
     }
@@ -130,7 +130,7 @@ class DosenInternshipController extends Controller
 
         $mahasiswa = $this->supervisionService->getActiveStudents(Auth::user());
 
-        return Inertia::render('Dosen/Bimbingan/Attendance', [
+        return Inertia::render('dosen/bimbingan/attendance', [
             'supervision' => $supervision,
             'mahasiswa' => $mahasiswa,
         ]);

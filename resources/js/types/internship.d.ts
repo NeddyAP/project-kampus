@@ -79,7 +79,7 @@ export interface InternshipSupervision {
     progress_notes?: string;
     improvements_needed?: string;
     progress_score?: number;
-    final_evaluation?: Record<string, any>;
+    final_evaluation?: Record<string, unknown>;
     final_score?: number;
     supervisor_notes?: string;
     attachment_path?: string;

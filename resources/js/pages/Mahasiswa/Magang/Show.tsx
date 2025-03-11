@@ -1,7 +1,7 @@
 import { AppContent } from '@/components/app-content';
 import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
-import { Badge } from '@/components/ui/badge';
+import { Badge, type VariantProps, badgeVariants } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -135,16 +135,16 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
     };
 
     // Function to get status badge color
-    const getStatusBadgeVariant = (status: string) => {
+    const getStatusBadgeVariant = (status: string): VariantProps<typeof badgeVariants>['variant'] => {
         switch (status) {
             case 'SELESAI':
-                return 'success';
+                return 'default';
             case 'SEDANG_BERJALAN':
-                return 'info';
+                return 'secondary';
             case 'DISETUJUI':
-                return 'success';
+                return 'default';
             case 'MENUNGGU_PERSETUJUAN':
-                return 'warning';
+                return 'outline';
             case 'DITOLAK':
                 return 'destructive';
             default:
@@ -230,7 +230,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                 <p className="text-muted-foreground">{getCategoryDisplay(internship.category)}</p>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Badge variant={getStatusBadgeVariant(internship.status) as any} className="text-base">
+                                <Badge variant={getStatusBadgeVariant(internship.status)} className="text-base">
                                     {getStatusDisplay(internship.status)}
                                 </Badge>
                                 {canEdit && (

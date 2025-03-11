@@ -1,7 +1,7 @@
 import { AppContent } from '@/components/app-content';
 import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
-import { Badge } from '@/components/ui/badge';
+import { Badge, type VariantProps } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -18,7 +18,7 @@ interface Internship {
         id: number;
         name: string;
     };
-    logs: any[];
+    logs: [];
 }
 
 interface Props {
@@ -52,16 +52,16 @@ export default function MahasiswaMagangIndex({ internships }: Props) {
     };
 
     // Function to get status badge color
-    const getStatusBadgeVariant = (status: string) => {
+    const getStatusBadgeVariant = (status: string): VariantProps<typeof Badge>['variant'] => {
         switch (status) {
             case 'SELESAI':
-                return 'success';
+                return 'default';
             case 'SEDANG_BERJALAN':
-                return 'info';
+                return 'secondary';
             case 'DISETUJUI':
-                return 'success';
+                return 'default';
             case 'MENUNGGU_PERSETUJUAN':
-                return 'warning';
+                return 'outline';
             case 'DITOLAK':
                 return 'destructive';
             default:
@@ -130,9 +130,7 @@ export default function MahasiswaMagangIndex({ internships }: Props) {
                                 <Card key={internship.id} className="overflow-hidden">
                                     <CardHeader className="pb-2">
                                         <div className="flex items-center justify-between">
-                                            <Badge variant={getStatusBadgeVariant(internship.status) as any}>
-                                                {getStatusDisplay(internship.status)}
-                                            </Badge>
+                                            <Badge variant={getStatusBadgeVariant(internship.status)}>{getStatusDisplay(internship.status)}</Badge>
                                             <Badge variant="outline">{getCategoryDisplay(internship.category)}</Badge>
                                         </div>
                                         <CardTitle className="mt-2">{internship.company_name}</CardTitle>

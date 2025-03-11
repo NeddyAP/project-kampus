@@ -1,7 +1,7 @@
 import { AppContent } from '@/components/app-content';
 import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
-import { Badge } from '@/components/ui/badge';
+import { Badge, type VariantProps, badgeVariants } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
+import type { LinkProps } from '@inertiajs/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { CalendarIcon, Clock } from 'lucide-react';
 import { useState } from 'react';
@@ -25,9 +26,8 @@ interface Internship {
         id: number;
         name: string;
     };
-    logs: any[];
+    logs: InternshipLog[];
 }
-
 interface Supervision {
     id: number;
     title: string;
@@ -50,7 +50,7 @@ interface Props {
         last_page: number;
         per_page: number;
         total: number;
-        links: any[];
+        links: LinkProps[];
     };
     upcomingSupervisions: {
         data: Supervision[];
@@ -58,14 +58,14 @@ interface Props {
         last_page: number;
         per_page: number;
         total: number;
-        links: any[];
+        links: LinkProps[];
     };
-    guidances: any[];
-    attendances: any[];
-    filters: Record<string, any>;
+    guidances: unknown[];
+    attendances: unknown[];
+    filters: Record<string, unknown>;
 }
 
-export default function DosenBimbinganIndex({ internships, upcomingSupervisions, filters }: Props) {
+export default function DosenBimbinganIndex({ internships, upcomingSupervisions }: Props) {
     const [selectedSupervision, setSelectedSupervision] = useState<number | null>(null);
 
     // Form untuk membuat jadwal bimbingan
@@ -122,16 +122,16 @@ export default function DosenBimbinganIndex({ internships, upcomingSupervisions,
     };
 
     // Function to get status badge color
-    const getStatusBadgeVariant = (status: string) => {
+    const getStatusBadgeVariant = (status: string): VariantProps<typeof badgeVariants>['variant'] => {
         switch (status) {
             case 'SELESAI':
-                return 'success';
+                return 'default';
             case 'SEDANG_BERJALAN':
-                return 'info';
+                return 'secondary';
             case 'DISETUJUI':
-                return 'success';
+                return 'default';
             case 'MENUNGGU_PERSETUJUAN':
-                return 'warning';
+                return 'outline';
             case 'DITOLAK':
                 return 'destructive';
             default:
@@ -170,13 +170,6 @@ export default function DosenBimbinganIndex({ internships, upcomingSupervisions,
     };
 
     // Format date
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
-    };
 
     // Format datetime
     const formatDateTime = (dateString: string) => {
@@ -472,7 +465,7 @@ export default function DosenBimbinganIndex({ internships, upcomingSupervisions,
                                                 <TableCell>{internship.company_name}</TableCell>
                                                 <TableCell>{getCategoryDisplay(internship.category)}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant={getStatusBadgeVariant(internship.status) as any}>
+                                                    <Badge variant={getStatusBadgeVariant(internship.status)}>
                                                         {getStatusDisplay(internship.status)}
                                                     </Badge>
                                                 </TableCell>

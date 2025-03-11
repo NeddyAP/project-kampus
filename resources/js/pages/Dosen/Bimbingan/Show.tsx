@@ -1,7 +1,7 @@
 import { AppContent } from '@/components/app-content';
 import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
-import { Badge } from '@/components/ui/badge';
+import { Badge, type VariantProps } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,7 +20,7 @@ interface InternshipLog {
     title: string;
     description: string;
     attachment_path: string | null;
-    metadata: any;
+    metadata: Record<string, unknown>;
     created_at: string;
     user: {
         id: number;
@@ -116,16 +116,16 @@ export default function DosenBimbinganShow({ internship }: Props) {
     };
 
     // Function to get status badge color
-    const getStatusBadgeVariant = (status: string) => {
+    const getStatusBadgeVariant = (status: string): VariantProps<typeof Badge>['variant'] => {
         switch (status) {
             case 'SELESAI':
-                return 'success';
+                return 'default';
             case 'SEDANG_BERJALAN':
-                return 'info';
+                return 'secondary';
             case 'DISETUJUI':
-                return 'success';
+                return 'default';
             case 'MENUNGGU_PERSETUJUAN':
-                return 'warning';
+                return 'outline';
             case 'DITOLAK':
                 return 'destructive';
             default:
@@ -230,7 +230,7 @@ export default function DosenBimbinganShow({ internship }: Props) {
                                     Mahasiswa: {internship.mahasiswa.name} - {getCategoryDisplay(internship.category)}
                                 </p>
                             </div>
-                            <Badge variant={getStatusBadgeVariant(internship.status) as any} className="text-base">
+                            <Badge variant={getStatusBadgeVariant(internship.status)} className="text-base">
                                 {getStatusDisplay(internship.status)}
                             </Badge>
                         </div>
@@ -636,7 +636,9 @@ export default function DosenBimbinganShow({ internship }: Props) {
                                                 .map((log) => (
                                                     <div key={log.id} className="rounded-lg border p-4">
                                                         <div className="mb-2 flex items-center justify-between">
-                                                            <h3 className="font-medium">{formatDate(log.metadata.date)}</h3>
+                                                            <h3 className="font-medium">
+                                                                {log.metadata.date ? formatDate(log.metadata.date as string) : ''}
+                                                            </h3>
                                                             <Badge variant={log.metadata.is_present ? 'default' : 'destructive'}>
                                                                 {log.metadata.is_present ? 'Hadir' : 'Tidak Hadir'}
                                                             </Badge>
