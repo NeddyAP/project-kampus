@@ -1,7 +1,7 @@
 import { AppContent } from '@/components/app-content';
 import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
-import { Badge, type VariantProps } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { VariantProps } from 'class-variance-authority';
 import { CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
 
@@ -289,33 +290,29 @@ export default function DosenBimbinganShow({ internship }: Props) {
 
                     <div className="mb-4 flex space-x-4 border-b">
                         <button
-                            className={`border-b-2 px-4 py-2 ${
-                                activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                            }`}
+                            className={`border-b-2 px-4 py-2 ${activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                                }`}
                             onClick={() => setActiveTab('detail')}
                         >
                             Detail
                         </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${
-                                activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                            }`}
+                            className={`border-b-2 px-4 py-2 ${activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                                }`}
                             onClick={() => setActiveTab('logs')}
                         >
                             Log Aktivitas
                         </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${
-                                activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                            }`}
+                            className={`border-b-2 px-4 py-2 ${activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                                }`}
                             onClick={() => setActiveTab('supervisions')}
                         >
                             Bimbingan
                         </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${
-                                activeTab === 'attendance' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                            }`}
+                            className={`border-b-2 px-4 py-2 ${activeTab === 'attendance' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                                }`}
                             onClick={() => setActiveTab('attendance')}
                         >
                             Kehadiran Bimbingan

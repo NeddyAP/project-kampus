@@ -26,6 +26,30 @@ class DosenInternshipController extends Controller
      */
     public function index(Request $request)
     {
+        return Inertia::render('dosen/bimbingan/index');
+    }
+
+    public function create()
+    {
+        return Inertia::render('dosen/bimbingan/create');
+    }
+
+    public function upcoming(Request $request)
+    {
+        $user = Auth::user();
+        $upcomingSupervisions = $this->supervisionService->getUpcomingSupervisions($user, [
+            'search' => $request->supervision_search,
+            'date' => $request->supervision_date,
+            'per_page' => $request->supervision_per_page ?? 10,
+        ]);
+
+        return Inertia::render('dosen/bimbingan/upcoming', [
+            'upcomingSupervisions' => $upcomingSupervisions,
+        ]);
+    }
+
+    public function list(Request $request)
+    {
         $user = Auth::user();
         $internships = $user->internshipBimbingan()
             ->with(['mahasiswa:id,name', 'logs'])
@@ -40,51 +64,9 @@ class DosenInternshipController extends Controller
             ->latest()
             ->paginate($request->per_page ?? 10);
 
-        $upcomingSupervisions = $this->supervisionService->getUpcomingSupervisions($user, [
-            'search' => $request->supervision_search,
-            'date' => $request->supervision_date,
-            'per_page' => $request->supervision_per_page ?? 10,
-        ]);
-
-        $guidances = InternshipSupervision::with(['internship.mahasiswa'])
-            ->whereHas('internship', function ($query) {
-                $query->where('dosen_id', auth()->id());
-            })
-            ->latest()
-            ->get()
-            ->map(function ($guidance) {
-                return [
-                    'id' => $guidance->id,
-                    'title' => $guidance->title,
-                    'notes' => $guidance->notes,
-                    'created_at' => $guidance->created_at,
-                    'internship' => [
-                        'id' => $guidance->internship->id,
-                        'category' => $guidance->internship->category,
-                        'company_name' => $guidance->internship->company_name,
-                        'status' => $guidance->internship->status,
-                        'mahasiswa' => [
-                            'id' => $guidance->internship->mahasiswa->id,
-                            'name' => $guidance->internship->mahasiswa->name,
-                        ],
-                    ],
-                ];
-            });
-
-        $attendances = InternshipLog::where('type', 'ATTENDANCE')
-            ->whereHas('internship', function ($query) {
-                $query->where('dosen_id', auth()->id());
-            })
-            ->with(['internship.mahasiswa'])
-            ->latest()
-            ->get();
-
-        return Inertia::render('dosen/bimbingan/index', [
+        return Inertia::render('dosen/bimbingan/list', [
             'internships' => $internships,
-            'upcomingSupervisions' => $upcomingSupervisions,
-            'guidances' => $guidances,
-            'attendances' => $attendances,
-            'filters' => $request->only(['search', 'status', 'supervision_search', 'supervision_date']),
+            'filters' => $request->only(['search', 'status']),
         ]);
     }
 

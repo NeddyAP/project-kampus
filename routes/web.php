@@ -19,6 +19,9 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->group(functi
 // Dosen Internship Routes
 Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->group(function () {
     Route::get('/bimbingan', [DosenInternshipController::class, 'index'])->name('dosen.bimbingan.index');
+    Route::get('/bimbingan/create', [DosenInternshipController::class, 'create'])->name('dosen.bimbingan.create');
+    Route::get('/bimbingan/upcoming', [DosenInternshipController::class, 'upcoming'])->name('dosen.bimbingan.upcoming');
+    Route::get('/bimbingan/list', [DosenInternshipController::class, 'list'])->name('dosen.bimbingan.list');
     Route::get('/bimbingan/{internship}', [DosenInternshipController::class, 'show'])->name('dosen.bimbingan.show');
     Route::post('/bimbingan/schedule', [DosenInternshipController::class, 'createGuidanceSchedule'])->name('dosen.bimbingan.schedule.create');
     Route::get('/bimbingan/supervision/{supervision}/attendance', [DosenInternshipController::class, 'showAttendanceForm'])->name('dosen.bimbingan.attendance.form');
