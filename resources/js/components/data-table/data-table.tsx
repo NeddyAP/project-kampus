@@ -21,7 +21,7 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, ChevronsUpDown } from 'lucide-react';
+import { ChevronDown, ChevronsUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 
 interface DataTableProps<TData, TValue> {
@@ -46,6 +46,7 @@ interface DataTableProps<TData, TValue> {
         icon?: React.ReactNode;
         show?: boolean;
     };
+    defaultSort?: { id: string; desc: boolean };
 }
 
 export function DataTable<TData, TValue>({
@@ -59,8 +60,11 @@ export function DataTable<TData, TValue>({
     filters = {},
     pagination,
     createButton,
+    defaultSort,
 }: DataTableProps<TData, TValue>) {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
+    // Initialize sorting with default value if provided
+    const initialSorting: SortingState = defaultSort ? [defaultSort] : [];
+    const [sorting, setSorting] = React.useState<SortingState>(initialSorting);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
@@ -105,6 +109,19 @@ export function DataTable<TData, TValue>({
             url.searchParams.delete('page');
         }
         window.history.pushState({}, '', url.toString());
+    };
+
+    // Helper to render sort indicator icon
+    const getSortIcon = (column: any) => {
+        if (!column.getCanSort()) return null;
+        
+        if (column.getIsSorted() === 'asc') {
+            return <ArrowUp className="ml-2 h-4 w-4" />;
+        }
+        if (column.getIsSorted() === 'desc') {
+            return <ArrowDown className="ml-2 h-4 w-4" />;
+        }
+        return <ChevronsUpDown className="ml-2 h-4 w-4" />;
     };
 
     return (
@@ -177,7 +194,7 @@ export function DataTable<TData, TValue>({
                                                     }}
                                                 >
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
-                                                    {canSort && <ChevronsUpDown className="h-4 w-4" />}
+                                                    {getSortIcon(header.column)}
                                                 </div>
                                             )}
                                         </TableHead>

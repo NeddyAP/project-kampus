@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Link } from '@inertiajs/react';
 import { MoreHorizontal } from 'lucide-react';
-import { 
+import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -42,7 +42,7 @@ export interface InternshipData {
 }
 
 // Helper function untuk membuat kolom aksi
-export const createActionColumn = <TData extends { id: number }>({ 
+export const createActionColumn = <TData extends { id: number }>({
     view = true,
     edit = true,
     remove = true,
@@ -188,6 +188,12 @@ export const upcomingColumns: ColumnDef<UpcomingSupervision>[] = [
         header: 'Tanggal & Waktu',
         cell: ({ row }) => formatDateTime(row.original.scheduled_at),
         enableSorting: true,
+        sortingFn: (rowA, rowB, columnId) => {
+            // Ensure we sort by date in ISO format (year->month->date->time)
+            const dateA = new Date(rowA.original.scheduled_at).getTime();
+            const dateB = new Date(rowB.original.scheduled_at).getTime();
+            return dateA - dateB;
+        }
     },
     {
         accessorKey: 'title',

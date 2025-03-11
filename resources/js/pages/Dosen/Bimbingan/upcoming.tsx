@@ -93,6 +93,7 @@ export default function JadwalBimbinganAkanDatang({ upcomingSupervisions, filter
                                 data={upcomingSupervisions.data}
                                 searchPlaceholder="Cari berdasarkan judul bimbingan..."
                                 searchColumn="title"
+                                defaultSort={{ id: 'scheduled_at', desc: false }}
                             />
                         </CardContent>
                     </Card>

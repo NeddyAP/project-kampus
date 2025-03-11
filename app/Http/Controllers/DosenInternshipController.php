@@ -44,12 +44,12 @@ class DosenInternshipController extends Controller
         // Search
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('notes', 'like', "%{$search}%")
-                  ->orWhereHas('internship.mahasiswa', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('notes', 'like', "%{$search}%")
+                    ->orWhereHas('internship.mahasiswa', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -62,7 +62,7 @@ class DosenInternshipController extends Controller
         $sortField = $request->input('sort_field', 'scheduled_at');
         $sortOrder = $request->input('sort_order', 'asc');
         $allowedSortFields = ['scheduled_at', 'title', 'notes'];
-        
+
         if (in_array($sortField, $allowedSortFields)) {
             $query->orderBy($sortField, $sortOrder);
         }
@@ -79,66 +79,42 @@ class DosenInternshipController extends Controller
 
     public function list(Request $request)
     {
-        $user = Auth::user();
-        $query = $user->internshipBimbingan()
-            ->with(['mahasiswa:id,name', 'logs']);
+        $dosenId = Auth::id(); // Mengambil ID dosen yang login
 
-        // Search
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('company_name', 'like', "%{$search}%")
-                  ->orWhereHas('mahasiswa', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+        $filters = $request->only(['search', 'status', 'category', 'sort_field', 'sort_order', 'per_page']);
+
+        $query = Internship::query()
+            ->where('dosen_id', $dosenId)
+            ->with('mahasiswa'); // Sesuaikan dengan relasi yang ada
+
+        // Filter berdasarkan pencarian
+        if (!empty($filters['search'])) {
+            $query->whereHas('mahasiswa', function (Builder $query) use ($filters) {
+                $query->where('name', 'like', '%' . $filters['search'] . '%');
             });
         }
 
-        // Status Filter
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
+        // Filter berdasarkan status
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
         }
 
-        // Category Filter
-        if ($request->has('category')) {
-            $query->where('category', $request->category);
+        // Filter berdasarkan kategori (KKL/KKN)
+        if (!empty($filters['category'])) {
+            $query->where('category', $filters['category']);
         }
 
-        // Sorting
-        $sortField = $request->input('sort_field', 'created_at');
-        $sortOrder = $request->input('sort_order', 'desc');
-        $allowedSortFields = [
-            'company_name',
-            'category',
-            'status',
-            'created_at'
-        ];
+        // Pengurutan
+        $sortField = $filters['sort_field'] ?? 'created_at';
+        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $query->orderBy($sortField, $sortOrder);
 
-        if (in_array($sortField, $allowedSortFields)) {
-            $query->orderBy($sortField, $sortOrder);
-        }
-
-        // Handle mahasiswa name sorting
-        if ($sortField === 'mahasiswa_name') {
-            $query->join('users as mahasiswa', 'internships.mahasiswa_id', '=', 'mahasiswa.id')
-                  ->orderBy('mahasiswa.name', $sortOrder)
-                  ->select('internships.*');
-        }
-
-        // Pagination
-        $perPage = $request->input('per_page', 10);
-        $internships = $query->paginate($perPage);
+        $perPage = $filters['per_page'] ?? 10;
+        $internships = $query->paginate($perPage)->withQueryString();
 
         return Inertia::render('dosen/bimbingan/list', [
             'internships' => $internships,
-            'filters' => $request->only([
-                'search',
-                'status',
-                'category',
-                'sort_field',
-                'sort_order',
-                'per_page'
-            ])
+            'filters' => $filters,
         ]);
     }
 
