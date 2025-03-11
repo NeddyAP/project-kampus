@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Internship, InternshipLog } from '@/types/internship';
+import { Internship } from '@/types/internship';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -56,8 +56,8 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                 metadata: {
                     old_status: internship.status,
                     new_status: status,
-                    notes: notes
-                }
+                    notes: notes,
+                },
             },
             {
                 onSuccess: () => {
@@ -90,8 +90,8 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                 metadata: {
                     old_status: internship.status,
                     new_status: 'SEDANG_BERJALAN',
-                    notes: notes
-                }
+                    notes: notes,
+                },
             },
             {
                 onSuccess: () => {
@@ -177,10 +177,10 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                                 <div>
                                     {internship.start_date
                                         ? new Date(internship.start_date).toLocaleDateString('id-ID', {
-                                            day: 'numeric',
-                                            month: 'long',
-                                            year: 'numeric',
-                                        })
+                                              day: 'numeric',
+                                              month: 'long',
+                                              year: 'numeric',
+                                          })
                                         : '-'}
                                 </div>
                             </div>
@@ -190,10 +190,10 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                                 <div>
                                     {internship.end_date
                                         ? new Date(internship.end_date).toLocaleDateString('id-ID', {
-                                            day: 'numeric',
-                                            month: 'long',
-                                            year: 'numeric',
-                                        })
+                                              day: 'numeric',
+                                              month: 'long',
+                                              year: 'numeric',
+                                          })
                                         : '-'}
                                 </div>
                             </div>
@@ -288,17 +288,11 @@ const InternshipShow = ({ internship, dosen }: Props) => {
                                             </div>
                                             <div>
                                                 <div className="font-medium">{log.title}</div>
-                                                {log.description && (
-                                                    <div className="text-muted-foreground mt-1 text-sm">{log.description}</div>
-                                                )}
+                                                {log.description && <div className="text-muted-foreground mt-1 text-sm">{log.description}</div>}
                                                 {log.metadata && log.metadata.notes && (
                                                     <div className="text-muted-foreground mt-1 text-sm">{log.metadata.notes}</div>
                                                 )}
-                                                {log.user && (
-                                                    <div className="text-muted-foreground mt-1 text-xs">
-                                                        Oleh: {log.user.name}
-                                                    </div>
-                                                )}
+                                                {log.user && <div className="text-muted-foreground mt-1 text-xs">Oleh: {log.user.name}</div>}
                                             </div>
                                         </div>
                                     ))}

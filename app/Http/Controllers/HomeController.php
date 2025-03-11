@@ -22,7 +22,7 @@ class HomeController extends Controller
         return Inertia::render('welcome', [
             'auth' => [
                 'user' => $user,
-                'roles' => $roles
+                'roles' => $roles,
             ],
         ]);
     }

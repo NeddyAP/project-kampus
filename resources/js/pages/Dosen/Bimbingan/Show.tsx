@@ -5,14 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { useState } from 'react';
 import { CalendarIcon } from 'lucide-react';
+import { useState } from 'react';
 
 interface InternshipLog {
     id: number;
@@ -77,7 +77,14 @@ export default function DosenBimbinganShow({ internship }: Props) {
         attachment: null as File | null,
     });
 
-    const { data: attendanceData, setData: setAttendanceData, post: postAttendance, processing: attendanceProcessing, errors: attendanceErrors, reset: resetAttendance } = useForm({
+    const {
+        data: attendanceData,
+        setData: setAttendanceData,
+        post: postAttendance,
+        processing: attendanceProcessing,
+        errors: attendanceErrors,
+        reset: resetAttendance,
+    } = useForm({
         is_present: 'true',
         notes: '',
         date: new Date().toISOString().split('T')[0],
@@ -282,32 +289,37 @@ export default function DosenBimbinganShow({ internship }: Props) {
 
                     <div className="mb-4 flex space-x-4 border-b">
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-}`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('detail')}
                         >
-Detail</button>
+                            Detail
+                        </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-}`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('logs')}
                         >
-Log Aktivitas</button>
+                            Log Aktivitas
+                        </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-}`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('supervisions')}
                         >
-Bimbingan</button>
+                            Bimbingan
+                        </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'attendance' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-}`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'attendance' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('attendance')}
                         >
-Kehadiran
- Bimbingan
-</button>
-
+                            Kehadiran Bimbingan
+                        </button>
                     </div>
 
                     {activeTab === 'detail' && (
@@ -563,7 +575,7 @@ Kehadiran
                                                         className="w-full"
                                                         max={new Date().toISOString().split('T')[0]}
                                                     />
-                                                    <CalendarIcon className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                    <CalendarIcon className="text-muted-foreground absolute top-2.5 right-3 h-4 w-4" />
                                                 </div>
                                                 {attendanceErrors.date && <p className="text-destructive mt-1 text-sm">{attendanceErrors.date}</p>}
                                             </div>

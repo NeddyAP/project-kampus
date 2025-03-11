@@ -16,7 +16,7 @@ class InternshipLogFactory extends Factory
             InternshipLog::TYPE_COMMENT,
             InternshipLog::TYPE_DOCUMENT_UPLOAD,
             InternshipLog::TYPE_ACTIVITY_REPORT,
-            InternshipLog::TYPE_SUPERVISION
+            InternshipLog::TYPE_SUPERVISION,
         ]);
 
         $metadata = match ($type) {

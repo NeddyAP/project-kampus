@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         if (app()->environment('production')) {
             Integration::boot();
-            
+
             $this->app->singleton('Sentry\ClientBuilder', function () {
                 return \Sentry\ClientBuilder::create([
                     'dsn' => config('sentry.dsn'),

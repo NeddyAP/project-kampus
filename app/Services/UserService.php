@@ -22,13 +22,13 @@ class UserService
             })
             ->when(
                 $request->sort,
-                fn($query, $sort) => $query->orderBy($sort, $request->order ?? 'asc'),
-                fn($query) => $query->orderBy('created_at', 'desc')
+                fn ($query, $sort) => $query->orderBy($sort, $request->order ?? 'asc'),
+                fn ($query) => $query->orderBy('created_at', 'desc')
             )
             ->when(
                 $request->trashed,
-                fn($query) => $query->onlyTrashed(),
-                fn($query) => $query->withoutTrashed()
+                fn ($query) => $query->onlyTrashed(),
+                fn ($query) => $query->withoutTrashed()
             )
             ->paginate($request->per_page ?? 10)
             ->withQueryString()
@@ -89,7 +89,7 @@ class UserService
                         'work_location' => $data['work_location'] ?? null,
                     ]);
                     break;
-                    
+
                 case 'dosen':
                     $user->dosenProfile()->create([
                         'nip' => $data['nip'],
@@ -100,7 +100,7 @@ class UserService
                         'tahun_mulai_mengajar' => $data['tahun_mulai_mengajar'],
                     ]);
                     break;
-                    
+
                 case 'mahasiswa':
                     $user->mahasiswaProfile()->create([
                         'nim' => $data['nim'],
@@ -143,7 +143,7 @@ class UserService
                         'work_location' => $data['work_location'] ?? null,
                     ]);
                     break;
-                    
+
                 case 'dosen':
                     $user->dosenProfile()->update([
                         'nip' => $data['nip'],
@@ -154,7 +154,7 @@ class UserService
                         'tahun_mulai_mengajar' => $data['tahun_mulai_mengajar'],
                     ]);
                     break;
-                    
+
                 case 'mahasiswa':
                     $user->mahasiswaProfile()->update([
                         'nim' => $data['nim'],
@@ -199,7 +199,7 @@ class UserService
         return DB::transaction(function () use ($id) {
             $user = User::onlyTrashed()->findOrFail($id);
             $role = $user->roles->first()?->name;
-            
+
             // Restore specific profile first
             switch ($role) {
                 case 'admin':

@@ -98,10 +98,10 @@ export function InternshipsTable({ internships, pagination, filters }: Internshi
             additionalMenuItems: (internship) =>
                 [
                     internship.status === 'DISETUJUI' &&
-                    !internship.dosen_id && {
-                        label: 'Assignment Dosen',
-                        href: route('admin.internships.assign', { internship: internship.id }),
-                    },
+                        !internship.dosen_id && {
+                            label: 'Assignment Dosen',
+                            href: route('admin.internships.assign', { internship: internship.id }),
+                        },
                 ].filter(Boolean),
         }),
     ];

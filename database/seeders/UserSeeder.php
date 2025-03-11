@@ -45,20 +45,20 @@ class UserSeeder extends Seeder
                         'Basis Data',
                         'Jaringan Komputer',
                         'Kecerdasan Buatan',
-                        'Keamanan Sistem'
+                        'Keamanan Sistem',
                     ]),
                     'pendidikan_terakhir' => fake()->randomElement([
                         'S2',
-                        'S3'
+                        'S3',
                     ]),
                     'jabatan_akademik' => fake()->randomElement([
                         'Asisten Ahli',
                         'Lektor',
                         'Lektor Kepala',
-                        'Profesor'
+                        'Profesor',
                     ]),
                     'status_kepegawaian' => fake()->randomElement(['PNS', 'Non-PNS']),
-                    'tahun_mulai_mengajar' => fake()->numberBetween(2010, 2020)
+                    'tahun_mulai_mengajar' => fake()->numberBetween(2010, 2020),
                 ]);
             });
 
@@ -73,12 +73,12 @@ class UserSeeder extends Seeder
                     'program_studi' => fake()->randomElement([
                         'Teknik Informatika',
                         'Sistem Informasi',
-                        'Ilmu Komputer'
+                        'Ilmu Komputer',
                     ]),
                     'angkatan' => fake()->numberBetween(2020, 2023),
                     'status_akademik' => 'Aktif',
                     'semester' => fake()->numberBetween(1, 8),
-                    'ipk' => fake()->randomFloat(2, 2.5, 4.0)
+                    'ipk' => fake()->randomFloat(2, 2.5, 4.0),
                 ]);
             });
     }

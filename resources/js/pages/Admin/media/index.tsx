@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { MediaGrid } from '@/pages/Admin/media/components/media-grid';
+import { MediaGrid } from '@/pages/admin/media/components/media-grid';
 import { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { FileBox } from 'lucide-react';

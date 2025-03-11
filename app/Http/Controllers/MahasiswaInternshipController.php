@@ -33,7 +33,7 @@ class MahasiswaInternshipController extends Controller
     {
         $dosen = User::role('dosen')->get(['id', 'name']);
 
-        return Inertia::render('Mahasiswa/Magang/Create', [
+        return Inertia::render('mahasiswa/magang/create', [
             'dosen' => $dosen,
             'categories' => [
                 Internship::CATEGORY_KKL => 'Kuliah Kerja Lapangan (KKL)',
@@ -54,7 +54,7 @@ class MahasiswaInternshipController extends Controller
                 ->with('message', 'Pengajuan magang berhasil dibuat dan sedang menunggu persetujuan.');
         } catch (\Exception $e) {
             return back()->withErrors([
-                'cover_letter' => 'Gagal mengunggah file. Pastikan ukuran file tidak melebihi 2MB.'
+                'cover_letter' => 'Gagal mengunggah file. Pastikan ukuran file tidak melebihi 2MB.',
             ])->withInput();
         }
     }
@@ -125,7 +125,7 @@ class MahasiswaInternshipController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        if (!$internship->isActive()) {
+        if (! $internship->isActive()) {
             return back()->with('error', 'Hanya magang yang aktif yang dapat menambahkan log aktivitas.');
         }
 

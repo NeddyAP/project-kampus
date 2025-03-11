@@ -34,4 +34,4 @@ class CreateGuidanceScheduleRequest extends FormRequest
             'attachment.max' => 'Ukuran file lampiran maksimal 5MB',
         ];
     }
-} 
+}

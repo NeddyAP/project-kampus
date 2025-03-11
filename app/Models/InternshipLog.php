@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class InternshipLog extends Model
 {
@@ -27,10 +27,15 @@ class InternshipLog extends Model
 
     // Log types
     const TYPE_STATUS_CHANGE = 'STATUS_CHANGE';
+
     const TYPE_COMMENT = 'COMMENT';
+
     const TYPE_DOCUMENT_UPLOAD = 'DOCUMENT_UPLOAD';
+
     const TYPE_ACTIVITY_REPORT = 'ACTIVITY_REPORT';
+
     const TYPE_SUPERVISION = 'SUPERVISION';
+
     const TYPE_ATTENDANCE = 'ATTENDANCE';
 
     // Relationships
@@ -63,6 +68,6 @@ class InternshipLog extends Model
 
     public function hasAttachment(): bool
     {
-        return !is_null($this->attachment_path);
+        return ! is_null($this->attachment_path);
     }
 }

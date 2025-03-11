@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Activity;
-use App\Models\User;
 use App\Models\Internship;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ActivityFactory extends Factory
@@ -16,7 +16,7 @@ class ActivityFactory extends Factory
         // Randomly select subject type
         $subjectTypes = [
             Internship::class,
-            User::class
+            User::class,
         ];
         $subjectClass = $this->faker->randomElement($subjectTypes);
 
@@ -48,6 +48,7 @@ class ActivityFactory extends Factory
             'description' => function (array $attrs) use ($actionText) {
                 $causer = User::find($attrs['causer_id']);
                 $subjectType = class_basename($attrs['subject_type']);
+
                 return "{$causer->name} {$actionText} {$subjectType}";
             },
         ];

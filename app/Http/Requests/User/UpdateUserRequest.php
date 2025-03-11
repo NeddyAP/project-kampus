@@ -35,7 +35,7 @@ class UpdateUserRequest extends FormRequest
                 'required_if:role,admin',
                 'nullable',
                 'string',
-                Rule::unique('admin_profiles', 'employee_id')->ignore($user->adminProfile->id ?? null)
+                Rule::unique('admin_profiles', 'employee_id')->ignore($user->adminProfile->id ?? null),
             ],
             'department' => ['required_if:role,admin', 'nullable', 'string'],
             'position' => ['required_if:role,admin', 'nullable', 'string'],
@@ -50,22 +50,22 @@ class UpdateUserRequest extends FormRequest
                 'required_if:role,dosen',
                 'nullable',
                 'string',
-                Rule::unique('dosen_profiles', 'nip')->ignore($user->dosenProfile->id ?? null)
+                Rule::unique('dosen_profiles', 'nip')->ignore($user->dosenProfile->id ?? null),
             ],
             'bidang_keahlian' => ['required_if:role,dosen', 'nullable', 'string'],
             'pendidikan_terakhir' => ['required_if:role,dosen', 'nullable', 'string'],
             'jabatan_akademik' => ['required_if:role,dosen', 'nullable', 'string'],
             'status_kepegawaian' => ['required_if:role,dosen', 'nullable', Rule::in(['PNS', 'Non-PNS'])],
-            'tahun_mulai_mengajar' => ['required_if:role,dosen', 'nullable', 'integer', 'min:1900', 'max:' . date('Y')],
+            'tahun_mulai_mengajar' => ['required_if:role,dosen', 'nullable', 'integer', 'min:1900', 'max:'.date('Y')],
             // Mahasiswa profile fields
             'nim' => [
                 'required_if:role,mahasiswa',
                 'nullable',
                 'string',
-                Rule::unique('mahasiswa_profiles', 'nim')->ignore($user->mahasiswaProfile->id ?? null)
+                Rule::unique('mahasiswa_profiles', 'nim')->ignore($user->mahasiswaProfile->id ?? null),
             ],
             'program_studi' => ['required_if:role,mahasiswa', 'nullable', 'string'],
-            'angkatan' => ['required_if:role,mahasiswa', 'nullable', 'integer', 'min:2000', 'max:' . (date('Y') + 1)],
+            'angkatan' => ['required_if:role,mahasiswa', 'nullable', 'integer', 'min:2000', 'max:'.(date('Y') + 1)],
             'status_akademik' => ['required_if:role,mahasiswa', 'nullable', Rule::in(['Aktif', 'Cuti', 'Lulus'])],
             'semester' => ['required_if:role,mahasiswa', 'nullable', 'integer', 'min:1', 'max:14'],
             'dosen_pembimbing_id' => [
@@ -77,11 +77,11 @@ class UpdateUserRequest extends FormRequest
                             $query->where('name', 'dosen');
                         })->where('id', $value)->exists();
 
-                        if (!$dosenExists) {
+                        if (! $dosenExists) {
                             $fail('Dosen pembimbing tidak valid.');
                         }
                     }
-                }
+                },
             ],
             'ipk' => ['nullable', 'numeric', 'min:0', 'max:4.00'],
         ];
@@ -89,8 +89,6 @@ class UpdateUserRequest extends FormRequest
 
     /**
      * Get custom messages for validator errors.
-     *
-     * @return array
      */
     public function messages(): array
     {

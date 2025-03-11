@@ -12,7 +12,7 @@ class InternshipSeeder extends Seeder
     {
         // Ambil semua mahasiswa
         $mahasiswa = User::role('mahasiswa')->get();
-        
+
         // Ambil semua dosen
         $dosen = User::role('dosen')->get();
 
@@ -30,20 +30,20 @@ class InternshipSeeder extends Seeder
                     \App\Models\InternshipLog::factory()
                         ->count(random_int(3, 8))
                         ->make([
-                            'user_id' => $internship->mahasiswa_id
+                            'user_id' => $internship->mahasiswa_id,
                         ])
                 );
 
                 // Jika status ongoing atau approved, buat data bimbingan
                 if (in_array($internship->status, [
                     Internship::STATUS_BERJALAN,
-                    Internship::STATUS_DISETUJUI
+                    Internship::STATUS_DISETUJUI,
                 ])) {
                     // Buat 2-5 data bimbingan biasa
                     $supervisions = \App\Models\InternshipSupervision::factory()
                         ->count(random_int(2, 5))
                         ->make([
-                            'dosen_id' => $internship->dosen_id
+                            'dosen_id' => $internship->dosen_id,
                         ]);
 
                     // Jika sedang berjalan, tambahkan 1-3 jadwal bimbingan yang akan datang

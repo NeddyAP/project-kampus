@@ -30,4 +30,4 @@ class RecordAttendanceRequest extends FormRequest
             'data.*.notes.max' => 'Catatan maksimal 1000 karakter',
         ];
     }
-} 
+}

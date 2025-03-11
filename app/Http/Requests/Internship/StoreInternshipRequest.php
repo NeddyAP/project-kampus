@@ -16,7 +16,7 @@ class StoreInternshipRequest extends FormRequest
     {
         return [
             'dosen_id' => 'required|exists:users,id',
-            'category' => 'required|in:' . implode(',', [Internship::CATEGORY_KKL, Internship::CATEGORY_KKN]),
+            'category' => 'required|in:'.implode(',', [Internship::CATEGORY_KKL, Internship::CATEGORY_KKN]),
             'company_name' => 'required|string|max:255',
             'company_address' => 'required|string|max:500',
             'company_phone' => 'required|string|max:20',

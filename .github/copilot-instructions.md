@@ -11,6 +11,7 @@ Rules:
 7. use lowercase for all file names and folders.
 8. use kebab-case for all file names and folders.
 9. Project Date: Project is start in 2025-02-01
+10. now date is 2025-03-11
 
 ---
 

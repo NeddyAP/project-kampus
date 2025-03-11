@@ -33,8 +33,8 @@ class InternshipController extends Controller
         // Apply sorting
         $query->when(
             $request->sort,
-            fn($q, $sort) => $q->orderBy($sort, $request->order ?? 'asc'),
-            fn($q) => $q->latest()
+            fn ($q, $sort) => $q->orderBy($sort, $request->order ?? 'asc'),
+            fn ($q) => $q->latest()
         );
 
         // Get paginated results
@@ -81,7 +81,7 @@ class InternshipController extends Controller
         $internship->load(['mahasiswa:id,name,email,nim', 'dosen:id,name,email,nip', 'logs']);
 
         return Inertia::render('Admin/internships/show', [
-            'internship' => $internship
+            'internship' => $internship,
         ]);
     }
 
@@ -89,7 +89,7 @@ class InternshipController extends Controller
     {
         $request->validate([
             'status' => 'required|in:DISETUJUI,DITOLAK',
-            'notes' => 'required|string|max:255'
+            'notes' => 'required|string|max:255',
         ]);
 
         $oldStatus = $internship->status;
@@ -107,8 +107,8 @@ class InternshipController extends Controller
             'metadata' => [
                 'old_status' => $oldStatus,
                 'new_status' => $request->status,
-                'notes' => $request->notes
-            ]
+                'notes' => $request->notes,
+            ],
         ]);
 
         return redirect()
@@ -120,12 +120,12 @@ class InternshipController extends Controller
     {
         $request->validate([
             'dosen_id' => 'required|exists:users,id',
-            'notes' => 'required|string|max:255'
+            'notes' => 'required|string|max:255',
         ]);
 
         $internship->update([
             'dosen_id' => $request->dosen_id,
-            'status' => 'SEDANG_BERJALAN'
+            'status' => 'SEDANG_BERJALAN',
         ]);
 
         // Catat log assignment dosen
@@ -137,8 +137,8 @@ class InternshipController extends Controller
             'metadata' => [
                 'old_status' => 'DISETUJUI',
                 'new_status' => 'SEDANG_BERJALAN',
-                'notes' => $request->notes
-            ]
+                'notes' => $request->notes,
+            ],
         ]);
 
         // Buat data supervisi awal
@@ -146,7 +146,7 @@ class InternshipController extends Controller
             'dosen_id' => $request->dosen_id,
             'supervision_date' => now(),
             'supervision_type' => 'ONLINE',
-            'supervisor_notes' => $request->notes
+            'supervisor_notes' => $request->notes,
         ]);
 
         return redirect()

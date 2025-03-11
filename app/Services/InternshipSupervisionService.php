@@ -24,7 +24,7 @@ class InternshipSupervisionService
             'dosen_id' => $dosen->id,
             'title' => $data['title'],
             'notes' => $data['notes'],
-            'scheduled_at' => $data['date'] . ' ' . $data['time'],
+            'scheduled_at' => $data['date'].' '.$data['time'],
             'attachment_path' => $attachmentPath,
         ]);
     }
@@ -83,10 +83,6 @@ class InternshipSupervisionService
 
     /**
      * Get upcoming supervisions for a dosen.
-     *
-     * @param User $dosen
-     * @param array $filters
-     * @return LengthAwarePaginator
      */
     public function getUpcomingSupervisions(User $dosen, array $filters = []): LengthAwarePaginator
     {

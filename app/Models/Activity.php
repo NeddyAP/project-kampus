@@ -46,7 +46,7 @@ class Activity extends Model
             'subject_type' => get_class($subject),
             'subject_id' => $subject->id,
             'description' => $description ?? sprintf(
-                '%s %s %s', 
+                '%s %s %s',
                 $causer?->name ?? 'System',
                 $action,
                 class_basename($subject)

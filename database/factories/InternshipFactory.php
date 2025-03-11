@@ -14,7 +14,7 @@ class InternshipFactory extends Factory
     {
         $startDate = $this->faker->dateTimeBetween('now', '+2 months');
         $endDate = $this->faker->dateTimeBetween($startDate, '+6 months');
-        
+
         $status = $this->faker->randomElement([
             Internship::STATUS_DRAFT,
             Internship::STATUS_MENUNGGU,
@@ -45,7 +45,7 @@ class InternshipFactory extends Factory
             // Jika status approved atau completed, set approved_by
             if (in_array($internship->status, [
                 Internship::STATUS_DISETUJUI,
-                Internship::STATUS_SELESAI
+                Internship::STATUS_SELESAI,
             ])) {
                 $internship->approved_by = User::role('admin')->inRandomOrder()->first()->id;
                 $internship->save();

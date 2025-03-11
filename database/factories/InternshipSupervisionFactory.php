@@ -26,7 +26,7 @@ class InternshipSupervisionFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'title' => 'Bimbingan: ' . $this->faker->sentence(),
+                'title' => 'Bimbingan: '.$this->faker->sentence(),
                 'notes' => $this->faker->paragraph(),
                 'scheduled_at' => $this->faker->dateTimeBetween('now', '+2 weeks'),
             ];

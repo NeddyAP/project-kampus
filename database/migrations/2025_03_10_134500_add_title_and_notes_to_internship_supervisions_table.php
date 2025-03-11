@@ -24,7 +24,7 @@ return new class extends Migration
                 'progress_score',
                 'final_evaluation',
                 'final_score',
-                'supervisor_notes'
+                'supervisor_notes',
             ]);
         });
     }

@@ -3,21 +3,21 @@ import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { CalendarIcon, PencilIcon } from "lucide-react";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+import { CalendarIcon, PencilIcon } from 'lucide-react';
 import { useState } from 'react';
 
 interface InternshipLog {
@@ -234,12 +234,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                     {getStatusDisplay(internship.status)}
                                 </Badge>
                                 {canEdit && (
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setIsEditDialogOpen(true)}
-                                        className="flex items-center gap-1"
-                                    >
+                                    <Button variant="outline" size="sm" onClick={() => setIsEditDialogOpen(true)} className="flex items-center gap-1">
                                         <PencilIcon className="h-4 w-4" />
                                         Edit
                                     </Button>
@@ -301,22 +296,25 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
 
                     <div className="mb-4 flex space-x-4 border-b">
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                                }`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'detail' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('detail')}
                         >
                             Detail
                         </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                                }`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'logs' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('logs')}
                         >
                             Log Aktivitas
                         </button>
                         <button
-                            className={`border-b-2 px-4 py-2 ${activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
-                                }`}
+                            className={`border-b-2 px-4 py-2 ${
+                                activeTab === 'supervisions' ? 'border-primary text-primary font-medium' : 'text-muted-foreground border-transparent'
+                            }`}
                             onClick={() => setActiveTab('supervisions')}
                         >
                             Bimbingan
@@ -566,35 +564,29 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
 
                     {/* Edit Dialog */}
                     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+                        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
                             <DialogHeader>
                                 <DialogTitle>Edit Pengajuan Magang</DialogTitle>
-                                <DialogDescription>
-                                    Perbarui informasi pengajuan magang Anda.
-                                </DialogDescription>
+                                <DialogDescription>Perbarui informasi pengajuan magang Anda.</DialogDescription>
                             </DialogHeader>
                             <form onSubmit={handleEditSubmit} className="space-y-6">
                                 <div className="space-y-4">
                                     <div>
                                         <Label htmlFor="category">Kategori Magang</Label>
-                                        <Select
-                                            value={editForm.data.category}
-                                            onValueChange={(value) => editForm.setData('category', value)}
-                                        >
+                                        <Select value={editForm.data.category} onValueChange={(value) => editForm.setData('category', value)}>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Pilih kategori magang" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {categories && Object.entries(categories).map(([value, label]) => (
-                                                    <SelectItem key={value} value={value}>
-                                                        {label}
-                                                    </SelectItem>
-                                                ))}
+                                                {categories &&
+                                                    Object.entries(categories).map(([value, label]) => (
+                                                        <SelectItem key={value} value={value}>
+                                                            {label}
+                                                        </SelectItem>
+                                                    ))}
                                             </SelectContent>
                                         </Select>
-                                        {editForm.errors.category && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.category}</p>
-                                        )}
+                                        {editForm.errors.category && <p className="text-destructive mt-1 text-sm">{editForm.errors.category}</p>}
                                     </div>
 
                                     <div>
@@ -607,16 +599,15 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                                 <SelectValue placeholder="Pilih dosen pembimbing" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {dosen && dosen.map((d) => (
-                                                    <SelectItem key={d.id} value={d.id.toString()}>
-                                                        {d.name}
-                                                    </SelectItem>
-                                                ))}
+                                                {dosen &&
+                                                    dosen.map((d) => (
+                                                        <SelectItem key={d.id} value={d.id.toString()}>
+                                                            {d.name}
+                                                        </SelectItem>
+                                                    ))}
                                             </SelectContent>
                                         </Select>
-                                        {editForm.errors.dosen_id && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.dosen_id}</p>
-                                        )}
+                                        {editForm.errors.dosen_id && <p className="text-destructive mt-1 text-sm">{editForm.errors.dosen_id}</p>}
                                     </div>
 
                                     <div>
@@ -627,7 +618,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                             onChange={(e) => editForm.setData('company_name', e.target.value)}
                                         />
                                         {editForm.errors.company_name && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.company_name}</p>
+                                            <p className="text-destructive mt-1 text-sm">{editForm.errors.company_name}</p>
                                         )}
                                     </div>
 
@@ -639,7 +630,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                             onChange={(e) => editForm.setData('company_address', e.target.value)}
                                         />
                                         {editForm.errors.company_address && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.company_address}</p>
+                                            <p className="text-destructive mt-1 text-sm">{editForm.errors.company_address}</p>
                                         )}
                                     </div>
 
@@ -651,7 +642,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                             onChange={(e) => editForm.setData('company_phone', e.target.value)}
                                         />
                                         {editForm.errors.company_phone && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.company_phone}</p>
+                                            <p className="text-destructive mt-1 text-sm">{editForm.errors.company_phone}</p>
                                         )}
                                     </div>
 
@@ -663,7 +654,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                             onChange={(e) => editForm.setData('supervisor_name', e.target.value)}
                                         />
                                         {editForm.errors.supervisor_name && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.supervisor_name}</p>
+                                            <p className="text-destructive mt-1 text-sm">{editForm.errors.supervisor_name}</p>
                                         )}
                                     </div>
 
@@ -675,7 +666,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                             onChange={(e) => editForm.setData('supervisor_phone', e.target.value)}
                                         />
                                         {editForm.errors.supervisor_phone && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.supervisor_phone}</p>
+                                            <p className="text-destructive mt-1 text-sm">{editForm.errors.supervisor_phone}</p>
                                         )}
                                     </div>
 
@@ -686,16 +677,12 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                                 <Button
                                                     variant="outline"
                                                     className={cn(
-                                                        "w-full justify-start text-left font-normal",
-                                                        !editForm.data.start_date && "text-muted-foreground"
+                                                        'w-full justify-start text-left font-normal',
+                                                        !editForm.data.start_date && 'text-muted-foreground',
                                                     )}
                                                 >
                                                     <CalendarIcon className="mr-2 h-4 w-4" />
-                                                    {editForm.data.start_date ? (
-                                                        formatDate(editForm.data.start_date)
-                                                    ) : (
-                                                        <span>Pilih tanggal</span>
-                                                    )}
+                                                    {editForm.data.start_date ? formatDate(editForm.data.start_date) : <span>Pilih tanggal</span>}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0" align="start">
@@ -707,9 +694,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                                 />
                                             </PopoverContent>
                                         </Popover>
-                                        {editForm.errors.start_date && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.start_date}</p>
-                                        )}
+                                        {editForm.errors.start_date && <p className="text-destructive mt-1 text-sm">{editForm.errors.start_date}</p>}
                                     </div>
 
                                     <div>
@@ -719,16 +704,12 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                                 <Button
                                                     variant="outline"
                                                     className={cn(
-                                                        "w-full justify-start text-left font-normal",
-                                                        !editForm.data.end_date && "text-muted-foreground"
+                                                        'w-full justify-start text-left font-normal',
+                                                        !editForm.data.end_date && 'text-muted-foreground',
                                                     )}
                                                 >
                                                     <CalendarIcon className="mr-2 h-4 w-4" />
-                                                    {editForm.data.end_date ? (
-                                                        formatDate(editForm.data.end_date)
-                                                    ) : (
-                                                        <span>Pilih tanggal</span>
-                                                    )}
+                                                    {editForm.data.end_date ? formatDate(editForm.data.end_date) : <span>Pilih tanggal</span>}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0" align="start">
@@ -741,9 +722,7 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                                 />
                                             </PopoverContent>
                                         </Popover>
-                                        {editForm.errors.end_date && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.end_date}</p>
-                                        )}
+                                        {editForm.errors.end_date && <p className="text-destructive mt-1 text-sm">{editForm.errors.end_date}</p>}
                                     </div>
 
                                     <div>
@@ -754,26 +733,20 @@ export default function MahasiswaMagangShow({ internship, dosen, categories }: P
                                                 type="file"
                                                 onChange={(e) => {
                                                     if (e.target.files && e.target.files[0]) {
-                                                        editForm.setData('cover_letter', e.target.files[0])
+                                                        editForm.setData('cover_letter', e.target.files[0]);
                                                     }
                                                 }}
                                             />
-                                            <p className="text-muted-foreground text-sm mt-1">
-                                                Kosongkan jika tidak ingin mengubah dokumen yang ada
-                                            </p>
+                                            <p className="text-muted-foreground mt-1 text-sm">Kosongkan jika tidak ingin mengubah dokumen yang ada</p>
                                         </div>
                                         {editForm.errors.cover_letter && (
-                                            <p className="text-destructive text-sm mt-1">{editForm.errors.cover_letter}</p>
+                                            <p className="text-destructive mt-1 text-sm">{editForm.errors.cover_letter}</p>
                                         )}
                                     </div>
                                 </div>
 
                                 <div className="flex justify-end space-x-2">
-                                    <Button
-                                        variant="outline"
-                                        type="button"
-                                        onClick={() => setIsEditDialogOpen(false)}
-                                    >
+                                    <Button variant="outline" type="button" onClick={() => setIsEditDialogOpen(false)}>
                                         Batal
                                     </Button>
                                     <Button type="submit" disabled={editForm.processing}>

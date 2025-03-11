@@ -44,36 +44,34 @@ class StoreUserRequest extends FormRequest
             'pendidikan_terakhir' => ['required_if:role,dosen', 'nullable', 'string'],
             'jabatan_akademik' => ['required_if:role,dosen', 'nullable', 'string'],
             'status_kepegawaian' => ['required_if:role,dosen', 'nullable', Rule::in(['PNS', 'Non-PNS'])],
-            'tahun_mulai_mengajar' => ['required_if:role,dosen', 'nullable', 'integer', 'min:1900', 'max:' . date('Y')],
+            'tahun_mulai_mengajar' => ['required_if:role,dosen', 'nullable', 'integer', 'min:1900', 'max:'.date('Y')],
             // Mahasiswa profile fields
             'nim' => ['required_if:role,mahasiswa', 'nullable', 'string', 'unique:mahasiswa_profiles,nim'],
             'program_studi' => ['required_if:role,mahasiswa', 'nullable', 'string'],
-            'angkatan' => ['required_if:role,mahasiswa', 'nullable', 'integer', 'min:2000', 'max:' . (date('Y') + 1)],
+            'angkatan' => ['required_if:role,mahasiswa', 'nullable', 'integer', 'min:2000', 'max:'.(date('Y') + 1)],
             'status_akademik' => ['required_if:role,mahasiswa', 'nullable', Rule::in(['Aktif', 'Cuti', 'Lulus'])],
             'semester' => ['required_if:role,mahasiswa', 'nullable', 'integer', 'min:1', 'max:14'],
-                'dosen_pembimbing_id' => [
-                    'nullable',
-                    function ($attribute, $value, $fail) {
-                        // Only validate if role is mahasiswa and a value is provided
-                        if ($this->role === 'mahasiswa' && $value !== null) {
-                            $dosenExists = User::whereHas('roles', function ($query) {
-                                $query->where('name', 'dosen');
-                            })->where('id', $value)->exists();
+            'dosen_pembimbing_id' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    // Only validate if role is mahasiswa and a value is provided
+                    if ($this->role === 'mahasiswa' && $value !== null) {
+                        $dosenExists = User::whereHas('roles', function ($query) {
+                            $query->where('name', 'dosen');
+                        })->where('id', $value)->exists();
 
-                            if (!$dosenExists) {
-                                $fail('Dosen pembimbing tidak valid.');
-                            }
+                        if (! $dosenExists) {
+                            $fail('Dosen pembimbing tidak valid.');
                         }
                     }
-                ],
+                },
+            ],
             'ipk' => ['nullable', 'numeric', 'min:0', 'max:4.00'],
         ];
     }
 
     /**
      * Get custom messages for validator errors.
-     *
-     * @return array
      */
     public function messages(): array
     {

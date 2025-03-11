@@ -6,7 +6,6 @@ use App\Models\Internship;
 use App\Models\InternshipLog;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class InternshipService
 {
@@ -39,7 +38,7 @@ class InternshipService
             // Buat log pengajuan
             $this->createLog($internship, $mahasiswa, InternshipLog::TYPE_STATUS_CHANGE, 'Pengajuan Magang Dibuat', [
                 'old_status' => null,
-                'new_status' => Internship::STATUS_PENDING
+                'new_status' => Internship::STATUS_PENDING,
             ]);
 
             return $internship;
@@ -52,7 +51,7 @@ class InternshipService
     public function approve(Internship $internship, User $approver, ?string $notes = null): Internship
     {
         return DB::transaction(function () use ($internship, $approver, $notes) {
-            if (!$internship->canBeApproved()) {
+            if (! $internship->canBeApproved()) {
                 throw new \Exception('Pengajuan magang tidak dapat disetujui');
             }
 
@@ -60,14 +59,14 @@ class InternshipService
             $internship->update([
                 'status' => Internship::STATUS_APPROVED,
                 'approved_by' => $approver->id,
-                'notes' => $notes
+                'notes' => $notes,
             ]);
 
             // Buat log persetujuan
             $this->createLog($internship, $approver, InternshipLog::TYPE_STATUS_CHANGE, 'Pengajuan Magang Disetujui', [
                 'old_status' => Internship::STATUS_PENDING,
                 'new_status' => Internship::STATUS_APPROVED,
-                'notes' => $notes
+                'notes' => $notes,
             ]);
 
             return $internship;
@@ -80,7 +79,7 @@ class InternshipService
     public function reject(Internship $internship, User $approver, string $reason): Internship
     {
         return DB::transaction(function () use ($internship, $approver, $reason) {
-            if (!$internship->canBeRejected()) {
+            if (! $internship->canBeRejected()) {
                 throw new \Exception('Pengajuan magang tidak dapat ditolak');
             }
 
@@ -88,14 +87,14 @@ class InternshipService
             $internship->update([
                 'status' => Internship::STATUS_REJECTED,
                 'approved_by' => $approver->id,
-                'rejection_reason' => $reason
+                'rejection_reason' => $reason,
             ]);
 
             // Buat log penolakan
             $this->createLog($internship, $approver, InternshipLog::TYPE_STATUS_CHANGE, 'Pengajuan Magang Ditolak', [
                 'old_status' => Internship::STATUS_PENDING,
                 'new_status' => Internship::STATUS_REJECTED,
-                'reason' => $reason
+                'reason' => $reason,
             ]);
 
             return $internship;
@@ -108,19 +107,19 @@ class InternshipService
     public function complete(Internship $internship, User $user): Internship
     {
         return DB::transaction(function () use ($internship, $user) {
-            if (!$internship->canBeCompleted()) {
+            if (! $internship->canBeCompleted()) {
                 throw new \Exception('Magang tidak dapat ditandai selesai');
             }
 
             // Update status
             $internship->update([
-                'status' => Internship::STATUS_COMPLETED
+                'status' => Internship::STATUS_COMPLETED,
             ]);
 
             // Buat log penyelesaian
             $this->createLog($internship, $user, InternshipLog::TYPE_STATUS_CHANGE, 'Magang Selesai', [
                 'old_status' => Internship::STATUS_ONGOING,
-                'new_status' => Internship::STATUS_COMPLETED
+                'new_status' => Internship::STATUS_COMPLETED,
             ]);
 
             return $internship;
@@ -133,7 +132,7 @@ class InternshipService
     public function uploadDocument(Internship $internship, string $type, $file): string
     {
         $path = $file->store("internships/{$internship->id}");
-        
+
         switch ($type) {
             case 'cover_letter':
                 $internship->update(['cover_letter_path' => $path]);
@@ -178,7 +177,7 @@ class InternshipService
             'user_id' => $user->id,
             'type' => $type,
             'title' => $title,
-            'metadata' => $metadata
+            'metadata' => $metadata,
         ]);
     }
 }

@@ -139,9 +139,13 @@ export default function Welcome() {
                                 {auth.user ? (
                                     <li>
                                         <Link
-                                            href={auth.roles.isAdmin ? route('admin.dashboard') :
-                                                auth.roles.isDosen ? route('dosen.bimbingan.index') :
-                                                    route('mahasiswa.magang.index')}
+                                            href={
+                                                auth.roles.isAdmin
+                                                    ? route('admin.dashboard')
+                                                    : auth.roles.isDosen
+                                                      ? route('dosen.bimbingan.index')
+                                                      : route('mahasiswa.magang.index')
+                                            }
                                             className="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white"
                                         >
                                             Akses Dashboard
@@ -163,18 +167,12 @@ export default function Welcome() {
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <div className="p-8 text-center">
                                     <h2 className="mb-4 text-2xl font-bold text-[#1b1b18] dark:text-[#EDEDEC]">
-                                        {auth.user ? (
-                                            <>Selamat Datang, {auth.user.name}</>
-                                        ) : (
-                                            <>Sistem Informasi Kampus</>
-                                        )}
+                                        {auth.user ? <>Selamat Datang, {auth.user.name}</> : <>Sistem Informasi Kampus</>}
                                     </h2>
                                     <p className="mb-6 text-[#706f6c] dark:text-[#A1A09A]">
-                                        {auth.user ? (
-                                            'Akses cepat ke fitur-fitur utama sistem magang'
-                                        ) : (
-                                            'Platform terintegrasi untuk pengelolaan magang mahasiswa dengan bimbingan dosen'
-                                        )}
+                                        {auth.user
+                                            ? 'Akses cepat ke fitur-fitur utama sistem magang'
+                                            : 'Platform terintegrasi untuk pengelolaan magang mahasiswa dengan bimbingan dosen'}
                                     </p>
                                 </div>
                             </div>

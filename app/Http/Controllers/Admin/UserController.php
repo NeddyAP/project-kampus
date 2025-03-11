@@ -5,13 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
-use App\Services\UserService;
 use App\Models\User;
-use App\Models\DosenProfile;
-use App\Models\MahasiswaProfile;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
@@ -23,7 +19,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        abort_if(!auth()->user()->isSuperAdmin() && $request->has('trashed'), 403);
+        abort_if(! auth()->user()->isSuperAdmin() && $request->has('trashed'), 403);
 
         $query = User::with(['roles', 'adminProfile', 'dosenProfile', 'mahasiswaProfile'])
             ->when($request->search, function ($query, $search) {
@@ -39,13 +35,13 @@ class UserController extends Controller
             })
             ->when(
                 $request->sort,
-                fn($query, $sort) => $query->orderBy($sort, $request->order ?? 'asc'),
-                fn($query) => $query->orderBy('created_at', 'desc')
+                fn ($query, $sort) => $query->orderBy($sort, $request->order ?? 'asc'),
+                fn ($query) => $query->orderBy('created_at', 'desc')
             )
             ->when(
                 $request->trashed,
-                fn($query) => $query->onlyTrashed(),
-                fn($query) => $query->withoutTrashed()
+                fn ($query) => $query->onlyTrashed(),
+                fn ($query) => $query->withoutTrashed()
             );
 
         // Get paginated results
@@ -108,12 +104,12 @@ class UserController extends Controller
             return redirect()->route('admin.users.index')
                 ->with('flash', [
                     'type' => 'success',
-                    'message' => 'Pengguna berhasil ditambahkan'
+                    'message' => 'Pengguna berhasil ditambahkan',
                 ]);
         } catch (\Exception $e) {
             return back()->with('flash', [
                 'type' => 'error',
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'Terjadi kesalahan: '.$e->getMessage(),
             ]);
         }
     }
@@ -141,12 +137,12 @@ class UserController extends Controller
             return redirect()->route('admin.users.index')
                 ->with('flash', [
                     'type' => 'success',
-                    'message' => 'Pengguna berhasil diperbarui'
+                    'message' => 'Pengguna berhasil diperbarui',
                 ]);
         } catch (\Exception $e) {
             return back()->with('flash', [
                 'type' => 'error',
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'Terjadi kesalahan: '.$e->getMessage(),
             ]);
         }
     }
@@ -158,12 +154,12 @@ class UserController extends Controller
 
             return back()->with('flash', [
                 'type' => 'success',
-                'message' => 'Pengguna berhasil dihapus'
+                'message' => 'Pengguna berhasil dihapus',
             ]);
         } catch (\Exception $e) {
             return back()->with('flash', [
                 'type' => 'error',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -175,12 +171,12 @@ class UserController extends Controller
 
             return back()->with('flash', [
                 'type' => 'success',
-                'message' => 'Pengguna berhasil dipulihkan'
+                'message' => 'Pengguna berhasil dipulihkan',
             ]);
         } catch (\Exception $e) {
             return back()->with('flash', [
                 'type' => 'error',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
         }
     }

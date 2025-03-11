@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Internship extends Model
 {
@@ -39,14 +39,20 @@ class Internship extends Model
 
     // Status constants
     const STATUS_DRAFT = 'DRAFT';
+
     const STATUS_MENUNGGU = 'MENUNGGU_PERSETUJUAN';
+
     const STATUS_DISETUJUI = 'DISETUJUI';
+
     const STATUS_DITOLAK = 'DITOLAK';
+
     const STATUS_BERJALAN = 'SEDANG_BERJALAN';
+
     const STATUS_SELESAI = 'SELESAI';
 
     // Category constants
     const CATEGORY_KKL = 'KKL';
+
     const CATEGORY_KKN = 'KKN';
 
     // Relationships
@@ -91,7 +97,7 @@ class Internship extends Model
     {
         return in_array($this->status, [
             self::STATUS_DISETUJUI,
-            self::STATUS_BERJALAN
+            self::STATUS_BERJALAN,
         ]);
     }
 

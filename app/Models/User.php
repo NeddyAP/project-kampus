@@ -13,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -64,6 +64,7 @@ class User extends Authenticatable
         } elseif ($this->hasRole('mahasiswa')) {
             return $this->mahasiswaProfile;
         }
+
         return null;
     }
 
