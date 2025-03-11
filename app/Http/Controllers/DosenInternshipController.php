@@ -37,36 +37,108 @@ class DosenInternshipController extends Controller
     public function upcoming(Request $request)
     {
         $user = Auth::user();
-        $upcomingSupervisions = $this->supervisionService->getUpcomingSupervisions($user, [
-            'search' => $request->supervision_search,
-            'date' => $request->supervision_date,
-            'per_page' => $request->supervision_per_page ?? 10,
-        ]);
+        $query = InternshipSupervision::with(['internship.mahasiswa'])
+            ->where('dosen_id', $user->id)
+            ->where('scheduled_at', '>=', now());
+
+        // Search
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('notes', 'like', "%{$search}%")
+                  ->orWhereHas('internship.mahasiswa', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Date Filter
+        if ($request->has('date')) {
+            $query->whereDate('scheduled_at', $request->date);
+        }
+
+        // Sorting
+        $sortField = $request->input('sort_field', 'scheduled_at');
+        $sortOrder = $request->input('sort_order', 'asc');
+        $allowedSortFields = ['scheduled_at', 'title', 'notes'];
+        
+        if (in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortOrder);
+        }
+
+        // Pagination
+        $perPage = $request->input('per_page', 10);
+        $upcomingSupervisions = $query->paginate($perPage);
 
         return Inertia::render('dosen/bimbingan/upcoming', [
             'upcomingSupervisions' => $upcomingSupervisions,
+            'filters' => $request->only(['search', 'date', 'sort_field', 'sort_order', 'per_page'])
         ]);
     }
 
     public function list(Request $request)
     {
         $user = Auth::user();
-        $internships = $user->internshipBimbingan()
-            ->with(['mahasiswa:id,name', 'logs'])
-            ->when($request->search, function ($query, $search) {
-                $query->whereHas('mahasiswa', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                });
-            })
-            ->when($request->status, function ($query, $status) {
-                $query->where('status', $status);
-            })
-            ->latest()
-            ->paginate($request->per_page ?? 10);
+        $query = $user->internshipBimbingan()
+            ->with(['mahasiswa:id,name', 'logs']);
+
+        // Search
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('company_name', 'like', "%{$search}%")
+                  ->orWhereHas('mahasiswa', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Status Filter
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Category Filter
+        if ($request->has('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // Sorting
+        $sortField = $request->input('sort_field', 'created_at');
+        $sortOrder = $request->input('sort_order', 'desc');
+        $allowedSortFields = [
+            'company_name',
+            'category',
+            'status',
+            'created_at'
+        ];
+
+        if (in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortOrder);
+        }
+
+        // Handle mahasiswa name sorting
+        if ($sortField === 'mahasiswa_name') {
+            $query->join('users as mahasiswa', 'internships.mahasiswa_id', '=', 'mahasiswa.id')
+                  ->orderBy('mahasiswa.name', $sortOrder)
+                  ->select('internships.*');
+        }
+
+        // Pagination
+        $perPage = $request->input('per_page', 10);
+        $internships = $query->paginate($perPage);
 
         return Inertia::render('dosen/bimbingan/list', [
             'internships' => $internships,
-            'filters' => $request->only(['search', 'status']),
+            'filters' => $request->only([
+                'search',
+                'status',
+                'category',
+                'sort_field',
+                'sort_order',
+                'per_page'
+            ])
         ]);
     }
 
@@ -75,7 +147,6 @@ class DosenInternshipController extends Controller
      */
     public function show(Internship $internship)
     {
-        // Ensure the internship is supervised by the authenticated dosen
         if ($internship->dosen_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -105,7 +176,6 @@ class DosenInternshipController extends Controller
      */
     public function showAttendanceForm(InternshipSupervision $supervision)
     {
-        // Ensure the supervision is owned by the authenticated dosen
         if ($supervision->dosen_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -123,7 +193,6 @@ class DosenInternshipController extends Controller
      */
     public function recordAttendance(RecordAttendanceRequest $request, InternshipSupervision $supervision)
     {
-        // Ensure the supervision is owned by the authenticated dosen
         if ($supervision->dosen_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }

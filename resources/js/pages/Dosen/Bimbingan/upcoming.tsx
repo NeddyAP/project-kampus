@@ -1,43 +1,36 @@
 import { AppContent } from '@/components/app-content';
 import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
-import { Head, InertiaLinkProps, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import TextLink from '@/components/text-link';
 import { ChevronLeft } from 'lucide-react';
-
-interface Supervision {
-    id: number;
-    title: string;
-    notes: string;
-    scheduled_at: string;
-    attachment_path: string | null;
-    internship: {
-        id: number;
-        mahasiswa: {
-            name: string;
-        };
-    };
-}
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/data-table/data-table';
+import { UpcomingSupervision, upcomingColumns } from '@/components/data-table/columns';
 
 interface Props {
     upcomingSupervisions: {
-        data: Supervision[];
+        data: UpcomingSupervision[];
         current_page: number;
         last_page: number;
         per_page: number;
         total: number;
-        links: InertiaLinkProps[];
+    };
+    filters?: {
+        search?: string;
+        date?: string;
+        sort_field?: string;
+        sort_order?: 'asc' | 'desc';
+        per_page?: number;
     };
 }
 
-export default function JadwalBimbinganAkanDatang({ upcomingSupervisions }: Props) {
+export default function JadwalBimbinganAkanDatang({ upcomingSupervisions, filters }: Props) {
     const [selectedSupervision, setSelectedSupervision] = useState<number | null>(null);
 
     // Form untuk absensi
@@ -51,17 +44,6 @@ export default function JadwalBimbinganAkanDatang({ upcomingSupervisions }: Prop
         is_present: 'true',
         notes: '',
     });
-
-    // Format datetime
-    const formatDateTime = (dateString: string) => {
-        return new Date(dateString).toLocaleString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
 
     // Handle attendance form submission
     const handleAttendanceSubmit = (e: React.FormEvent) => {
@@ -82,12 +64,12 @@ export default function JadwalBimbinganAkanDatang({ upcomingSupervisions }: Prop
             <AppHeader />
             <AppContent>
                 <div className="container mx-auto py-10">
-
                     <Link href={route('dosen.bimbingan.index')} className="mb-4 flex items-center space-x-2 text-sm hover:underline">
                         <ChevronLeft className="w-4 h-4 mr-1" />
                         Kembali ke Dashboard
                     </Link>
 
+                    {/* Buat Jadwal Card */}
                     <Card className='mb-6'>
                         <CardHeader>
                             <CardTitle>Buat Jadwal Bimbingan</CardTitle>
@@ -99,53 +81,26 @@ export default function JadwalBimbinganAkanDatang({ upcomingSupervisions }: Prop
                             </Button>
                         </CardContent>
                     </Card>
+
                     {/* Jadwal Bimbingan yang Akan Datang */}
-                    <Card className="mb-6">
+                    <Card>
                         <CardHeader>
                             <CardTitle>Jadwal Bimbingan yang Akan Datang</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Tanggal & Waktu</TableHead>
-                                        <TableHead>Judul</TableHead>
-                                        <TableHead>Catatan</TableHead>
-                                        <TableHead>Aksi</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {upcomingSupervisions.data.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={4} className="text-center">
-                                                Belum ada jadwal bimbingan yang akan datang
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : (
-                                        upcomingSupervisions.data.map((supervision) => (
-                                            <TableRow key={supervision.id}>
-                                                <TableCell>{formatDateTime(supervision.scheduled_at)}</TableCell>
-                                                <TableCell>{supervision.title}</TableCell>
-                                                <TableCell className="max-w-md truncate">{supervision.notes}</TableCell>
-                                                <TableCell>
-                                                    <Button variant="outline" size="sm" asChild>
-                                                        <Link href={route('dosen.bimbingan.attendance.form', { supervision: supervision.id })}>
-                                                            Isi Kehadiran
-                                                        </Link>
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    )}
-                                </TableBody>
-                            </Table>
+                            <DataTable
+                                columns={upcomingColumns}
+                                data={upcomingSupervisions.data}
+                                searchPlaceholder="Cari berdasarkan judul bimbingan..."
+                                searchColumn="title"
+                            />
                         </CardContent>
                     </Card>
 
-                    {/* Form Isi Kehadiran (muncul ketika jadwal dipilih) */}
+                    {/* Form Isi Kehadiran */}
                     {selectedSupervision && (
                         <div>
-                            <Card className="mb-6">
+                            <Card className="mb-6 mt-6">
                                 <CardHeader>
                                     <CardTitle>Isi Kehadiran Mahasiswa</CardTitle>
                                     <CardDescription>Catat kehadiran mahasiswa dalam sesi bimbingan</CardDescription>
@@ -206,4 +161,3 @@ export default function JadwalBimbinganAkanDatang({ upcomingSupervisions }: Prop
         </AppShell>
     );
 }
-

@@ -24,7 +24,7 @@ class MahasiswaInternshipController extends Controller
             ->latest()
             ->get();
 
-        return Inertia::render('Mahasiswa/Magang/Index', [
+        return Inertia::render('mahasiswa/Magang/Index', [
             'internships' => $internships,
         ]);
     }
@@ -74,7 +74,7 @@ class MahasiswaInternshipController extends Controller
 
         $dosen = User::role('dosen')->get(['id', 'name']);
 
-        return Inertia::render('Mahasiswa/Magang/Edit', [
+        return Inertia::render('mahasiswa/Magang/Edit', [
             'internship' => $internship,
             'dosen' => $dosen,
             'categories' => [
@@ -114,7 +114,7 @@ class MahasiswaInternshipController extends Controller
 
         $internship->load(['dosen:id,name', 'logs.user:id,name', 'supervisions.dosen:id,name']);
 
-        return Inertia::render('Mahasiswa/Magang/Show', [
+        return Inertia::render('mahasiswa/Magang/Show', [
             'internship' => $internship,
         ]);
     }

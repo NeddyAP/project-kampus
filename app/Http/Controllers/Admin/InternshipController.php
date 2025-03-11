@@ -68,7 +68,7 @@ class InternshipController extends Controller
                 ];
             });
 
-        return Inertia::render('Admin/internships/index', [
+        return Inertia::render('admin/internships/index', [
             'internships' => $internships,
             'filters' => $request->only(['search', 'status', 'category', 'sort', 'order', 'per_page']),
             'stats' => $stats,
@@ -80,7 +80,7 @@ class InternshipController extends Controller
     {
         $internship->load(['mahasiswa:id,name,email,nim', 'dosen:id,name,email,nip', 'logs']);
 
-        return Inertia::render('Admin/internships/show', [
+        return Inertia::render('admin/internships/show', [
             'internship' => $internship,
         ]);
     }

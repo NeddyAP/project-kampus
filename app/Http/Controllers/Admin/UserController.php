@@ -77,7 +77,7 @@ class UserController extends Controller
             'recent_activities' => $recentActivities,
         ];
 
-        return Inertia::render('Admin/users/index', [
+        return Inertia::render('admin/users/index', [
             'users' => $users,
             'filters' => $request->only(['search', 'sort', 'order', 'per_page', 'trashed', 'role']),
             'roles' => User::getRoleNames(),
@@ -90,7 +90,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/users/create', [
+        return Inertia::render('admin/users/create', [
             'roles' => User::getRoleNames(),
             'dosen_users' => $this->userService->getDosenUsers(),
         ]);
@@ -122,7 +122,7 @@ class UserController extends Controller
         $role = $user->roles->first()?->name;
         $user->role = $role;
 
-        return Inertia::render('Admin/users/edit', [
+        return Inertia::render('admin/users/edit', [
             'user' => $user,
             'roles' => User::getRoleNames(),
             'dosen_users' => $this->userService->getDosenUsers(),

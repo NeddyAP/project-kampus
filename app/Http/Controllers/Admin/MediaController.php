@@ -31,7 +31,7 @@ class MediaController extends Controller
                 ];
             });
 
-        return Inertia::render('Admin/media/index', [
+        return Inertia::render('admin/media/index', [
             'media' => $media,
         ]);
     }
